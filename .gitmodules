@@ -1,3 +1,4 @@
-[submodule "core"]
-	path = core
+
+[submodule "core/core"]
+	path = core/core
 	url = git@github.com:leiyonghui/core.git
