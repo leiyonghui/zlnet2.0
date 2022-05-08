@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="core">
+      <UniqueIdentifier>{3726c75f-6e4e-47b8-a7be-5a56a32e5abf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="network">
+      <UniqueIdentifier>{5e1db22e-2801-47b8-8266-9cdef20be936}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test">
+      <UniqueIdentifier>{67ee08be-25de-43ef-ab83-37b4a22ab5c8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="network\CMakeLists.txt">
+      <Filter>network</Filter>
+    </Text>
+    <Text Include="test\CMakeLists.txt">
+      <Filter>test</Filter>
+    </Text>
+    <Text Include="core\CMakeLists.txt">
+      <Filter>core</Filter>
+    </Text>
+    <Text Include="CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="network\Address.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="network\Common.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="network\Configs.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="network\Network.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Common.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Configs.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\TimeHelp.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\NonCopyable.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="network\Connection.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="network\Endpoint.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="network\Listener.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="network\TcpListener.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="core\ObjectPools.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Singleton.h">
+      <Filter>core</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="network\Address.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="network\Network.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="test\main_win.cpp">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="core\TimeHelp.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="network\Connection.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="network\Endpoint.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="network\Listener.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="network\TcpListener.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="core\ObjectPools.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

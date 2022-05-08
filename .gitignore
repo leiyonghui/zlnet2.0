@@ -1,0 +1,8 @@
+out
+build
+.vs
+libs
+bin
+obj
+x64
+/CMakeSettings.json

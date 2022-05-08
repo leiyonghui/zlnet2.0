@@ -1,0 +1,186 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="core">
+      <UniqueIdentifier>{5814f664-151f-44c3-9ef1-b0b69a6eef05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="network">
+      <UniqueIdentifier>{56e512ba-3dc0-441a-ac6b-7e364e1f659a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test">
+      <UniqueIdentifier>{74198901-6520-42f9-8f5f-fb5d291ccfa0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="app">
+      <UniqueIdentifier>{be61432b-172c-48ec-8e6f-d7985fbed124}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine">
+      <UniqueIdentifier>{fd485f03-4304-4a3c-9cac-9f8f7a986797}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="network\CMakeLists.txt">
+      <Filter>network</Filter>
+    </Text>
+    <Text Include="test\CMakeLists.txt">
+      <Filter>test</Filter>
+    </Text>
+    <Text Include="CMakeLists.txt" />
+    <Text Include="app\CMakeLists.txt">
+      <Filter>app</Filter>
+    </Text>
+    <Text Include="core\core\CMakeLists.txt">
+      <Filter>core</Filter>
+    </Text>
+    <Text Include="core\CMakeLists.txt">
+      <Filter>core</Filter>
+    </Text>
+    <Text Include="engine\CMakeLists.txt">
+      <Filter>engine</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="network\Address.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="network\Common.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="network\Configs.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="network\Endpoint.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="app\Configs.h">
+      <Filter>app</Filter>
+    </ClInclude>
+    <ClInclude Include="network\Callbacks.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="network\Buffs.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="network\Buffer.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="network\BufferReader.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="network\BufferWriter.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="network\IBuffer.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="core\core\Common.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\core\Configs.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\core\FastNode.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\core\NonCopyable.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\core\ObjectPools.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\core\RingBuff.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\core\Singleton.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\core\TimeHelp.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\core\Timers.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\core\TimerSet.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\core\TimerWheel.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\core\KeyPool.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\core\Macro.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\core\Queue.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\Configs.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="network\Network.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="network\IOObject.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="network\IOProtocol.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="network\IOObjects.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="network\Poller.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="network\EPoller.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="network\IOEvent.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="network\IOEvents.h">
+      <Filter>network</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="network\Address.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="test\main.cpp">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="network\Endpoint.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="core\core\ObjectPools.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="core\core\RingBuff.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="core\core\TimeHelp.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="core\core\Timers.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="core\core\TimerSet.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="core\core\TimerWheel.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="network\Network.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="network\IOProtocol.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="network\Poller.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="network\EPoller.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
