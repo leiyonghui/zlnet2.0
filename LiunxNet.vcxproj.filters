@@ -4,9 +4,6 @@
     <Filter Include="core">
       <UniqueIdentifier>{5814f664-151f-44c3-9ef1-b0b69a6eef05}</UniqueIdentifier>
     </Filter>
-    <Filter Include="network">
-      <UniqueIdentifier>{56e512ba-3dc0-441a-ac6b-7e364e1f659a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="test">
       <UniqueIdentifier>{74198901-6520-42f9-8f5f-fb5d291ccfa0}</UniqueIdentifier>
     </Filter>
@@ -16,10 +13,13 @@
     <Filter Include="engine">
       <UniqueIdentifier>{fd485f03-4304-4a3c-9cac-9f8f7a986797}</UniqueIdentifier>
     </Filter>
+    <Filter Include="net">
+      <UniqueIdentifier>{56e512ba-3dc0-441a-ac6b-7e364e1f659a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="network\CMakeLists.txt">
-      <Filter>network</Filter>
+      <Filter>net</Filter>
     </Text>
     <Text Include="test\CMakeLists.txt">
       <Filter>test</Filter>
@@ -40,37 +40,37 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="network\Address.h">
-      <Filter>network</Filter>
+      <Filter>net</Filter>
     </ClInclude>
     <ClInclude Include="network\Common.h">
-      <Filter>network</Filter>
+      <Filter>net</Filter>
     </ClInclude>
     <ClInclude Include="network\Configs.h">
-      <Filter>network</Filter>
+      <Filter>net</Filter>
     </ClInclude>
     <ClInclude Include="network\Endpoint.h">
-      <Filter>network</Filter>
+      <Filter>net</Filter>
     </ClInclude>
     <ClInclude Include="app\Configs.h">
       <Filter>app</Filter>
     </ClInclude>
     <ClInclude Include="network\Callbacks.h">
-      <Filter>network</Filter>
+      <Filter>net</Filter>
     </ClInclude>
     <ClInclude Include="network\Buffs.h">
-      <Filter>network</Filter>
+      <Filter>net</Filter>
     </ClInclude>
     <ClInclude Include="network\Buffer.h">
-      <Filter>network</Filter>
+      <Filter>net</Filter>
     </ClInclude>
     <ClInclude Include="network\BufferReader.h">
-      <Filter>network</Filter>
+      <Filter>net</Filter>
     </ClInclude>
     <ClInclude Include="network\BufferWriter.h">
-      <Filter>network</Filter>
+      <Filter>net</Filter>
     </ClInclude>
     <ClInclude Include="network\IBuffer.h">
-      <Filter>network</Filter>
+      <Filter>net</Filter>
     </ClInclude>
     <ClInclude Include="core\core\Common.h">
       <Filter>core</Filter>
@@ -118,39 +118,39 @@
       <Filter>engine</Filter>
     </ClInclude>
     <ClInclude Include="network\Network.h">
-      <Filter>network</Filter>
+      <Filter>net</Filter>
     </ClInclude>
     <ClInclude Include="network\IOObject.h">
-      <Filter>network</Filter>
+      <Filter>net</Filter>
     </ClInclude>
     <ClInclude Include="network\IOProtocol.h">
-      <Filter>network</Filter>
+      <Filter>net</Filter>
     </ClInclude>
     <ClInclude Include="network\IOObjects.h">
-      <Filter>network</Filter>
+      <Filter>net</Filter>
     </ClInclude>
     <ClInclude Include="network\Poller.h">
-      <Filter>network</Filter>
+      <Filter>net</Filter>
     </ClInclude>
     <ClInclude Include="network\EPoller.h">
-      <Filter>network</Filter>
+      <Filter>net</Filter>
     </ClInclude>
     <ClInclude Include="network\IOEvent.h">
-      <Filter>network</Filter>
+      <Filter>net</Filter>
     </ClInclude>
     <ClInclude Include="network\IOEvents.h">
-      <Filter>network</Filter>
+      <Filter>net</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="network\Address.cpp">
-      <Filter>network</Filter>
+      <Filter>net</Filter>
     </ClCompile>
     <ClCompile Include="test\main.cpp">
       <Filter>test</Filter>
     </ClCompile>
     <ClCompile Include="network\Endpoint.cpp">
-      <Filter>network</Filter>
+      <Filter>net</Filter>
     </ClCompile>
     <ClCompile Include="core\core\ObjectPools.cpp">
       <Filter>core</Filter>
@@ -171,16 +171,16 @@
       <Filter>core</Filter>
     </ClCompile>
     <ClCompile Include="network\Network.cpp">
-      <Filter>network</Filter>
+      <Filter>net</Filter>
     </ClCompile>
     <ClCompile Include="network\IOProtocol.cpp">
-      <Filter>network</Filter>
+      <Filter>net</Filter>
     </ClCompile>
     <ClCompile Include="network\Poller.cpp">
-      <Filter>network</Filter>
+      <Filter>net</Filter>
     </ClCompile>
     <ClCompile Include="network\EPoller.cpp">
-      <Filter>network</Filter>
+      <Filter>net</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
