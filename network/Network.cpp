@@ -2,18 +2,19 @@
 
 #ifdef __linux
 #include <signal.h>
+#include "EPoller.h"
 #endif // __linux
 
 namespace network
 {
-	CNetwork::CNetwork() :_isStop(false)
+	CNetwork::CNetwork() :_isStop(false),_poller(new CEPoller())
 	{
 		_objects.resize(MAX_OBJECT_SIZE);
 	}
 
 	CNetwork::~CNetwork()
 	{
-
+		delete _poller;
 	}
 
 	bool CNetwork::addObject(const IOObjectPtr& object)
@@ -54,7 +55,7 @@ namespace network
 		if (key == 0)
 			return 0;
 		protocol->setKey(key);
-		pushEvent(std::static_pointer_cast<IOEvent>(IOListenPtr(new IOListen(port))));
+		pushEvent(std::static_pointer_cast<IOEvent>(IOListenPtr(new IOListen(port, protocol))));
 	}
 
 	uint32 CNetwork::connect(const std::string& ip, uint16 port, IOProtocolPtr protocol)
@@ -78,8 +79,11 @@ namespace network
 	{
 		while (_isStop)
 		{
+			_poller->poll();
+
 			std::list<IOEventPtr> events;
 			_eventQueue.pop(events);
+
 			for (std::list<IOEventPtr>::iterator iter = events.begin(); iter != events.end(); ++iter)
 			{
 				dispatchProcess(*iter);
@@ -119,7 +123,9 @@ namespace network
 		}
 		object->setReadCallback(std::bind(&CNetwork::handPollTcpAccept, this, _1));
 	}
+
 	void CNetwork::handPollTcpAccept(const IOObjectPtr& object)
 	{
+
 	}
 }

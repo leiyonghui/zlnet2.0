@@ -24,4 +24,5 @@ namespace network
 
 		std::vector<IOObjectPtr> _handlers;
 	};
+	USING_SHARED_PTR(CPoller);
 }

@@ -3,6 +3,7 @@
 #include "IOObjects.h"
 #include "IOProtocol.h"
 #include "IOEvents.h"
+#include "Poller.h"
 #include "core/Queue.h"
 
 namespace network
@@ -31,9 +32,10 @@ namespace network
 
 		void handPollTcpAccept(const IOObjectPtr& object);
 	private:
+		bool _isStop;
 		ObjecKeyPool _keyPool;
 		std::vector<IOObjectPtr> _objects;
 		Queue<IOEventPtr> _eventQueue;
-		bool _isStop;
+		CPoller* _poller;
 	};
 }

@@ -1,16 +1,20 @@
 #pragma once
 #include "core/Configs.h"
 
-namespace core
+namespace engine
 {
-	enum EMsgEvent
+	using namespace core;
+
+	using IOProtocol = network::IOProtocol;
+
+	enum EPacketType
 	{
-		EIOListen		=	1,
-		EIOUnlisten		=	2,
-		EIOAccept		=	3,
-		EIOConnect		=	4,
-		EIODisCon		=	5,
-		EIOClose		=	6,
-		EIOPacket		=	7,
+		PacketListen		=	1,
+		PacketUnlisten		=	2,
+		PacketAccept		=	3,
+		PacketConnect		=	4,
+		PacketDisCon		=	5,
+		PacketClose			=	6,
+		PacketMsg			=	7,
 	};
 }
