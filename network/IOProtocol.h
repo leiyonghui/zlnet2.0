@@ -6,10 +6,11 @@ namespace network
 	class IOProtocol : public CNoncopyable
 	{
 	public:
-		IOProtocol(class CNetwork* net);
+		IOProtocol(EPROTOCOL type, class CNetwork* net);
 
 		virtual ~IOProtocol();
 
+		EPROTOCOL getProto() const { return _protocolType; };
 		void setKey(uint32 key) { _key = key; }
 		uint32 key() const { return _key; }
 	public:
@@ -31,6 +32,7 @@ namespace network
 
 		virtual void onDisconnect() = 0;
 	protected:
+		EPROTOCOL _protocolType;
 		uint32 _key;
 		CNetwork* _network;
 	};

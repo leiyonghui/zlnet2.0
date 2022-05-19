@@ -32,15 +32,6 @@ namespace network
 		}
 		return nullptr;
 	}
-	uint32 CNetwork::popKey()
-	{
-		return _keyPool.pop();
-	}
-
-	void CNetwork::pushKey(uint32 key)
-	{
-		_keyPool.push(key);
-	}
 
 	void CNetwork::start()
 	{
@@ -56,6 +47,7 @@ namespace network
 			return 0;
 		protocol->setKey(key);
 		pushEvent(std::static_pointer_cast<IOEvent>(IOListenPtr(new IOListen(port, protocol))));
+		return key;
 	}
 
 	uint32 CNetwork::connect(const std::string& ip, uint16 port, IOProtocolPtr protocol)
@@ -66,6 +58,16 @@ namespace network
 	uint32 CNetwork::close(uint32 key)
 	{
 		return uint32();
+	}
+
+	uint32 CNetwork::popKey()
+	{
+		return _keyPool.pop();
+	}
+
+	void CNetwork::pushKey(uint32 key)
+	{
+		_keyPool.push(key);
 	}
 
 	void CNetwork::init()
@@ -115,17 +117,28 @@ namespace network
 	{
 		IOListenPtr ev = std::dynamic_pointer_cast<IOListen>(event);
 		auto protocol = ev->getProtocol();
-		TcpListenerPtr object = std::make_shared<TcpListener>(ev->getKey(), protocol);
+		IOObjectPtr object = nullptr;
+		auto prototype = protocol->getProto();
+		if (prototype == EPROTO_TCP)
+		{
+			object = std::make_shared<TcpListener>(ev->getKey(), protocol);
+			object->setReadCallback(std::bind(&CNetwork::handleTcpAccept, this, _1));
+			_poller->deregisterReadhandler(object);
+		}
+		else if (prototype == EPROTO_UDP)
+		{
+			
+		}
 		if (!addObject(object))
 		{
 			core_log_error("listen add object error", ev->getKey());
 			return;
 		}
-		object->setReadCallback(std::bind(&CNetwork::handPollTcpAccept, this, _1));
 	}
 
-	void CNetwork::handPollTcpAccept(const IOObjectPtr& object)
+	void CNetwork::handleTcpAccept(const IOObjectPtr& object)
 	{
-
+		TcpListenerPtr listen = std::dynamic_pointer_cast<TcpListener>(object);
+		assert(listen);
 	}
 }

@@ -14,12 +14,12 @@ namespace network
 		CNetwork();
 		virtual ~CNetwork();
 	public:
-		uint32 popKey();
-		void pushKey(uint32 key);
 		void start();
 		uint32 listen(uint16 port, IOProtocolPtr protocol);
 		uint32 connect(const std::string& ip, uint16 port, IOProtocolPtr protocol);
 		uint32 close(uint32 key);
+		uint32 popKey();
+		void pushKey(uint32 key);
 	protected:
 		bool addObject(const IOObjectPtr& object);
 		IOObjectPtr getObject(uint32 key) const;
@@ -30,7 +30,8 @@ namespace network
 		void pushEvent(const IOEventPtr& event);
 		void processListen(const IOEventPtr& event);
 
-		void handPollTcpAccept(const IOObjectPtr& object);
+	public:
+		void handleTcpAccept(const IOObjectPtr& object);
 	private:
 		bool _isStop;
 		ObjecKeyPool _keyPool;

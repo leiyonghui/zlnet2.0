@@ -23,6 +23,12 @@ namespace network
 
 	class IOObject;
 	USING_SHARED_PTR(IOObject);
+	class TcpListener;
+	USING_SHARED_PTR(TcpListener);
+	class TcpConnection;
+	USING_SHARED_PTR(TcpConnection);
+	class TcpConnector;
+	USING_SHARED_PTR(TcpConnector);
 
 	enum EPROTOCOL
 	{
