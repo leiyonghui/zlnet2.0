@@ -8,16 +8,17 @@ namespace network
 	using ReadCallback = std::function<void(const IOObjectPtr&)>;
 	using WriteCallback = std::function<void(const IOObjectPtr&)>;
 
-	class IOObject : public CNoncopyable
+	class IOObject : public core::CPoolObject, public CNoncopyable
 	{
 	public:
-		IOObject(IO_OBJECT_TYPE type, uint32 key, IOProtocolPtr protocl): _type(type), _key(key), _protocol(protocl), _events(0)
-		{
+		IOObject() = default;
+		virtual ~IOObject() = default;
 
-		}
+		void onAwake(IO_OBJECT_TYPE type, const IOProtocolPtr& protocl, CEndPointUnPtr endPoint);
+		void onRecycle();
 
 		IO_OBJECT_TYPE type() const { return _type; }
-		uint32 key() const { return _key; }
+		uint32 getKey() const { return _key; }
 		IOProtocolPtr getProtocol() const { return _protocol; }
 
 		int32 getEvents() const { return _events; }

@@ -8,7 +8,7 @@ namespace network
 	class IOListen : public IOEvent
 	{
 	public:
-		IOListen(uint16 port, const IOProtocolPtr& protocol) : IOEvent(IO_EVENT_LISTEN, protocol->key()), _port(port), _protocol(protocol)
+		IOListen(uint16 port, const IOProtocolPtr& protocol) : IOEvent(IO_EVENT_LISTEN, protocol->getKey()), _port(port), _protocol(protocol)
 		{
 
 		}

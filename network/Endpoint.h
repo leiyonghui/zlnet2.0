@@ -11,8 +11,6 @@ namespace network
 	public:
 		CEndPoint();
 
-		//CEndPoint(SOCKET s, const CAddress& address); 
-
 		~CEndPoint();
 
 		void onAwake(SOCKET s, const CAddress& address);

@@ -6,13 +6,14 @@ namespace network
 	class TcpListener : public IOObject
 	{
 	public:
-		TcpListener(uint32 key, IOProtocolPtr protocol) :
-			IOObject(IO_OBJECT_TYPE_LISTENER, key, protocol)
-		{
+		TcpListener() = default;
+		virtual ~TcpListener() = default;
 
-		}
+		void onAwake(const IOProtocolPtr& protocol, CEndPointUnPtr endPoint);
+		void onRecycle();
 
-		CEndPointUnPtr listen();
+		bool listen();
+		CEndPointUnPtr accept();
 	};
 
 	class TcpConnection : public IOObject
@@ -23,6 +24,8 @@ namespace network
 		{
 
 		}
+		void onAwake(const IOProtocolPtr& protocol, CEndPointUnPtr endPoint);
+		void onRecycle();
 	};
 
 	class TcpConnector : public IOObject

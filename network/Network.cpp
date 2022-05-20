@@ -1,5 +1,6 @@
 #include "Network.h"
-
+#include "Common.h"
+#include "Address.h"
 #ifdef __linux
 #include <signal.h>
 #include "EPoller.h"
@@ -17,16 +18,18 @@ namespace network
 		delete _poller;
 	}
 
-	bool CNetwork::addObject(const IOObjectPtr& object)
+	void CNetwork::addObject(const IOObjectPtr& object)
 	{
-		return false;
+		auto key = object->getKey();
+		assert(_objects[key] == nullptr);
+		_objects[key] = object;
 	}
 
 	IOObjectPtr CNetwork::getObject(uint32 key) const
 	{
 		auto index = _keyPool.index(key);
 		auto object = _objects[index];
-		if (object && object->key() == key)
+		if (object && object->getKey() == key)
 		{
 			return object;
 		}
@@ -115,30 +118,29 @@ namespace network
 
 	void CNetwork::processListen(const IOEventPtr& event)
 	{
+		IOObjectPtr object = nullptr;
 		IOListenPtr ev = std::dynamic_pointer_cast<IOListen>(event);
 		auto protocol = ev->getProtocol();
-		IOObjectPtr object = nullptr;
-		auto prototype = protocol->getProto();
-		if (prototype == EPROTO_TCP)
+		auto protoType = protocol->getProtocolType();
+		if (protoType == EPROTO_TCP)
 		{
-			object = std::make_shared<TcpListener>(ev->getKey(), protocol);
-			object->setReadCallback(std::bind(&CNetwork::handleTcpAccept, this, _1));
-			_poller->deregisterReadhandler(object);
+			auto socket = common::CreateSocket(EPROTO_TCP);
+			auto address = CAddress("", ev->_port);
+			auto endPoint = CObjectPool<CEndPoint>::Instance()->createUnique(socket, address);
+			auto listener = CObjectPool<TcpListener>::Instance()->create(protocol, std::move(endPoint));
+			listener->setReadCallback(std::bind(&CNetwork::handleTcpAccept, this, _1));
+			if (!listener->listen()) 
+			{
+				protocol->onUnlisten();
+				return;
+			}
 		}
-		else if (prototype == EPROTO_UDP)
+		else if (protoType == EPROTO_UDP)
 		{
 			
 		}
-		if (!addObject(object))
-		{
-			core_log_error("listen add object error", ev->getKey());
-			return;
-		}
+		addObject(object);
+		_poller->deregisterReadhandler(object);
 	}
 
-	void CNetwork::handleTcpAccept(const IOObjectPtr& object)
-	{
-		TcpListenerPtr listen = std::dynamic_pointer_cast<TcpListener>(object);
-		assert(listen);
-	}
 }

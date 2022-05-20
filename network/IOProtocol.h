@@ -7,12 +7,11 @@ namespace network
 	{
 	public:
 		IOProtocol(EPROTOCOL type, class CNetwork* net);
-
 		virtual ~IOProtocol();
 
-		EPROTOCOL getProto() const { return _protocolType; };
+		EPROTOCOL getProtocolType() const { return _protocolType; };
 		void setKey(uint32 key) { _key = key; }
-		uint32 key() const { return _key; }
+		uint32 getKey() const { return _key; }
 	public:
 		virtual IOProtocol* create() const = 0;
 
@@ -24,7 +23,7 @@ namespace network
 
 		virtual void onUnlisten() = 0;
 
-		virtual void onAccept() = 0;
+		virtual void onAccept(IOProtocolPtr&) = 0;
 
 		virtual void onClose() = 0;
 
@@ -36,5 +35,4 @@ namespace network
 		uint32 _key;
 		CNetwork* _network;
 	};
-	USING_SHARED_PTR(IOProtocol);
 }

@@ -11,7 +11,6 @@
 #include <winsock2.h>
 #endif // _WIN32
 
-
 namespace network
 {
 	using namespace core;
@@ -21,6 +20,8 @@ namespace network
 	const int32 MAX_OBJECT_SIZE = 1 << 16;
 	using ObjecKeyPool = KeyPool<16>;
 
+	class IOProtocol;
+	USING_SHARED_PTR(IOProtocol);
 	class IOObject;
 	USING_SHARED_PTR(IOObject);
 	class TcpListener;
