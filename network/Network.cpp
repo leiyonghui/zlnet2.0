@@ -1,6 +1,8 @@
 #include "Network.h"
 #include "Common.h"
 #include "Address.h"
+#include "TcpIOObjects.h"
+
 #ifdef __linux
 #include <signal.h>
 #include "EPoller.h"
@@ -23,6 +25,15 @@ namespace network
 		auto key = object->getKey();
 		assert(_objects[key] == nullptr);
 		_objects[key] = object;
+	}
+
+	void CNetwork::removeObject(uint32 key)
+	{
+		auto index = _keyPool.index(key);
+		auto& object = _objects[index];
+		assert(object);
+		assert(object->getKey() == key);
+		object = nullptr;
 	}
 
 	IOObjectPtr CNetwork::getObject(uint32 key) const
@@ -84,19 +95,20 @@ namespace network
 	{
 		while (_isStop)
 		{
-			_poller->poll();
+			_poller->poll(1);
 
-			std::list<IOEventPtr> events;
+			std::list<IOEvent*> events;
 			_eventQueue.pop(events);
 
-			for (std::list<IOEventPtr>::iterator iter = events.begin(); iter != events.end(); ++iter)
+			for (std::list<IOEvent*>::iterator iter = events.begin(); iter != events.end(); ++iter)
 			{
 				dispatchProcess(*iter);
+				delete* iter;
 			}
 		}
 	}
 
-	void CNetwork::dispatchProcess(const IOEventPtr& event)
+	void CNetwork::dispatchProcess(IOEvent* event)
 	{
 		switch (event->getType())
 		{
@@ -105,42 +117,69 @@ namespace network
 			processListen(event);
 			break;
 		}
+		case IO_EVENT_DATA:
+		{
+			processData(event);
+			break;
+		}
+		case IO_EVENT_CONNECT:
+		{
+			processConnect(event);
+			break;
+		}
+		case IO_EVENT_CLOSE:
+		{
+			processClose(event);
+			break;
+		}
 		default:
+			core_log_error("unknow process", event->getType());
 			break;
 		}
 	}
 
-	void CNetwork::pushEvent(const IOEventPtr& event)
+	void CNetwork::pushEvent(IOEvent* event)
 	{
 		bool notify;
 		_eventQueue.push(event, notify);
 	}
 
-	void CNetwork::processListen(const IOEventPtr& event)
+	void CNetwork::processListen(IOEvent* event)
 	{
-		IOObjectPtr object = nullptr;
-		IOListenPtr ev = std::dynamic_pointer_cast<IOListen>(event);
+		IOListen* ev = dynamic_cast<IOListen*>(event);
 		auto protocol = ev->getProtocol();
 		auto protoType = protocol->getProtocolType();
 		if (protoType == EPROTO_TCP)
 		{
-			auto socket = common::CreateSocket(EPROTO_TCP);
-			auto address = CAddress("", ev->_port);
-			auto endPoint = CObjectPool<CEndPoint>::Instance()->createUnique(socket, address);
-			auto listener = CObjectPool<TcpListener>::Instance()->create(protocol, std::move(endPoint));
-			listener->setReadCallback(std::bind(&CNetwork::handleTcpAccept, this, _1));
-			if (!listener->listen()) 
-			{
-				protocol->onUnlisten();
-				return;
-			}
+			tcpListen(ev->getPort(), protocol);
 		}
 		else if (protoType == EPROTO_UDP)
 		{
 			
 		}
-		addObject(object);
-		_poller->deregisterReadhandler(object);
+		else if (protoType == EPROTO_KCP)
+		{
+
+		}
 	}
 
+	void CNetwork::processData(IOEvent* event)
+	{
+
+	}
+
+	void CNetwork::processConnect(IOEvent* event)
+	{
+
+	}
+
+	void CNetwork::processClose(IOEvent* event)
+	{
+
+	}
+
+	void CNetwork::defaultErrorHandle(const IOObjectPtr& object)
+	{
+		core_log_error("default error", object->getKey(), object->getType());
+	}
 }

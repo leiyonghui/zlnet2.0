@@ -38,30 +38,27 @@ namespace network
 		EPROTO_KCP = 2,
 	};
 
-	enum IO_OBJECT_TYPE
+	enum EIOOBJECT_TYPE
 	{
-		IO_OBJECT_TYPE_NONE = 0,
-		IO_OBJECT_TYPE_LISTENER,
-		IO_OBJECT_TYPE_CONNECTOR,
-		IO_OBJECT_TYPE_CONNECTION,
+		IO_OBJECT_LISTENER,
+		IO_OBJECT_CONNECTOR,
+		IO_OBJECT_CONNECTION,
 	};
 
 	enum EConnectState
 	{
-		EConnecting = 1,		//正在连接
-		EConnected = 2,			//已连接
-		EDisconnecting = 3,		//正在关闭
-		EDisconnected = 4,		//已关闭
+		DISCONNECTED = 0,		//已关闭
+		CONNECTING = 1,			//正在连接
+		CONNECTED = 2,			//已连接
+		DISCONNECTING = 3,		//正在关闭
 	};
 
-	enum IOEventType
+	enum EIOEventType
 	{
-		IO_EVENT_NONE = 0,
 		IO_EVENT_LISTEN,
-		IO_EVENT_ACCEPT,
 		IO_EVENT_CONNECT,
-		IO_EVENT_RW,
 		IO_EVENT_DATA,
+		IO_EVENT_CLOSE,
 	};
 
 #ifdef __linux

@@ -107,23 +107,21 @@
     <ClInclude Include="network\Buffer.h" />
     <ClInclude Include="network\BufferReader.h" />
     <ClInclude Include="network\BufferWriter.h" />
-    <ClInclude Include="network\Buffs.h" />
-    <ClInclude Include="network\Callbacks.h" />
     <ClInclude Include="network\Common.h" />
     <ClInclude Include="network\Configs.h" />
     <ClInclude Include="network\Endpoint.h" />
     <ClInclude Include="network\EPoller.h" />
+    <ClInclude Include="network\IBuffer.h" />
     <ClInclude Include="network\IOEvent.h" />
     <ClInclude Include="network\IOEvents.h" />
-    <ClInclude Include="network\Poller.h" />
-    <ClInclude Include="network\IBuffer.h" />
-    <ClInclude Include="network\IOObject.h" />
     <ClInclude Include="network\IOObjects.h" />
+    <ClInclude Include="network\Poller.h" />
+    <ClInclude Include="network\IOObject.h" />
+    <ClInclude Include="network\TcpIOObjects.h" />
     <ClInclude Include="network\IOProtocol.h" />
     <ClInclude Include="network\Network.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="core\core\ObjectPools.cpp" />
     <ClCompile Include="core\core\RingBuff.cpp" />
     <ClCompile Include="core\core\TimeHelp.cpp" />
     <ClCompile Include="core\core\Timers.cpp" />
@@ -132,8 +130,11 @@
     <ClCompile Include="network\Address.cpp" />
     <ClCompile Include="network\Endpoint.cpp" />
     <ClCompile Include="network\EPoller.cpp" />
+    <ClCompile Include="network\IOObjects.cpp" />
+    <ClCompile Include="network\TcpIOObjects.cpp" />
     <ClCompile Include="network\IOProtocol.cpp" />
     <ClCompile Include="network\Network.cpp" />
+    <ClCompile Include="network\TcpNetwork.cpp" />
     <ClCompile Include="network\Poller.cpp" />
     <ClCompile Include="test\main.cpp" />
   </ItemGroup>

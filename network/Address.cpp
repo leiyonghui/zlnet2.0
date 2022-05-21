@@ -9,9 +9,10 @@
 
 #include "Address.h"
 
-
 namespace network
 {
+	using namespace common;
+
 	CAddress::CAddress():_ip(0),_port(0) {
 
 	}

@@ -3,6 +3,8 @@
 
 namespace network
 {
+    using namespace common;
+
     class BufferWriter
     {
     private:

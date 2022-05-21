@@ -1,42 +1,29 @@
 #pragma once
 #include "IOObject.h"
 
+namespace core
+{
+	class CRingBuff;
+}
+
 namespace network
 {
-	class TcpListener : public IOObject
+	using core::CRingBuff;
+
+	class Connection : public IOObject
 	{
 	public:
-		TcpListener() = default;
-		virtual ~TcpListener() = default;
-
+		Connection();
 		void onAwake(const IOProtocolPtr& protocol, CEndPointUnPtr endPoint);
 		void onRecycle();
 
-		bool listen();
-		CEndPointUnPtr accept();
-	};
-
-	class TcpConnection : public IOObject
-	{
-	public:
-		TcpConnection(uint32 key, IOProtocolPtr protocol) :
-			IOObject(IO_OBJECT_TYPE_CONNECTION, key, protocol)
-		{
-
-		}
-		void onAwake(const IOProtocolPtr& protocol, CEndPointUnPtr endPoint);
-		void onRecycle();
-	};
-
-	class TcpConnector : public IOObject
-	{
-	public:
-		TcpConnector(uint32 key, IOProtocolPtr protocol) :
-			IOObject(IO_OBJECT_TYPE_CONNECTOR, key, protocol),_state(EDisconnected)
-		{
-
-		}
+		void setState(EConnectState state) { _state = state; };
+		EConnectState getState() const { return _state; };
+		CRingBuff* getInputBuff() { return _inputBuff; };
+		CRingBuff* getOutBuff() { return _outBuff; };
 	protected:
 		EConnectState _state;
+		CRingBuff* _inputBuff;
+		CRingBuff* _outBuff;
 	};
 }

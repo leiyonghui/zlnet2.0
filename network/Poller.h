@@ -15,7 +15,7 @@ namespace network
 		virtual void deregisterReadhandler(const IOObjectPtr& object) = 0;
 		virtual void deregisterWritehandler(const IOObjectPtr& object) = 0;
 		virtual void deregisterObject(const IOObjectPtr& object) = 0;
-		virtual void poll() = 0;
+		virtual void poll(int32 millisecond) = 0;
 
 		bool hasObject(const IOObjectPtr& object) const;
 		bool hasObject(uint32 key) const;

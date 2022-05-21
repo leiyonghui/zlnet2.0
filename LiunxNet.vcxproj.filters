@@ -54,24 +54,6 @@
     <ClInclude Include="app\Configs.h">
       <Filter>app</Filter>
     </ClInclude>
-    <ClInclude Include="network\Callbacks.h">
-      <Filter>net</Filter>
-    </ClInclude>
-    <ClInclude Include="network\Buffs.h">
-      <Filter>net</Filter>
-    </ClInclude>
-    <ClInclude Include="network\Buffer.h">
-      <Filter>net</Filter>
-    </ClInclude>
-    <ClInclude Include="network\BufferReader.h">
-      <Filter>net</Filter>
-    </ClInclude>
-    <ClInclude Include="network\BufferWriter.h">
-      <Filter>net</Filter>
-    </ClInclude>
-    <ClInclude Include="network\IBuffer.h">
-      <Filter>net</Filter>
-    </ClInclude>
     <ClInclude Include="core\core\Common.h">
       <Filter>core</Filter>
     </ClInclude>
@@ -126,7 +108,7 @@
     <ClInclude Include="network\IOProtocol.h">
       <Filter>net</Filter>
     </ClInclude>
-    <ClInclude Include="network\IOObjects.h">
+    <ClInclude Include="network\TcpIOObjects.h">
       <Filter>net</Filter>
     </ClInclude>
     <ClInclude Include="network\Poller.h">
@@ -141,6 +123,21 @@
     <ClInclude Include="network\IOEvents.h">
       <Filter>net</Filter>
     </ClInclude>
+    <ClInclude Include="network\IOObjects.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="network\Buffer.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="network\BufferReader.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="network\BufferWriter.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="network\IBuffer.h">
+      <Filter>net</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="network\Address.cpp">
@@ -151,9 +148,6 @@
     </ClCompile>
     <ClCompile Include="network\Endpoint.cpp">
       <Filter>net</Filter>
-    </ClCompile>
-    <ClCompile Include="core\core\ObjectPools.cpp">
-      <Filter>core</Filter>
     </ClCompile>
     <ClCompile Include="core\core\RingBuff.cpp">
       <Filter>core</Filter>
@@ -180,6 +174,15 @@
       <Filter>net</Filter>
     </ClCompile>
     <ClCompile Include="network\EPoller.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="network\TcpIOObjects.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="network\TcpNetwork.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="network\IOObjects.cpp">
       <Filter>net</Filter>
     </ClCompile>
   </ItemGroup>

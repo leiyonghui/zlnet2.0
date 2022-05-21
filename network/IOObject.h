@@ -11,13 +11,13 @@ namespace network
 	class IOObject : public core::CPoolObject, public CNoncopyable
 	{
 	public:
-		IOObject() = default;
+		IOObject(EIOOBJECT_TYPE type);
 		virtual ~IOObject() = default;
 
-		void onAwake(IO_OBJECT_TYPE type, const IOProtocolPtr& protocl, CEndPointUnPtr endPoint);
+		void onAwake(const IOProtocolPtr& protocl, CEndPointUnPtr endPoint);
 		void onRecycle();
 
-		IO_OBJECT_TYPE type() const { return _type; }
+		EIOOBJECT_TYPE getType() const { return _type; }
 		uint32 getKey() const { return _key; }
 		IOProtocolPtr getProtocol() const { return _protocol; }
 
@@ -32,7 +32,7 @@ namespace network
 		const WriteCallback& getWriteCallback() const { return _writeCallback; }
 		SOCKET getSocket() const { return _endpoint ? _endpoint->getSocket() : INVALID_SOCKET; }
 	protected:
-		IO_OBJECT_TYPE _type;
+		EIOOBJECT_TYPE _type;
 		uint32 _key;
 		IOProtocolPtr _protocol;
 

@@ -1,10 +1,15 @@
 #include "IOObject.h"
+#include "IOObject.h"
 
 namespace network
 {
-	void IOObject::onAwake(IO_OBJECT_TYPE type, const IOProtocolPtr& protocl, CEndPointUnPtr endPoint)
+	IOObject::IOObject(IO_OBJECT_TYPE type):_type(type),_key(0),_events(0)
 	{
-		_type = type;
+
+	}
+
+	void IOObject::onAwake(const IOProtocolPtr& protocl, CEndPointUnPtr endPoint)
+	{
 		_protocol = protocl;
 		_key = protocl->getKey();
 		_events = 0;

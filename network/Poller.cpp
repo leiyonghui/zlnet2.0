@@ -9,7 +9,7 @@ namespace network
 
 	bool CPoller::hasObject(const IOObjectPtr& object) const
 	{
-		return getObject(object->key()) == object;
+		return getObject(object->getKey()) == object;
 	}
 
 	bool CPoller::hasObject(uint32 key) const
@@ -21,7 +21,7 @@ namespace network
 	{
 		auto index = ObjecKeyPool::index(key);
 		auto& object = _handlers[index];
-		if (object && object->key() == key)
+		if (object && object->getKey() == key)
 		{
 			return object;
 		}

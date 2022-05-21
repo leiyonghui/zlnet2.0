@@ -15,7 +15,7 @@ namespace network
 		virtual void deregisterWritehandler(const IOObjectPtr& object) override;
 		virtual void deregisterObject(const IOObjectPtr& object) override;
 
-		virtual void poll() override;
+		virtual void poll(int32 millisecond) override;
 	protected:
 		void updateObject(const IOObjectPtr& object, int32 events);
 		void removeObject(const IOObjectPtr& object);

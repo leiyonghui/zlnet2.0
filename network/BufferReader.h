@@ -6,6 +6,8 @@
 
 namespace network
 {
+    using namespace common;
+
     class BufferReader
     {
     private:

@@ -13,9 +13,9 @@ namespace network
 		void setKey(uint32 key) { _key = key; }
 		uint32 getKey() const { return _key; }
 	public:
-		virtual IOProtocol* create() const = 0;
+		virtual IOProtocolPtr create() const = 0;
 
-		virtual void onSerialize() = 0;
+		virtual void onSerialize(class CRingBuff* buff) = 0;
 
 		virtual void onUnserialize() = 0;
 
