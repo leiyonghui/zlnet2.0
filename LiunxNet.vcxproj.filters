@@ -69,9 +69,6 @@
     <ClInclude Include="core\core\ObjectPools.h">
       <Filter>core</Filter>
     </ClInclude>
-    <ClInclude Include="core\core\RingBuff.h">
-      <Filter>core</Filter>
-    </ClInclude>
     <ClInclude Include="core\core\Singleton.h">
       <Filter>core</Filter>
     </ClInclude>
@@ -138,6 +135,12 @@
     <ClInclude Include="network\IBuffer.h">
       <Filter>net</Filter>
     </ClInclude>
+    <ClInclude Include="network\IStream.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="network\RingBuff.h">
+      <Filter>net</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="network\Address.cpp">
@@ -148,9 +151,6 @@
     </ClCompile>
     <ClCompile Include="network\Endpoint.cpp">
       <Filter>net</Filter>
-    </ClCompile>
-    <ClCompile Include="core\core\RingBuff.cpp">
-      <Filter>core</Filter>
     </ClCompile>
     <ClCompile Include="core\core\TimeHelp.cpp">
       <Filter>core</Filter>
@@ -183,6 +183,9 @@
       <Filter>net</Filter>
     </ClCompile>
     <ClCompile Include="network\IOObjects.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="network\RingBuff.cpp">
       <Filter>net</Filter>
     </ClCompile>
   </ItemGroup>

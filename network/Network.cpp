@@ -10,7 +10,7 @@
 
 namespace network
 {
-	CNetwork::CNetwork() :_isStop(false),_poller(new CEPoller())
+	CNetwork::CNetwork() :_isStart(false),_poller(new CEPoller())
 	{
 		_objects.resize(MAX_OBJECT_SIZE);
 	}
@@ -49,6 +49,8 @@ namespace network
 
 	void CNetwork::start()
 	{
+		assert(!_isStart);
+		_isStart = true;
 		std::thread ([this]() {
 			loop();
 		}).detach();
@@ -56,22 +58,28 @@ namespace network
 
 	uint32 CNetwork::listen(uint16 port, IOProtocolPtr protocol)
 	{
+		assert(!protocol->getKey());
 		auto key = popKey();
 		if (key == 0)
 			return 0;
 		protocol->setKey(key);
-		pushEvent(std::static_pointer_cast<IOEvent>(IOListenPtr(new IOListen(port, protocol))));
+		pushEvent(static_cast<IOEvent*>(new IOListen(port, protocol)));
 		return key;
 	}
 
 	uint32 CNetwork::connect(const std::string& ip, uint16 port, IOProtocolPtr protocol)
 	{
-		return uint32();
+		assert(!protocol->getKey());
+		auto key = popKey();
+		if (key == 0)
+			return 0;
+		protocol->setKey(key);
+		pushEvent(static_cast<IOEvent*>(new IOEConnect(ip, port, protocol)));
 	}
 
-	uint32 CNetwork::close(uint32 key)
+	void CNetwork::close(uint32 key)
 	{
-		return uint32();
+		pushEvent(static_cast<IOEvent*>(new IOClose(key)));
 	}
 
 	uint32 CNetwork::popKey()
@@ -93,7 +101,7 @@ namespace network
 
 	void CNetwork::loop()
 	{
-		while (_isStop)
+		while (_isStart)
 		{
 			_poller->poll(1);
 
@@ -108,28 +116,30 @@ namespace network
 		}
 	}
 
+	void CNetwork::pushEvent(IOEvent* event)
+	{
+		bool notify;
+		_eventQueue.push(event, notify);
+	}
+
 	void CNetwork::dispatchProcess(IOEvent* event)
 	{
 		switch (event->getType())
 		{
 		case IO_EVENT_LISTEN:
 		{
-			processListen(event);
-			break;
-		}
-		case IO_EVENT_DATA:
-		{
-			processData(event);
+			processListen(dynamic_cast<IOListen*>(event));
 			break;
 		}
 		case IO_EVENT_CONNECT:
 		{
-			processConnect(event);
+			processConnect(dynamic_cast<IOEConnect*>(event));
 			break;
 		}
+		case IO_EVENT_DATA:
 		case IO_EVENT_CLOSE:
 		{
-			processClose(event);
+			processObjectEvent(event);
 			break;
 		}
 		default:
@@ -138,44 +148,79 @@ namespace network
 		}
 	}
 
-	void CNetwork::pushEvent(IOEvent* event)
+	void CNetwork::processObjectEvent(IOEvent* event)
 	{
-		bool notify;
-		_eventQueue.push(event, notify);
+		auto key = event->getKey();
+		auto object = getObject(key);
+		if (!object)
+		{
+			core_log_error("process data object null", key);
+			return;
+		}
+		auto protocol = object->getProtocol();
+		switch (protocol->getProtocolType())
+		{
+		case EPROTO_TCP:
+			processTcpObjectEvent(object, event);
+			break;
+		case EPROTO_UDP:
+			break;
+		case EPROTO_KCP:
+			break;
+		default:
+			assert(false);
+			break;
+		}
 	}
 
-	void CNetwork::processListen(IOEvent* event)
+	void CNetwork::processListen(IOListen* event)
 	{
-		IOListen* ev = dynamic_cast<IOListen*>(event);
-		auto protocol = ev->getProtocol();
+		auto protocol = event->getProtocol();
 		auto protoType = protocol->getProtocolType();
-		if (protoType == EPROTO_TCP)
+		switch (protoType)
 		{
-			tcpListen(ev->getPort(), protocol);
+		case EPROTO_TCP:
+		{
+			tcpListen(event->getPort(), protocol);
+			break;
 		}
-		else if (protoType == EPROTO_UDP)
+		case EPROTO_UDP:
 		{
-			
+			break;
 		}
-		else if (protoType == EPROTO_KCP)
+		case EPROTO_KCP:
 		{
-
+			break;
+		}
+		default:
+			assert(false);
+			break;
 		}
 	}
 
-	void CNetwork::processData(IOEvent* event)
+	void CNetwork::processConnect(IOEConnect* event)
 	{
-
-	}
-
-	void CNetwork::processConnect(IOEvent* event)
-	{
-
-	}
-
-	void CNetwork::processClose(IOEvent* event)
-	{
-
+		auto protocol = event->getProtocol();
+		auto protoType = protocol->getProtocolType();
+		switch (protoType)
+		{
+		case EPROTO_TCP:
+		{
+			tcpConnect(event->getIp(), event->getPort(), protocol);
+			break;
+		}
+		case EPROTO_UDP:
+		{
+			break;
+		}
+		case EPROTO_KCP:
+		{
+			break;
+		}
+		default:
+			assert(false);
+			break;
+		}
 	}
 
 	void CNetwork::defaultErrorHandle(const IOObjectPtr& object)

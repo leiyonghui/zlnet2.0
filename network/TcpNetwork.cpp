@@ -1,26 +1,8 @@
 #include "Network.h"
 #include "TcpIOObjects.h"
-#include "core/RingBuff.h"
 
 namespace network
 {
-	void CNetwork::tcpListen(int16 port, const IOProtocolPtr& protocol)
-	{
-		auto socket = common::CreateSocket(EPROTO_TCP);
-		auto address = CAddress(INADDR_ANY, port);
-		auto endPoint = CObjectPool<CEndPoint>::Instance()->createUnique(socket, address);
-		auto listener = CObjectPool<TcpListener>::Instance()->create(protocol, std::move(endPoint));
-		listener->setErrorCallback(std::bind(&CNetwork::defaultErrorHandle, this, _1));
-		listener->setReadCallback(std::bind(&CNetwork::handleTcpAccept, this, _1));
-		if (!listener->listen())
-		{
-			protocol->onUnlisten();
-			return;
-		}
-		addObject(listener);
-		_poller->deregisterReadhandler(listener);
-	}
-
 	void CNetwork::handleTcpAccept(const IOObjectPtr& object)
 	{
 		auto listener = std::dynamic_pointer_cast<TcpListener>(object);
@@ -66,7 +48,7 @@ namespace network
 		auto endPoint = con->getEndPoint();
 		auto inputBuff = con->getInputBuff();
 		auto protocol = con->getProtocol();
-		SWritev* writev = inputBuff->writerv();
+		SBufferVec* writev = inputBuff->getBufferVec();
 		int32 writeable = writev[0].len + writev[1].len;
 		constexpr int32 extralen = 65536;
 		char extrabuf[extralen];
@@ -120,5 +102,45 @@ namespace network
 		protocol->onClose();
 	}
 
+	void CNetwork::processTcpObjectEvent(const IOObjectPtr& object, IOEvent* event)
+	{
+		switch (event->getType())
+		{
+		case IO_EVENT_DATA:
+		{
+			break;
+		}
+		case IO_EVENT_CLOSE:
+		{
+			closeTcpCon(std::dynamic_pointer_cast<TcpConnection>(object));
+			break;
+		}
+		default:
+			assert(false);
+			break;
+		}
+	}
+
+	void CNetwork::tcpListen(int16 port, const IOProtocolPtr& protocol)
+	{
+		auto socket = common::CreateSocket(EPROTO_TCP);
+		auto address = CAddress(INADDR_ANY, port);
+		auto endPoint = CObjectPool<CEndPoint>::Instance()->createUnique(socket, address);
+		auto listener = CObjectPool<TcpListener>::Instance()->create(protocol, std::move(endPoint));
+		listener->setErrorCallback(std::bind(&CNetwork::defaultErrorHandle, this, _1));
+		listener->setReadCallback(std::bind(&CNetwork::handleTcpAccept, this, _1));
+		if (!listener->listen())
+		{
+			protocol->onUnlisten();
+			return;
+		}
+		addObject(listener);
+		_poller->deregisterReadhandler(listener);
+	}
+
+	void CNetwork::tcpConnect(const std::string& ip, uint16 port, const IOProtocolPtr& protocol)
+	{
+
+	}
 	
 }

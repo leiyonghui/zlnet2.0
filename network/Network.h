@@ -15,18 +15,18 @@ namespace network
 		virtual ~CNetwork();
 	public:
 		void start();
-		uint32 listen(uint16 port, IOProtocolPtr protocol);
-		uint32 connect(const std::string& ip, uint16 port, IOProtocolPtr protocol);
-		uint32 close(uint32 key);
+		uint32 listen(uint16 port, IOProtocolPtr protocol);//multi-thread
+		uint32 connect(const std::string& ip, uint16 port, IOProtocolPtr protocol);//multi-thread
+		void close(uint32 key);//multi-thread
 
 		template<class UserData>
-		void send(IOEventData<UserData>* event)
+		void send(IOEventData<UserData>* event)//multi-thread
 		{
-			pushEvent(event);
+			pushEvent(static_cast<IOEvent*>(event));
 		}
 
-		uint32 popKey();
-		void pushKey(uint32 key);
+		uint32 popKey();//multi-thread
+		void pushKey(uint32 key);//multi-thread
 	protected:
 		void addObject(const IOObjectPtr& object);
 		void removeObject(uint32 key);
@@ -34,24 +34,24 @@ namespace network
 
 		void init();
 		void loop();
-		void dispatchProcess(IOEvent* event);
 		void pushEvent(IOEvent* event);
-		void processListen(IOEvent* event);
-		void processData(IOEvent* event);
-		void processConnect(IOEvent* event);
-		void processClose(IOEvent* event);
+		void dispatchProcess(IOEvent* event);
+		void processObjectEvent(IOEvent* event);
+		void processListen(IOListen* event);
+		void processConnect(IOEConnect* event);
 
 		void defaultErrorHandle(const IOObjectPtr& object);
 
-		void tcpListen(int16 port, const IOProtocolPtr& protocol);
 		void handleTcpAccept(const IOObjectPtr& object);
 		void handleTcpConError(const IOObjectPtr& object);
 		void handleTcpConRead(const IOObjectPtr& object);
 		void handleTcpConWrite(const IOObjectPtr& object);
 		void closeTcpCon(const TcpConnectionPtr& con);
-
+		void processTcpObjectEvent(const IOObjectPtr& object, IOEvent* event);
+		void tcpListen(int16 port, const IOProtocolPtr& protocol);
+		void tcpConnect(const std::string& ip, uint16 port, const IOProtocolPtr& protocol);
 	private:
-		bool _isStop;
+		bool _isStart;
 		ObjecKeyPool _keyPool;
 		std::vector<IOObjectPtr> _objects;
 		Queue<IOEvent*> _eventQueue;

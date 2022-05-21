@@ -1,7 +1,7 @@
 #ifdef __linux
-#include "EPoller.h"
 #include <sys/epoll.h>
 #include <unistd.h>
+#include "EPoller.h"
 
 namespace network
 {
@@ -26,7 +26,6 @@ namespace network
 		std::string str = oss.str();
 		printf("%s\n", str.c_str());
 	}
-
 
 	CEPoller::CEPoller():_epfd(epoll_create(MAX_OBJECT_SIZE)), _events(new epoll_event[MAX_OBJECT_SIZE])
 	{

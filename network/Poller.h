@@ -1,5 +1,4 @@
 #pragma once
-#include "Configs.h"
 #include "IOObject.h"
 
 namespace network

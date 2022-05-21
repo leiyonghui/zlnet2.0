@@ -1,14 +1,9 @@
 #pragma once
 #include "IOObject.h"
-
-namespace core
-{
-	class CRingBuff;
-}
+#include "IStream.h"
 
 namespace network
 {
-	using core::CRingBuff;
 
 	class Connection : public IOObject
 	{
@@ -19,11 +14,11 @@ namespace network
 
 		void setState(EConnectState state) { _state = state; };
 		EConnectState getState() const { return _state; };
-		CRingBuff* getInputBuff() { return _inputBuff; };
-		CRingBuff* getOutBuff() { return _outBuff; };
+		IStream* getInputBuff() { return _inputBuff; };
+		IStream* getOutBuff() { return _outBuff; };
 	protected:
 		EConnectState _state;
-		CRingBuff* _inputBuff;
-		CRingBuff* _outBuff;
+		IStream* _inputBuff;
+		IStream* _outBuff;
 	};
 }
