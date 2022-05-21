@@ -137,26 +137,6 @@ namespace network
 		return count;
 	}
 
-	int32 CEndPoint::shutdownWrite()
-	{
-		if (::shutdown(_socket, SHUT_WR) < 0)
-		{
-			core_log_error("sockets::shutdownWrite", errno, strerror(errno));
-			return -1;
-		}
-		return 0;
-	}
-	
-	int32 CEndPoint::readv(const iovec* iov, int32 iovcnt)
-	{
-		uint32 count = (uint32)::readv(_socket, iov, iovcnt);
-		if (count < 0)
-		{
-			core_log_warning("SocketOpt::read", errno, strerror(errno));
-		}
-		return count;
-	}
-
 	int32 CEndPoint::write(char* buff, int32 len)
 	{
 		uint32 count = (uint32)::write(_socket, buff, (size_t)len);
@@ -165,6 +145,36 @@ namespace network
 			core_log_warning("SocketOpt::write", errno, strerror(errno));
 		}
 		return count;
+	}
+
+	int32 CEndPoint::readv(const iovec* iov, int32 iovcnt)
+	{
+		uint32 count = (uint32)::readv(_socket, iov, iovcnt);
+		if (count < 0)
+		{
+			core_log_warning("SocketOpt::readv", errno, strerror(errno));
+		}
+		return count;
+	}
+
+	int32 CEndPoint::writev(const iovec* iov, int32 iovcnt)
+	{
+		uint32 count = (uint32)::writev(_socket, iov, iovcnt);
+		if (count < 0)
+		{
+			core_log_warning("SocketOpt::writev", errno, strerror(errno));
+		}
+		return count;
+	}
+
+	int32 CEndPoint::shutdownWrite()
+	{
+		if (::shutdown(_socket, SHUT_WR) < 0)
+		{
+			core_log_error("sockets::shutdownWrite", errno, strerror(errno));
+			return -1;
+		}
+		return 0;
 	}
 
 	int32 CEndPoint::getSocketError()

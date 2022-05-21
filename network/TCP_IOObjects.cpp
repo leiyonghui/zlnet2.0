@@ -1,4 +1,4 @@
-#include "TcpIOObjects.h"
+#include "TCP_IOObjects.h"
 
 namespace network
 {
@@ -35,11 +35,6 @@ namespace network
 	void TcpConnection::onRecycle()
 	{
 		Connection::onRecycle();
-	}
-
-	CEndPoint* TcpConnection::getEndPoint()
-	{
-		return _endpoint.get();
 	}
 
 	void TcpConnector::onAwake(const IOProtocolPtr& protocol, CEndPointUnPtr endPoint)

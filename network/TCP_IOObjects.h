@@ -19,8 +19,6 @@ namespace network
 	public:
 		void onAwake(const IOProtocolPtr& protocol, CEndPointUnPtr endPoint);
 		void onRecycle();
-
-		CEndPoint* getEndPoint();
 	};
 
 	class TcpConnector : public Connection

@@ -19,20 +19,6 @@ namespace network
 		IOProtocolPtr _protocol;
 	};
 
-	template<class UserData>
-	class IOEventData : public IOEvent
-	{
-	public:
-		IOEventData(uint32 key) :IOEvent(IO_EVENT_DATA, key)
-		{
-
-		}
-
-		UserData getData() { return _data; }
-	private:
-		UserData _data;
-	};
-
 	class IOEConnect : public IOEvent
 	{
 	public:
@@ -53,9 +39,27 @@ namespace network
 	class IOClose : public IOEvent
 	{
 	public:
-		IOClose(uint32 key) :IOEvent(IO_EVENT_CLOSE, key) 
+		IOClose(uint32 key, int32 delaySec) :IOEvent(IO_EVENT_CLOSE, key), _delaySec(delaySec)
 		{
 
 		}
+
+		int32 getDelay() const { return _delaySec; }
+	private:
+		int32 _delaySec;
+	};
+
+	template<class UserData>
+	class IOEventData : public IOEvent
+	{
+	public:
+		IOEventData(uint32 key) :IOEvent(IO_EVENT_DATA, key)
+		{
+
+		}
+
+		UserData getData() { return _data; }
+	private:
+		UserData _data;
 	};
 }

@@ -1,5 +1,5 @@
 #include "Network.h"
-#include "TcpIOObjects.h"
+#include "TCP_IOObjects.h"
 
 namespace network
 {
@@ -21,7 +21,7 @@ namespace network
 		}
 		auto conPrototcol = protocol->create();
 		conPrototcol->setKey(key);
-		auto con = CObjectPool<TcpConnection>::Instance()->create(conPrototcol, std::move(endPoint));
+		auto con = CObjectPool<Connection>::Instance()->create(conPrototcol, std::move(endPoint));
 		con->setErrorCallback(std::bind(&CNetwork::handleTcpConError, this, _1));
 		con->setReadCallback(std::bind(&CNetwork::handleTcpConRead, this, _1));
 		con->setWriteCallbac(std::bind(&CNetwork::handleTcpConWrite, this, _1));
@@ -33,22 +33,22 @@ namespace network
 	void CNetwork::handleTcpConError(const IOObjectPtr& object)
 	{
 		core_log_error("tcp connection error", object->getKey(), object->getSocket());
-		auto con = std::dynamic_pointer_cast<TcpConnection>(object);
-		closeTcpCon(con);
+		auto con = std::dynamic_pointer_cast<Connection>(object);
+		removeTcpCon(con);
 	}
 
 	void CNetwork::handleTcpConRead(const IOObjectPtr& object)
 	{
-		auto con = std::dynamic_pointer_cast<TcpConnection>(object);
-		if (con->getState() == DISCONNECTING)
+		auto con = std::dynamic_pointer_cast<Connection>(object);
+		if (!con->enable())
 		{
-			core_log_trace("read disconnection", object->getKey());
+			core_log_trace("con dis read", object->getKey(), con->getState());
 			return;
 		}
 		auto endPoint = con->getEndPoint();
-		auto inputBuff = con->getInputBuff();
+		auto inputBuffer = con->getInputBuffer();
 		auto protocol = con->getProtocol();
-		SBufferVec* writev = inputBuff->getBufferVec();
+		SBufferVec* writev = inputBuffer->getWriteableVec();
 		int32 writeable = writev[0].len + writev[1].len;
 		constexpr int32 extralen = 65536;
 		char extrabuf[extralen];
@@ -69,18 +69,18 @@ namespace network
 		{
 			if (cnt >= writeable)
 			{
-				inputBuff->write(writeable);
-				inputBuff->write(extrabuf, cnt - writeable);
+				inputBuffer->write_confirm(writeable);
+				inputBuffer->write(extrabuf, cnt - writeable);
 			}
 			else
 			{
-				inputBuff->write(cnt);
+				inputBuffer->write_confirm(cnt);
 			}
-			protocol->onSerialize(inputBuff);
+			protocol->onSerialize(inputBuffer);
 		}
 		else if (cnt == 0)
 		{
-			closeTcpCon(con);
+			removeTcpCon(con);
 		}
 		else
 		{
@@ -90,35 +90,22 @@ namespace network
 
 	void CNetwork::handleTcpConWrite(const IOObjectPtr& object)
 	{
-
+		auto con = std::dynamic_pointer_cast<Connection>(object);
+		if (!con->enable())
+		{
+			core_log_trace("con dis write", object->getKey(), con->getState());
+			return;
+		}
+		tcpWrite(con);
 	}
 
-	void CNetwork::closeTcpCon(const TcpConnectionPtr& con)
+	void CNetwork::removeTcpCon(const ConnectionPtr& con)
 	{
 		auto protocol = con->getProtocol();
 		con->setState(DISCONNECTED);
 		_poller->deregisterObject(con);
 		removeObject(con->getKey());
 		protocol->onClose();
-	}
-
-	void CNetwork::processTcpObjectEvent(const IOObjectPtr& object, IOEvent* event)
-	{
-		switch (event->getType())
-		{
-		case IO_EVENT_DATA:
-		{
-			break;
-		}
-		case IO_EVENT_CLOSE:
-		{
-			closeTcpCon(std::dynamic_pointer_cast<TcpConnection>(object));
-			break;
-		}
-		default:
-			assert(false);
-			break;
-		}
 	}
 
 	void CNetwork::tcpListen(int16 port, const IOProtocolPtr& protocol)
@@ -138,9 +125,69 @@ namespace network
 		_poller->deregisterReadhandler(listener);
 	}
 
+	void CNetwork::tcpSend(const IOObjectPtr& object, IOEvent* event)
+	{
+		auto con = std::dynamic_pointer_cast<Connection>(object);
+		assert(con);
+		if (!con->enable())
+		{
+			core_log_trace("con dis send", object->getKey(), con->getState());
+			return;
+		}
+		auto protocol = con->getProtocol();
+		auto outBuffer = con->getOutBuffer();
+		protocol->onUnserialize(event, outBuffer);
+		if (con->isWriting())
+		{
+			core_log_warning("con is writing", con->getKey());
+			return;
+		}
+		tcpWrite(con);
+	}
+
+	void CNetwork::tcpWrite(const ConnectionPtr& con)
+	{
+		auto outBuffer = con->getOutBuffer();
+		auto size = int32(outBuffer->size());
+		if (!size)
+		{
+			core_log_warning("send null data", con->getKey());
+			return;
+		}
+		SBufferVec* writev = outBuffer->getReadableVec();
+		struct iovec vec[2];
+		vec[0].iov_base = writev[0].buff;
+		vec[0].iov_len = writev[0].len;
+		vec[1].iov_base = writev[1].buff;
+		vec[1].iov_len = writev[1].len;
+		auto endPoint = con->getEndPoint();
+		auto count = endPoint->writev(vec, size);
+		if (count == size)
+		{
+			outBuffer->read_confirm(size);
+			if (con->isWriting())
+				_poller->deregisterWritehandler(con);
+		}
+		else if (count > 0 && count < size)
+		{
+			core_log_warning("con write messge size:", size, " remain:", size - count);
+			outBuffer->read_confirm(count);
+			if (!con->isWriting())
+				_poller->deregisterWritehandler(con);
+		}
+		else
+		{
+			core_log_error("write con", con->getKey(), count);
+		}	
+	}
+
 	void CNetwork::tcpConnect(const std::string& ip, uint16 port, const IOProtocolPtr& protocol)
 	{
 
 	}
-	
+
+	void CNetwork::tcpClose(uint32 key, uint32 second)
+	{
+
+	}	
 }

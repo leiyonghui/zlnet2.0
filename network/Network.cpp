@@ -79,9 +79,9 @@ namespace network
 		return key;
 	}
 
-	void CNetwork::close(uint32 key)
+	void CNetwork::close(uint32 key, int32 second)
 	{
-		pushEvent(static_cast<IOEvent*>(new IOClose(key)));
+		pushEvent(static_cast<IOEvent*>(new IOClose(key, second)));
 	}
 
 	uint32 CNetwork::popKey()
@@ -139,9 +139,13 @@ namespace network
 			break;
 		}
 		case IO_EVENT_DATA:
+		{
+			processDataEvent(event);
+			break;
+		}
 		case IO_EVENT_CLOSE:
 		{
-			processObjectEvent(event);
+			processClose(dynamic_cast<IOClose*>(event));
 			break;
 		}
 		default:
@@ -150,7 +154,7 @@ namespace network
 		}
 	}
 
-	void CNetwork::processObjectEvent(IOEvent* event)
+	void CNetwork::processDataEvent(IOEvent* event)
 	{
 		auto key = event->getKey();
 		auto object = getObject(key);
@@ -163,7 +167,7 @@ namespace network
 		switch (protocol->getProtocolType())
 		{
 		case EPROTO_TCP:
-			processTcpObjectEvent(object, event);
+			tcpSend(object, event);
 			break;
 		case EPROTO_UDP:
 			break;
@@ -219,6 +223,31 @@ namespace network
 		{
 			break;
 		}
+		default:
+			assert(false);
+			break;
+		}
+	}
+
+	void CNetwork::processClose(IOClose* event)
+	{
+		auto key = event->getKey();
+		auto object = getObject(key);
+		if (!object)
+		{
+			core_log_error("process data object null", key);
+			return;
+		}
+		auto protocol = object->getProtocol();
+		switch (protocol->getProtocolType())
+		{
+		case EPROTO_TCP:
+			tcpClose(event->getKey(), event->getDelay());
+			break;
+		case EPROTO_UDP:
+			break;
+		case EPROTO_KCP:
+			break;
 		default:
 			assert(false);
 			break;

@@ -1,6 +1,7 @@
 #pragma once
 #include "Configs.h"
 #include "IStream.h"
+#include "IOEvent.h"
 
 namespace network
 {
@@ -16,9 +17,9 @@ namespace network
 	public:
 		virtual IOProtocolPtr create() const = 0;
 
-		virtual void onSerialize(IStream* buff) = 0;
+		virtual void onSerialize(IStream* buffer) = 0;
 
-		virtual void onUnserialize() = 0;
+		virtual void onUnserialize(IOEvent* event, IStream* buffer) = 0;
 
 		virtual void onListen() = 0;
 

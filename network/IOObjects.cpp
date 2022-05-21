@@ -1,9 +1,9 @@
-#include "RingBuff.h"
+#include "RingBuffer.h"
 #include "IOObjects.h"
 
 namespace network
 {
-	Connection::Connection():IOObject(IO_OBJECT_CONNECTION), _inputBuff(new CRingBuff(1024)), _outBuff(new CRingBuff(1024))
+	Connection::Connection():IOObject(IO_OBJECT_CONNECTION), _inputBuffer(new CRingBuffer(1024)), _outBuffer(new CRingBuffer(1024))
 	{
 
 	}
@@ -12,12 +12,13 @@ namespace network
 	{
 		IOObject::onAwake(protocol, std::move(endPoint));
 		_state = DISCONNECTED;
+		_isWriting = false;
 	}
 
 	void Connection::onRecycle()
 	{
 		IOObject::onRecycle();
-		_inputBuff->clear();
-		_outBuff->clear();
+		_inputBuffer->clear();
+		_outBuffer->clear();
 	}
 }

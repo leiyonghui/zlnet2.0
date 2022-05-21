@@ -50,16 +50,15 @@ namespace network
 
 		int32 read(char* buff, int32 len);
 
-		int32 shutdownWrite();
-
+		int32 write(char* buff, int32 len);
 #ifdef __linux
 		int32 readv(const struct iovec* iov, int32 iovcnt);
-#endif // __linux
 
-		int32 write(char* buff, int32 len);
+		int32 writev(const struct iovec* iov, int32 iovcnt);
+#endif // __linux
+		int32 shutdownWrite();
 
 		int32 getSocketError();
-
 	private:
 		SOCKET _socket;
 		CAddress _address;

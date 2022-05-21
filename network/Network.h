@@ -1,6 +1,7 @@
 #pragma once
 #include "Configs.h"
 #include "IOObject.h"
+#include "IOObjects.h"
 #include "IOProtocol.h"
 #include "IOEvents.h"
 #include "Poller.h"
@@ -17,7 +18,7 @@ namespace network
 		void start();
 		uint32 listen(uint16 port, IOProtocolPtr protocol);//multi-thread
 		uint32 connect(const std::string& ip, uint16 port, IOProtocolPtr protocol);//multi-thread
-		void close(uint32 key);//multi-thread
+		void close(uint32 key, int32 second);//multi-thread
 
 		template<class UserData>
 		void send(IOEventData<UserData>* event)//multi-thread
@@ -36,9 +37,10 @@ namespace network
 		void loop();
 		void pushEvent(IOEvent* event);
 		void dispatchProcess(IOEvent* event);
-		void processObjectEvent(IOEvent* event);
+		void processDataEvent(IOEvent* event);
 		void processListen(IOListen* event);
 		void processConnect(IOEConnect* event);
+		void processClose(IOClose* event);
 
 		void defaultErrorHandle(const IOObjectPtr& object);
 
@@ -46,10 +48,12 @@ namespace network
 		void handleTcpConError(const IOObjectPtr& object);
 		void handleTcpConRead(const IOObjectPtr& object);
 		void handleTcpConWrite(const IOObjectPtr& object);
-		void closeTcpCon(const TcpConnectionPtr& con);
-		void processTcpObjectEvent(const IOObjectPtr& object, IOEvent* event);
+		void removeTcpCon(const ConnectionPtr& con);
 		void tcpListen(int16 port, const IOProtocolPtr& protocol);
+		void tcpSend(const IOObjectPtr& object, IOEvent* event);
+		void tcpWrite(const ConnectionPtr& con);
 		void tcpConnect(const std::string& ip, uint16 port, const IOProtocolPtr& protocol);
+		void tcpClose(uint32 key, uint32 second);
 	private:
 		bool _isStart;
 		ObjecKeyPool _keyPool;

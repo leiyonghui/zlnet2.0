@@ -105,7 +105,7 @@
     <ClInclude Include="network\IOProtocol.h">
       <Filter>net</Filter>
     </ClInclude>
-    <ClInclude Include="network\TcpIOObjects.h">
+    <ClInclude Include="network\TCP_IOObjects.h">
       <Filter>net</Filter>
     </ClInclude>
     <ClInclude Include="network\Poller.h">
@@ -138,7 +138,7 @@
     <ClInclude Include="network\IStream.h">
       <Filter>net</Filter>
     </ClInclude>
-    <ClInclude Include="network\RingBuff.h">
+    <ClInclude Include="network\RingBuffer.h">
       <Filter>net</Filter>
     </ClInclude>
   </ItemGroup>
@@ -176,16 +176,16 @@
     <ClCompile Include="network\EPoller.cpp">
       <Filter>net</Filter>
     </ClCompile>
-    <ClCompile Include="network\TcpIOObjects.cpp">
+    <ClCompile Include="network\TCP_IOObjects.cpp">
       <Filter>net</Filter>
     </ClCompile>
-    <ClCompile Include="network\TcpNetwork.cpp">
+    <ClCompile Include="network\TCP_Network.cpp">
       <Filter>net</Filter>
     </ClCompile>
     <ClCompile Include="network\IOObjects.cpp">
       <Filter>net</Filter>
     </ClCompile>
-    <ClCompile Include="network\RingBuff.cpp">
+    <ClCompile Include="network\RingBuffer.cpp">
       <Filter>net</Filter>
     </ClCompile>
     <ClCompile Include="network\IOObject.cpp">

@@ -31,6 +31,7 @@ namespace network
 		const ReadCallback& getReadCallback() const { return _readCalllback; }
 		const WriteCallback& getWriteCallback() const { return _writeCallback; }
 		SOCKET getSocket() const { return _endpoint ? _endpoint->getSocket() : INVALID_SOCKET; }
+		CEndPoint* getEndPoint() { return _endpoint.get(); }
 	protected:
 		EIOOBJECT_TYPE _type;
 		uint32 _key;

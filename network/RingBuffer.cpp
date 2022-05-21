@@ -1,22 +1,20 @@
-#include "RingBuff.h"
+#include "RingBuffer.h"
 
 namespace network
 {
-	CRingBuff::CRingBuff(uint32 capacity) :_capacity(capacity), _front(0), _end(0), _size(0), _buff(new char[_capacity]), _writerv(new SBufferVec[2]) {
+	CRingBuffer::CRingBuffer(uint32 capacity) :_capacity(capacity), _front(0), _end(0), _size(0), _buff(new char[_capacity]) {
 
 	}
 
-	CRingBuff::~CRingBuff()
+	CRingBuffer::~CRingBuffer()
 	{
 		delete[] _buff;
-		delete[] _writerv;
 	}
 
-	void CRingBuff::write(char* buff, uint32 len)
+	void CRingBuffer::write(char* buff, uint32 len)
 	{
 		assert(len > 0);
 		ensure(_size + len);
-
 		if (_end >= _front /*|| (_end == _front && !_size)*/) //ensure保证有空间
 		{
 			uint32 count = _capacity - _end;
@@ -41,7 +39,7 @@ namespace network
 		_size += len;
 	}
 
-	void CRingBuff::read(char* buff, uint32 len)
+	void CRingBuffer::read(char* buff, uint32 len)
 	{
 		assert(_size >= len && len);
 
@@ -72,7 +70,7 @@ namespace network
 		_size -= len;
 	}
 
-	void CRingBuff::write(uint32 len)
+	void CRingBuffer::write_confirm(uint32 len)
 	{
 		assert(len > 0 && _size + len <= _capacity);
 		if (_end >= _front)
@@ -90,7 +88,34 @@ namespace network
 		_size += len;
 	}
 
-	SBufferVec* CRingBuff::getBufferVec()
+	void CRingBuffer::read_confirm(uint32 len)
+	{
+		assert(_size >= len && len);
+
+		if (_end > _front)
+		{
+#ifdef _DEBUG
+			assert(_end - _front >= len);
+#endif // DEBUG
+			_front += len;
+		}
+		else
+		{
+			uint32 count = _capacity - _front;
+			if (count >= len)
+			{
+				_front += len;
+			}
+			else
+			{
+				uint32 remain = len - count;
+				_front = remain;
+			}
+		}
+		_size -= len;
+	}
+
+	SBufferVec* CRingBuffer::getWriteableVec()
 	{
 		if (_capacity == _size)
 		{
@@ -122,7 +147,28 @@ namespace network
 		return _writerv;
 	}
 
-	void CRingBuff::clear()
+	SBufferVec* CRingBuffer::getReadableVec()
+	{
+		_readerv[0].clear();
+		_readerv[1].clear();
+		if (_end > _front)
+		{
+			_readerv[0].buff = _buff + _front;
+			_readerv[0].len = _size;
+		}
+		else
+		{
+			uint32 len1 = _capacity - _front;
+			uint32 len2 = _size - len1;
+			_readerv[0].buff = _buff + _front;
+			_readerv[0].len = len1;
+			_readerv[1].buff = _buff;
+			_readerv[1].len = len2;
+		}
+		return _readerv;
+	}
+
+	void CRingBuffer::clear()
 	{
 		_front = 0;
 		_end = 0;
@@ -130,7 +176,7 @@ namespace network
 		_writerv->clear();
 	}
 
-	void CRingBuff::ensure(uint32 capacity)
+	void CRingBuffer::ensure(uint32 capacity)
 	{
 		if (_capacity >= capacity)
 			return;
