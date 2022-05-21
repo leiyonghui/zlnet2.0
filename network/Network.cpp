@@ -51,9 +51,10 @@ namespace network
 	{
 		assert(!_isStart);
 		_isStart = true;
-		std::thread ([this]() {
+		loop();
+		/*std::thread ([this]() {
 			loop();
-		}).detach();
+		}).detach();*/
 	}
 
 	uint32 CNetwork::listen(uint16 port, IOProtocolPtr protocol)
@@ -75,6 +76,7 @@ namespace network
 			return 0;
 		protocol->setKey(key);
 		pushEvent(static_cast<IOEvent*>(new IOEConnect(ip, port, protocol)));
+		return key;
 	}
 
 	void CNetwork::close(uint32 key)

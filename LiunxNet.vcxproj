@@ -130,6 +130,7 @@
     <ClCompile Include="network\Address.cpp" />
     <ClCompile Include="network\Endpoint.cpp" />
     <ClCompile Include="network\EPoller.cpp" />
+    <ClCompile Include="network\IOObject.cpp" />
     <ClCompile Include="network\IOObjects.cpp" />
     <ClCompile Include="network\RingBuff.cpp" />
     <ClCompile Include="network\TcpIOObjects.cpp" />

@@ -1,9 +1,8 @@
 #include "IOObject.h"
-#include "IOObject.h"
 
 namespace network
 {
-	IOObject::IOObject(IO_OBJECT_TYPE type):_type(type),_key(0),_events(0)
+	IOObject::IOObject(EIOOBJECT_TYPE type):_type(type),_key(0),_events(0)
 	{
 
 	}
