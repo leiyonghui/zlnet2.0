@@ -3,12 +3,12 @@
 
 namespace engine
 {
-	CIOEngine::CIOEngine():_network(new network::CNetwork())
+	IOEngine::IOEngine():_network(new network::CNetwork())
 	{
 
 	}
 
-	CIOEngine::~CIOEngine()
+	IOEngine::~IOEngine()
 	{
 		delete _network;
 	}

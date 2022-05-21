@@ -9,11 +9,11 @@ namespace network
 
 namespace engine
 {
-	class CIOEngine
+	class IOEngine
 	{
 	public:
-		CIOEngine();
-		virtual~CIOEngine();
+		IOEngine();
+		virtual~IOEngine();
 
 	protected:
 		class network::CNetwork* _network;
