@@ -2,32 +2,35 @@
 
 namespace engine
 {
-	void IOProtocolEx::onListen()
+	void IOProtocol::onListen()
 	{
 
 	}
 
-	void IOProtocolEx::onUnlisten()
+	void IOProtocol::onUnlisten()
 	{
+
 	}
 
-	void IOProtocolEx::onAccept()
+	void IOProtocol::onAccept(network::IOProtocolPtr &protocol)
 	{
+
 	}
 
-	void IOProtocolEx::onClose()
+	void IOProtocol::onClose()
 	{
+
 	}
 
-	void IOProtocolEx::onConnect()
+	void IOProtocol::onConnect()
 	{
+
 	}
 
-	void IOProtocolEx::onDisconnect()
+	void IOProtocol::onDisconnect()
 	{
+
 	}
-
-
 }
 
 

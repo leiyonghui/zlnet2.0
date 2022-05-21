@@ -4,14 +4,14 @@
 
 namespace engine
 {
-	class IOProtocolEx : public network::IOProtocol
+	class IOProtocol : public network::IOProtocol
 	{
 	public:
 		virtual void onListen() override;
 
 		virtual void onUnlisten() override;
 
-		virtual void onAccept() override;
+		virtual void onAccept(network::IOProtocolPtr&) override;
 
 		virtual void onClose() override;
 
@@ -19,5 +19,5 @@ namespace engine
 
 		virtual void onDisconnect() override;
 	};
-	USING_SHARED_PTR(IOProtocolEx);
+	USING_SHARED_PTR(IOProtocol);
 }

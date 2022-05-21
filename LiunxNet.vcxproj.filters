@@ -141,6 +141,15 @@
     <ClInclude Include="network\RingBuffer.h">
       <Filter>net</Filter>
     </ClInclude>
+    <ClInclude Include="engine\IOEngine.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\IOProtocolEx.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\Packet.h">
+      <Filter>engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="network\Address.cpp">
@@ -190,6 +199,12 @@
     </ClCompile>
     <ClCompile Include="network\IOObject.cpp">
       <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\IOEngine.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\IOProtocolEx.cpp">
+      <Filter>engine</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

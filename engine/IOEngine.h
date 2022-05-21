@@ -1,7 +1,11 @@
 #pragma once
 #include "Configs.h"
-#include "network/Network.h"
 #include "IOProtocolEx.h"
+
+namespace network
+{
+	class CNetwork;
+}
 
 namespace engine
 {
@@ -12,7 +16,7 @@ namespace engine
 		virtual~CIOEngine();
 
 	protected:
-		network::CNetwork* _network;
-		std::unordered_map<uint32, IOProtocolExPtr> _protocols;
+		class network::CNetwork* _network;
+		std::unordered_map<uint32, IOProtocolPtr> _protocols;
 	};
 }

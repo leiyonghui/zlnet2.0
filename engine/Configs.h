@@ -5,8 +5,6 @@ namespace engine
 {
 	using namespace core;
 
-	using IOProtocol = network::IOProtocol;
-
 	enum EPacketType
 	{
 		PacketListen		=	1,
