@@ -142,7 +142,6 @@
     <ClCompile Include="network\IOProtocol.cpp" />
     <ClCompile Include="network\Network.cpp" />
     <ClCompile Include="network\TCP_Network.cpp" />
-    <ClCompile Include="network\Poller.cpp" />
     <ClCompile Include="test\main.cpp" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

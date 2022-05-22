@@ -27,7 +27,7 @@ namespace network
 		con->setReadCallback(std::bind(&CNetwork::handleTcpConRead, this, _1));
 		con->setWriteCallbac(std::bind(&CNetwork::handleTcpConWrite, this, _1));
 		addObject(con);
-		_poller->deregisterReadhandler(object);
+		_poller->registerReadHandler(object);
 		protocol->onAccept(conPrototcol);
 	}
 
@@ -116,14 +116,14 @@ namespace network
 		{
 			outBuffer->read_confirm(size);
 			if (con->isWriting())
-				_poller->deregisterWritehandler(con);
+				_poller->deregisterWriteHandler(con);
 		}
 		else if (count > 0 && count < size)
 		{
 			core_log_warning("con write messge size:", size, " remain:", size - count);
 			outBuffer->read_confirm(count);
 			if (!con->isWriting())
-				_poller->deregisterWritehandler(con);
+				_poller->registerWriteHandler(con);
 		}
 		else
 		{
@@ -133,16 +133,38 @@ namespace network
 
 	void CNetwork::handleTcpConnectWrite(const IOObjectPtr& object)
 	{
+		auto connect = std::dynamic_pointer_cast<TcpConnector>(object);
+		auto state = connect->getState();
+		assert(state == CONNECTING);
+		auto endPont = connect->getEndPoint();
+		_poller->deregisterObject(object);
+		auto err = endPont->getSocketError();
+		if (err)
+		{
+			core_log_warning("connect error", object->getSocket(), strerror(err));
+			tcpDisconnect(connect);
+		}
+		else if(common::isSelfConnect(endPont->getSocket()))
+		{
+			core_log_error("connect self connect", object->getSocket());
+			tcpDisconnect(connect);
+		}
+		else
+		{
+			connect->setState(CONNECTED);
+			connect->setErrorCallback(std::bind(&CNetwork::handleTcpConError, this, _1));
+			connect->setReadCallback(std::bind(&CNetwork::handleTcpConRead, this, _1));
+			connect->setWriteCallbac(std::bind(&CNetwork::handleTcpConWrite, this, _1));
+			_poller->registerReadHandler(object);
+			auto protocol = connect->getProtocol();
+			protocol->onConnect(false);
+		}
 
 	}
 
 	void CNetwork::handleTcpConnectError(const IOObjectPtr& object)
 	{
-		auto connect = std::dynamic_pointer_cast<TcpConnector>(object);
-		connect->setState(DISCONNECTED);
-		removeObject(object->getKey());
-		auto protocol = object->getProtocol();
-		protocol->onDisconnect();
+		tcpDisconnect(std::dynamic_pointer_cast<TcpConnector>(object));
 	}
 
 	void CNetwork::removeTcpCon(const ConnectionPtr& con)
@@ -168,7 +190,7 @@ namespace network
 			return;
 		}
 		addObject(listener);
-		_poller->deregisterReadhandler(listener);
+		_poller->registerReadHandler(listener);
 	}
 
 	void CNetwork::tcpSend(const IOObjectPtr& object, IOEvent* event)
@@ -197,7 +219,7 @@ namespace network
 			auto outBuffer = con->getOutBuffer();
 			outBuffer->write(data + count, size - count);
 			if (!con->isWriting())
-				_poller->deregisterWritehandler(con);
+				_poller->deregisterWriteHandler(con);
 			core_log_warning("con write bigger", con->getSocket(), size, size - count);
 		}
 		else if(count < 0)
@@ -216,8 +238,16 @@ namespace network
 		connect->setErrorCallback(std::bind(&CNetwork::handleTcpConnectError, this, _1));
 		connect->setReadCallback(std::bind(&CNetwork::handleTcpConnectWrite, this, _1));
 		connect->setState(CONNECTING);
-		_poller->deregisterWritehandler(connect);
+		_poller->registerWriteHandler(connect);
 		connect->getEndPoint()->connect();
+	}
+
+	void CNetwork::tcpDisconnect(const TcpConnectorPtr& connect)
+	{
+		connect->setState(DISCONNECTED);
+		removeObject(connect->getKey());
+		auto protocol = connect->getProtocol();
+		protocol->onConnect(true);
 	}
 
 	void CNetwork::tcpClose(uint32 key, uint32 second)

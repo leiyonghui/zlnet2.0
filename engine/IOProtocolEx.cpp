@@ -22,12 +22,7 @@ namespace engine
 
 	}
 
-	void IOProtocol::onConnect()
-	{
-
-	}
-
-	void IOProtocol::onDisconnect()
+	void IOProtocol::onConnect(bool dis)
 	{
 
 	}

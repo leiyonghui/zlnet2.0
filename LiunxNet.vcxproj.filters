@@ -179,9 +179,6 @@
     <ClCompile Include="network\IOProtocol.cpp">
       <Filter>net</Filter>
     </ClCompile>
-    <ClCompile Include="network\Poller.cpp">
-      <Filter>net</Filter>
-    </ClCompile>
     <ClCompile Include="network\EPoller.cpp">
       <Filter>net</Filter>
     </ClCompile>

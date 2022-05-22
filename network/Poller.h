@@ -11,8 +11,8 @@ namespace network
 
 		virtual void registerReadHandler(const IOObjectPtr& object) = 0;
 		virtual void registerWriteHandler(const IOObjectPtr& object) = 0;
-		virtual void deregisterReadhandler(const IOObjectPtr& object) = 0;
-		virtual void deregisterWritehandler(const IOObjectPtr& object) = 0;
+		virtual void deregisterReadHandler(const IOObjectPtr& object) = 0;
+		virtual void deregisterWriteHandler(const IOObjectPtr& object) = 0;
 		virtual void deregisterObject(const IOObjectPtr& object) = 0;
 		virtual void poll(const std::vector<IOObjectPtr>& objects, int32 millisecond) = 0;
 	};

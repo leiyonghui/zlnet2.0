@@ -46,4 +46,9 @@ namespace network
 	{
 		Connection::onRecycle();
 	}
+
+	void TcpConnector::setEndPoint(CEndPointUnPtr&& endPoint)
+	{
+		_endpoint = std::move(endPoint);
+	}
 }

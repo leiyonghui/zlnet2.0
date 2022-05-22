@@ -45,12 +45,12 @@ namespace network
 		updateObject(object, object->getEvents() & EPOLLOUT);
 	}
 
-	void CEPoller::deregisterReadhandler(const IOObjectPtr& object)
+	void CEPoller::deregisterReadHandler(const IOObjectPtr& object)
 	{
 		updateObject(object, object->getEvents() ^ EPOLLIN);
 	}
 
-	void CEPoller::deregisterWritehandler(const IOObjectPtr& object)
+	void CEPoller::deregisterWriteHandler(const IOObjectPtr& object)
 	{
 		updateObject(object, object->getEvents() ^ EPOLLOUT);
 	}

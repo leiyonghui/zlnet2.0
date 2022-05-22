@@ -54,6 +54,7 @@ namespace network
 		void tcpListen(int16 port, const IOProtocolPtr& protocol);
 		void tcpSend(const IOObjectPtr& object, IOEvent* event);
 		void tcpConnect(const std::string& ip, uint16 port, const IOProtocolPtr& protocol);
+		void tcpDisconnect(const TcpConnectorPtr& connect);
 		void tcpClose(uint32 key, uint32 second);
 	private:
 		bool _isStart;

@@ -11,8 +11,8 @@ namespace network
 		virtual ~CEPoller();
 		virtual void registerReadHandler(const IOObjectPtr& object) override;
 		virtual void registerWriteHandler(const IOObjectPtr& object) override;
-		virtual void deregisterReadhandler(const IOObjectPtr& object) override;
-		virtual void deregisterWritehandler(const IOObjectPtr& object) override;
+		virtual void deregisterReadHandler(const IOObjectPtr& object) override;
+		virtual void deregisterWriteHandler(const IOObjectPtr& object) override;
 		virtual void deregisterObject(const IOObjectPtr& object) override;
 
 		virtual void poll(const std::vector<IOObjectPtr>& objects, int32 millisecond) override;
