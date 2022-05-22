@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "Address.h"
 #include "TCP_IOObjects.h"
+#include "core/TimerSet.h"
 
 #ifdef __linux
 #include <signal.h>
@@ -10,7 +11,7 @@
 
 namespace network
 {
-	CNetwork::CNetwork() :_isStart(false),_poller(new CEPoller())
+	CNetwork::CNetwork() :_isStart(false),_poller(new CEPoller()),_shceduler(new timerset::TimerSet()), _timerHandler(nullptr), _lastclock(0)
 	{
 		_objects.resize(MAX_OBJECT_SIZE);
 	}
@@ -18,6 +19,7 @@ namespace network
 	CNetwork::~CNetwork()
 	{
 		delete _poller;
+		delete _shceduler;
 	}
 
 	void CNetwork::addObject(const IOObjectPtr& object)
@@ -103,6 +105,8 @@ namespace network
 
 	void CNetwork::loop()
 	{
+		auto timer = TimerHander(_shceduler);
+		_timerHandler = &timer;
 		while (_isStart)
 		{
 			_poller->poll(_objects, 1);
@@ -115,7 +119,20 @@ namespace network
 				dispatchProcess(*iter);
 				delete* iter;
 			}
+
+			auto now = TimeHelp::clock_ms().count();
+			if (now - _lastclock >= 1000)
+			{
+				onTimer1000ms();
+				_lastclock = now;
+			}
+			_shceduler->update(now);
 		}
+	}
+
+	void CNetwork::onTimer1000ms()
+	{
+
 	}
 
 	void CNetwork::pushEvent(IOEvent* event)

@@ -16,6 +16,9 @@ namespace engine
 		virtual void onClose() override;
 
 		virtual void onConnect(bool dis) override;
+
+		virtual void onDisConnect() override;
+
 	};
 	USING_SHARED_PTR(IOProtocol);
 }

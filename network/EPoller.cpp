@@ -71,7 +71,7 @@ namespace network
 			auto object = objects[index];
 			if (!object || object->getKey() != key)
 			{
-				core_log_error("object null", key, object ? object->getKey() : 0);
+				core_log_warning("object null", key, object ? object->getKey() : 0);
 				continue;
 			}
 			const uint32& ev = event.events;

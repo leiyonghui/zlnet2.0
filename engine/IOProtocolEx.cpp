@@ -26,6 +26,9 @@ namespace engine
 	{
 
 	}
+	void IOProtocol::onDisConnect()
+	{
+	}
 }
 
 

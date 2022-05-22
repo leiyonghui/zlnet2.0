@@ -31,6 +31,8 @@ namespace network
 		virtual void onClose() = 0;
 
 		virtual void onConnect(bool dis) = 0;
+
+		virtual void onDisConnect() = 0;
 	protected:
 		EPROTOCOL _protocolType;
 		uint32 _key;

@@ -94,8 +94,8 @@ namespace network
 		auto con = std::dynamic_pointer_cast<Connection>(object);
 		if (!con->enable())
 		{
-			core_log_trace("con dis write", object->getKey(), con->getState());
-			return;
+			core_log_error("con writeable unexpect state", con->getState());
+			assert(false);
 		}
 		auto outBuffer = con->getOutBuffer();
 		auto size = int32(outBuffer->size());
@@ -115,15 +115,20 @@ namespace network
 		if (count == size)
 		{
 			outBuffer->read_confirm(size);
-			if (con->isWriting())
+			if (con->getState() == DISCONNECTING)
+			{
+				tcpClose(con, 0);
+			}
+			else if(con->isWriting())
+			{
+				con->setWriting(false);
 				_poller->deregisterWriteHandler(con);
+			}
 		}
 		else if (count > 0 && count < size)
 		{
 			core_log_warning("con write messge size:", size, " remain:", size - count);
 			outBuffer->read_confirm(count);
-			if (!con->isWriting())
-				_poller->registerWriteHandler(con);
 		}
 		else
 		{
@@ -142,12 +147,12 @@ namespace network
 		if (err)
 		{
 			core_log_warning("connect error", object->getSocket(), strerror(err));
-			tcpDisconnect(connect);
+			tcpConnectError(connect);
 		}
 		else if(common::isSelfConnect(endPont->getSocket()))
 		{
 			core_log_error("connect self connect", object->getSocket());
-			tcpDisconnect(connect);
+			tcpConnectError(connect);
 		}
 		else
 		{
@@ -164,7 +169,7 @@ namespace network
 
 	void CNetwork::handleTcpConnectError(const IOObjectPtr& object)
 	{
-		tcpDisconnect(std::dynamic_pointer_cast<TcpConnector>(object));
+		tcpConnectError(std::dynamic_pointer_cast<TcpConnector>(object));
 	}
 
 	void CNetwork::removeTcpCon(const ConnectionPtr& con)
@@ -173,7 +178,14 @@ namespace network
 		con->setState(DISCONNECTED);
 		_poller->deregisterObject(con);
 		removeObject(con->getKey());
-		protocol->onClose();
+		if (con->getType() == IO_OBJECT_CONNECTION)
+		{
+			protocol->onClose();
+		}
+		else 
+		{
+			protocol->onDisConnect();
+		}
 	}
 
 	void CNetwork::tcpListen(int16 port, const IOProtocolPtr& protocol)
@@ -219,7 +231,10 @@ namespace network
 			auto outBuffer = con->getOutBuffer();
 			outBuffer->write(data + count, size - count);
 			if (!con->isWriting())
+			{
+				con->setWriting(true);
 				_poller->deregisterWriteHandler(con);
+			}
 			core_log_warning("con write bigger", con->getSocket(), size, size - count);
 		}
 		else if(count < 0)
@@ -242,7 +257,7 @@ namespace network
 		connect->getEndPoint()->connect();
 	}
 
-	void CNetwork::tcpDisconnect(const TcpConnectorPtr& connect)
+	void CNetwork::tcpConnectError(const TcpConnectorPtr& connect)
 	{
 		connect->setState(DISCONNECTED);
 		removeObject(connect->getKey());
@@ -252,6 +267,63 @@ namespace network
 
 	void CNetwork::tcpClose(uint32 key, uint32 second)
 	{
+		auto object = getObject(key);
+		switch (object->getType())
+		{
+		case IO_OBJECT_LISTENER:
+			break;
+		case IO_OBJECT_CONNECTION:
+		case IO_OBJECT_CONNECTOR:
+			tcpClose(std::dynamic_pointer_cast<Connection>(object), second);
+			break;
+		default:
+			break;
+		}
+	}
 
-	}	
+	void CNetwork::tcpClose(const ConnectionPtr& con, int32 second)
+	{
+		auto state = con->getState();
+		assert(state != DISCONNECTED);
+		if (state == DISCONNECTING)
+		{
+			core_log_warning("closing con", con->getType(), con->getSocket());
+			return;
+		}
+		auto protocol = con->getProtocol();
+		auto type = con->getType();
+		if (type == IO_OBJECT_CONNECTOR)
+		{
+			if (state == CONNECTING)
+			{
+				protocol->onConnect(true);
+			}
+			else
+			{
+				protocol->onDisConnect();
+			}
+		}
+		else
+		{
+			protocol->onClose();
+		}
+		if (second > 0)
+		{
+			con->setState(DISCONNECTING);
+			_timerHandler->addTimer(1ms * second, 0ms, [this, con]() {
+				auto object = getObject(con->getKey());
+				if (object)
+				{
+					tcpClose(con, 0);
+				}
+			});
+		}
+		else
+		{
+			con->setState(DISCONNECTED);
+			_poller->deregisterObject(con);
+			removeObject(con->getKey());
+		}
+	}
+
 }

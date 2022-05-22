@@ -35,6 +35,7 @@ namespace network
 
 		void init();
 		void loop();
+		void onTimer1000ms();
 		void pushEvent(IOEvent* event);
 		void dispatchProcess(IOEvent* event);
 		void processDataEvent(IOEvent* event);
@@ -54,13 +55,17 @@ namespace network
 		void tcpListen(int16 port, const IOProtocolPtr& protocol);
 		void tcpSend(const IOObjectPtr& object, IOEvent* event);
 		void tcpConnect(const std::string& ip, uint16 port, const IOProtocolPtr& protocol);
-		void tcpDisconnect(const TcpConnectorPtr& connect);
+		void tcpConnectError(const TcpConnectorPtr& connect);
 		void tcpClose(uint32 key, uint32 second);
+		void tcpClose(const ConnectionPtr& con, int32 second);
 	private:
 		bool _isStart;
 		ObjecKeyPool _keyPool;
 		std::vector<IOObjectPtr> _objects;
 		Queue<IOEvent*> _eventQueue;
 		CPoller* _poller;
+		IScheduler* _shceduler;
+		TimerHander* _timerHandler;
+		int64 _lastclock;
 	};
 }
