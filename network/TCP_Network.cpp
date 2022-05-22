@@ -205,7 +205,7 @@ namespace network
 		auto protocol = con->getProtocol();
 		auto buffer = StackBuffer<2048>();
 		protocol->onUnserialize(event, &buffer);
-		auto size = buffer.size();
+		auto size = int32(buffer.size());
 		if (size == 0)
 		{
 			core_log_warning("send null data", con->getKey());

@@ -175,7 +175,7 @@ namespace network
 
         virtual ~StackBuffer()
         {
-            if (size > FIXED_SIZE)
+            if (_size > FIXED_SIZE)
             {
                 delete[] _ptr;
             }
@@ -198,7 +198,7 @@ namespace network
 
 		virtual void write(uint32 pos, const char* data, uint32 size) override
 		{
-			assert(pos <= _size)
+            assert(pos <= _size);
 			ensure(pos + size);
 			memcpy(_ptr + pos, data, size);
 			if (pos + size > _size)
@@ -218,7 +218,7 @@ namespace network
 
 		virtual void read(uint32 pos, char* data, uint32 size) const override
 		{
-			assert (pos + size < _size)
+            assert(pos + size < _size);
 			memcpy(data, _ptr + pos, size);
 		}
 
