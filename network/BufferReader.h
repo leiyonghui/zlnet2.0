@@ -11,11 +11,11 @@ namespace network
     class BufferReader
     {
     private:
-        Buffer* _buf;
+        IBuffer* _buf;
         uint32 _pos;
 
     public:
-        explicit BufferReader(Buffer *buff): _buf(buff), _pos(0)
+        explicit BufferReader(IBuffer*buff): _buf(buff), _pos(0)
         {
 
         }
@@ -190,14 +190,14 @@ namespace network
             }
         }
 
-        char* read(int32 len)
+        const char* read(int32 len)
         {
-            char* ptr = _buf->read(_pos, len);
+            const char* ptr = _buf->read(_pos, len);
             _pos += len;
             return ptr;
         }
 
-        char* read()
+        const char* read()
         {
             return _buf->read(_pos, 0);
         }
@@ -212,9 +212,9 @@ namespace network
             return 0;
         }
 
-        void toString()
-        {
-            _buf->toString();
-        }
+		/*  void toString()
+		  {
+			  _buf->toString();
+		  }*/
     };
 }

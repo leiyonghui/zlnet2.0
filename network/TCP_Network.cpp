@@ -1,5 +1,6 @@
 #include "Network.h"
 #include "TCP_IOObjects.h"
+#include "Buffer.h"
 
 namespace network
 {
@@ -96,7 +97,52 @@ namespace network
 			core_log_trace("con dis write", object->getKey(), con->getState());
 			return;
 		}
-		tcpWrite(con);
+		auto outBuffer = con->getOutBuffer();
+		auto size = int32(outBuffer->size());
+		if (!size)
+		{
+			core_log_warning("send null data", con->getKey());
+			return;
+		}
+		SBufferVec* writev = outBuffer->getReadableVec();
+		struct iovec vec[2];
+		vec[0].iov_base = writev[0].buff;
+		vec[0].iov_len = writev[0].len;
+		vec[1].iov_base = writev[1].buff;
+		vec[1].iov_len = writev[1].len;
+		auto endPoint = con->getEndPoint();
+		auto count = endPoint->writev(vec, size);
+		if (count == size)
+		{
+			outBuffer->read_confirm(size);
+			if (con->isWriting())
+				_poller->deregisterWritehandler(con);
+		}
+		else if (count > 0 && count < size)
+		{
+			core_log_warning("con write messge size:", size, " remain:", size - count);
+			outBuffer->read_confirm(count);
+			if (!con->isWriting())
+				_poller->deregisterWritehandler(con);
+		}
+		else
+		{
+			core_log_error("write con", con->getKey(), count);
+		}
+	}
+
+	void CNetwork::handleTcpConnectWrite(const IOObjectPtr& object)
+	{
+
+	}
+
+	void CNetwork::handleTcpConnectError(const IOObjectPtr& object)
+	{
+		auto connect = std::dynamic_pointer_cast<TcpConnector>(object);
+		connect->setState(DISCONNECTED);
+		removeObject(object->getKey());
+		auto protocol = object->getProtocol();
+		protocol->onDisconnect();
 	}
 
 	void CNetwork::removeTcpCon(const ConnectionPtr& con)
@@ -135,55 +181,43 @@ namespace network
 			return;
 		}
 		auto protocol = con->getProtocol();
-		auto outBuffer = con->getOutBuffer();
-		protocol->onUnserialize(event, outBuffer);
-		if (con->isWriting())
-		{
-			core_log_warning("con is writing", con->getKey());
-			return;
-		}
-		tcpWrite(con);
-	}
-
-	void CNetwork::tcpWrite(const ConnectionPtr& con)
-	{
-		auto outBuffer = con->getOutBuffer();
-		auto size = int32(outBuffer->size());
-		if (!size)
+		auto buffer = StackBuffer<2048>();
+		protocol->onUnserialize(event, &buffer);
+		auto size = buffer.size();
+		if (size == 0)
 		{
 			core_log_warning("send null data", con->getKey());
 			return;
 		}
-		SBufferVec* writev = outBuffer->getReadableVec();
-		struct iovec vec[2];
-		vec[0].iov_base = writev[0].buff;
-		vec[0].iov_len = writev[0].len;
-		vec[1].iov_base = writev[1].buff;
-		vec[1].iov_len = writev[1].len;
+		auto data = buffer.data();
 		auto endPoint = con->getEndPoint();
-		auto count = endPoint->writev(vec, size);
-		if (count == size)
+		auto count = endPoint->write(data, size);
+		if (count > 0 && count != size)
 		{
-			outBuffer->read_confirm(size);
-			if (con->isWriting())
-				_poller->deregisterWritehandler(con);
-		}
-		else if (count > 0 && count < size)
-		{
-			core_log_warning("con write messge size:", size, " remain:", size - count);
-			outBuffer->read_confirm(count);
+			auto outBuffer = con->getOutBuffer();
+			outBuffer->write(data + count, size - count);
 			if (!con->isWriting())
 				_poller->deregisterWritehandler(con);
+			core_log_warning("con write bigger", con->getSocket(), size, size - count);
 		}
-		else
+		else if(count < 0)
 		{
-			core_log_error("write con", con->getKey(), count);
-		}	
+			core_log_error("write con", con->getKey(), size, count);
+		}
 	}
 
 	void CNetwork::tcpConnect(const std::string& ip, uint16 port, const IOProtocolPtr& protocol)
 	{
-
+		auto socket = common::CreateSocket(EPROTO_TCP);
+		auto address = CAddress(ip, port);
+		auto endPoint = CObjectPool<CEndPoint>::Instance()->createUnique(socket, address);
+		auto connect = CObjectPool<TcpConnector>::Instance()->create(protocol, std::move(endPoint));
+		addObject(connect);
+		connect->setErrorCallback(std::bind(&CNetwork::handleTcpConnectError, this, _1));
+		connect->setReadCallback(std::bind(&CNetwork::handleTcpConnectWrite, this, _1));
+		connect->setState(CONNECTING);
+		_poller->deregisterWritehandler(connect);
+		connect->getEndPoint()->connect();
 	}
 
 	void CNetwork::tcpClose(uint32 key, uint32 second)

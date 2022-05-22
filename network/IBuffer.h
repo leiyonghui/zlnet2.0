@@ -7,7 +7,7 @@ namespace network
     {
 
     public:
-        virtual const char* buff() const = 0;
+        virtual const char* data() const = 0;
 
         virtual uint32 size() const = 0;
 
@@ -17,6 +17,6 @@ namespace network
 
         virtual void read(uint32 pos, char *buff, uint32 size) const = 0;
 
-        virtual char* read(uint32 pos, uint32 size) const = 0;
+        virtual const char* read(uint32 pos, uint32 size) const = 0;
     };
 }

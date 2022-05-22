@@ -17,7 +17,7 @@ namespace network
 
         ~CRingBuffer();
 
-        void write(char* buff, uint32 len) override;
+        void write(const char* buff, uint32 len) override;
 
         void read(char* buff, uint32 len) override;
 

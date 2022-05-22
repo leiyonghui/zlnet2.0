@@ -26,7 +26,5 @@ namespace network
 	public:
 		void onAwake(const IOProtocolPtr& protocol, CEndPointUnPtr endPoint);
 		void onRecycle();
-	protected:
-		EConnectState _state;
 	};
 }

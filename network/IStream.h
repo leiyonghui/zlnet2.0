@@ -17,7 +17,7 @@ namespace network
 		IStream() = default;
 		virtual~ IStream() = default;
 
-		virtual void write(char* buff, unsigned int len) = 0;
+		virtual void write(const char* buff, unsigned int len) = 0;
 		virtual void read(char* buff, unsigned int len) = 0;
 		virtual void write_confirm(unsigned int len) = 0;
 		virtual void read_confirm(unsigned int len) = 0;

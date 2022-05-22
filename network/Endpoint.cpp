@@ -137,7 +137,7 @@ namespace network
 		return count;
 	}
 
-	int32 CEndPoint::write(char* buff, int32 len)
+	int32 CEndPoint::write(const char* buff, int32 len)
 	{
 		uint32 count = (uint32)::write(_socket, buff, (size_t)len);
 		if (count < 0)

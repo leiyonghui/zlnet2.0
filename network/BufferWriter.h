@@ -8,11 +8,11 @@ namespace network
     class BufferWriter
     {
     private:
-        Buffer* _buf;
+        IBuffer* _buf;
         uint32 _pos;
 
     public:
-        explicit BufferWriter(Buffer* buff) : _buf(buff), _pos(0)
+        explicit BufferWriter(IBuffer* buff) : _buf(buff), _pos(0)
         {
 
         }
@@ -118,10 +118,10 @@ namespace network
             return _buf->write(_pos, 0);
         }
 
-        void toString()
-        {
-            _buf->toString();
-        }
+		/*  void toString()
+		  {
+			  _buf->toString();
+		  }*/
     };
 
 }

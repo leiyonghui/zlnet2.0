@@ -54,7 +54,7 @@ namespace network
             return _capacity;
         }
 
-        virtual const char* buff() const override
+        virtual const char* data() const override
         {
             return _buff;
         }
@@ -90,7 +90,7 @@ namespace network
             memcpy(buff, _buff + pos, size);
         }
 
-        virtual char* read(uint32 pos, uint32 size) const override
+        virtual const char* read(uint32 pos, uint32 size) const override
         {
             if (pos + size > _size)
                 return NULL;
@@ -126,20 +126,135 @@ namespace network
             _buff = new_buff;
             _capacity = new_capacity;
         }
+    };
 
-        void shrink(uint32 pos, int32 reserve)
+    template<uint16 FIXED_SIZE>
+    class StackBuffer : public IBuffer
+    {
+    public:
+        explicit StackBuffer() : _ptr(_buf), _size(0), _capacity(FIXED_SIZE)
         {
-            assert(pos <= _size);
 
-            int32 len = _size - pos;
-            Buffer tmp(len + reserve);
-            tmp.write(0, _buff + pos, len);
-
-            swap(tmp);
-           /*int32 len = _size - pos;
-            _size = len;
-            memcpy(_buff, _buff + pos, len);
-            ensure(len + reserve);*/
         }
+
+        StackBuffer(const char* buf, uint32 size) : _ptr(size > FIXED_SIZE ? new char[size] : _buf), _capacity(size > FIXED_SIZE ? size : FIXED_SIZE)
+        {
+            memcpy(_ptr, buf, size);
+        }
+
+        StackBuffer(const StackBuffer& obj)
+        {
+            if (obj._capacity > FIXED_SIZE)
+            {
+                _ptr = new char[obj._capacity];
+            }
+            else {
+                _ptr = _buf;
+            }
+			memcpy(_ptr, obj._ptr, obj._size);
+			_size = obj._size;
+			_capacity = obj._capacity;
+        }
+
+		StackBuffer& operator = (const StackBuffer& obj)
+		{
+			if (_capacity > FIXED_SIZE) {
+                delete[] _ptr;
+			}
+			if (obj._capacity > FIXED_SIZE) {
+                _ptr = new char[obj._capacity];
+			}
+			else {
+				_ptr = _buf;
+			}
+			memcpy(_ptr, obj._ptr, obj._size);
+			_size = obj._size;
+			_capacity = obj._capacity;
+			return *this;
+		}
+
+        virtual ~StackBuffer()
+        {
+            if (size > FIXED_SIZE)
+            {
+                delete[] _ptr;
+            }
+        }
+
+		void clear()
+		{
+			_size = 0;
+		}
+
+		virtual const char* data() const override
+		{
+			return _ptr;
+		}
+
+		virtual uint32 size() const override
+		{
+			return _size;
+		}
+
+		virtual void write(uint32 pos, const char* data, uint32 size) override
+		{
+			assert(pos <= _size)
+			ensure(pos + size);
+			memcpy(_ptr + pos, data, size);
+			if (pos + size > _size)
+				_size = pos + size;
+		}
+
+		//check null and set the memory bytes you got
+		virtual char* write(uint32 pos, uint32 size) override
+		{
+			if (pos > _size)
+				return NULL;
+			ensure(pos + size);
+			if (pos + size > _size)
+				_size = pos + size;
+			return _ptr + pos;
+		}
+
+		virtual void read(uint32 pos, char* data, uint32 size) const override
+		{
+			assert (pos + size < _size)
+			memcpy(data, _ptr + pos, size);
+		}
+
+		//check null
+		virtual const char* read(uint32 pos, uint32 size) const override
+		{
+			if (pos + size > _size)
+				return NULL;
+			return _ptr + pos;
+		}
+
+	private:
+		void ensure(uint32 size)
+		{
+			if (_capacity >= size)
+				return;
+
+			uint32 new_capacity = (_capacity << 1) + 1;
+			while (new_capacity < size) {
+				new_capacity = (new_capacity << 1) + 1;
+			}
+
+            char* new_ptr = new char[new_capacity];
+			memcpy(new_ptr, _ptr, _size);
+
+			if (_capacity > FIXED_SIZE) {
+                delete[] _ptr;
+			}
+			_ptr = new_ptr;
+			_capacity = new_capacity;
+		}
+
+    private:
+        char _buf[FIXED_SIZE];
+        char* _ptr;
+        uint32 _size;
+        uint32 _capacity;
     };
 }

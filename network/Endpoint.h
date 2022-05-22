@@ -50,7 +50,7 @@ namespace network
 
 		int32 read(char* buff, int32 len);
 
-		int32 write(char* buff, int32 len);
+		int32 write(const char* buff, int32 len);
 #ifdef __linux
 		int32 readv(const struct iovec* iov, int32 iovcnt);
 

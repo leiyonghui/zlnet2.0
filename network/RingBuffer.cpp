@@ -11,7 +11,7 @@ namespace network
 		delete[] _buff;
 	}
 
-	void CRingBuffer::write(char* buff, uint32 len)
+	void CRingBuffer::write(const char* buff, uint32 len)
 	{
 		assert(len > 0);
 		ensure(_size + len);

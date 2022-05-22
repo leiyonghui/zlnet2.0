@@ -2,6 +2,7 @@
 #include "Configs.h"
 #include "IStream.h"
 #include "IOEvent.h"
+#include "IBuffer.h"
 
 namespace network
 {
@@ -19,7 +20,7 @@ namespace network
 
 		virtual void onSerialize(IStream* buffer) = 0;
 
-		virtual void onUnserialize(IOEvent* event, IStream* buffer) = 0;
+		virtual void onUnserialize(IOEvent* event, IBuffer* buffer) = 0;
 
 		virtual void onListen() = 0;
 

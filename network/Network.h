@@ -48,10 +48,11 @@ namespace network
 		void handleTcpConError(const IOObjectPtr& object);
 		void handleTcpConRead(const IOObjectPtr& object);
 		void handleTcpConWrite(const IOObjectPtr& object);
+		void handleTcpConnectWrite(const IOObjectPtr& object);
+		void handleTcpConnectError(const IOObjectPtr& object);
 		void removeTcpCon(const ConnectionPtr& con);
 		void tcpListen(int16 port, const IOProtocolPtr& protocol);
 		void tcpSend(const IOObjectPtr& object, IOEvent* event);
-		void tcpWrite(const ConnectionPtr& con);
 		void tcpConnect(const std::string& ip, uint16 port, const IOProtocolPtr& protocol);
 		void tcpClose(uint32 key, uint32 second);
 	private:
