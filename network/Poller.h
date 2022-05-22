@@ -6,7 +6,7 @@ namespace network
 	class CPoller
 	{
 	public:
-		CPoller();
+		CPoller() = default;
 		virtual ~CPoller() = default;
 
 		virtual void registerReadHandler(const IOObjectPtr& object) = 0;
@@ -14,14 +14,7 @@ namespace network
 		virtual void deregisterReadhandler(const IOObjectPtr& object) = 0;
 		virtual void deregisterWritehandler(const IOObjectPtr& object) = 0;
 		virtual void deregisterObject(const IOObjectPtr& object) = 0;
-		virtual void poll(int32 millisecond) = 0;
-
-		bool hasObject(const IOObjectPtr& object) const;
-		bool hasObject(uint32 key) const;
-	protected:
-		IOObjectPtr getObject(uint32 key) const;
-
-		std::vector<IOObjectPtr> _handlers;
+		virtual void poll(const std::vector<IOObjectPtr>& objects, int32 millisecond) = 0;
 	};
 	USING_SHARED_PTR(CPoller);
 }

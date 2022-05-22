@@ -105,7 +105,7 @@ namespace network
 	{
 		while (_isStart)
 		{
-			_poller->poll(1);
+			_poller->poll(_objects, 1);
 
 			std::list<IOEvent*> events;
 			_eventQueue.pop(events);

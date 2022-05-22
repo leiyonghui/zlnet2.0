@@ -60,15 +60,21 @@ namespace network
 		removeObject(object);
 	}
 
-	void CEPoller::poll(int32 millisecond)
+	void CEPoller::poll(const std::vector<IOObjectPtr>& objects, int32 millisecond)
 	{
 		int32 cnt = ::epoll_wait(_epfd, _events, MAX_OBJECT_SIZE, millisecond);
 		for (int32 i = 0; i < cnt; i++)
 		{
 			const epoll_event& event = _events[i];
-			IOObjectPtr object = getObject(event.data.u32);
+			auto key = event.data.u32;
+			auto index = ObjecKeyPool::index(key);
+			auto object = objects[index];
+			if (!object || object->getKey() != key)
+			{
+				core_log_error("object null", key, object ? object->getKey() : 0);
+				continue;
+			}
 			const uint32& ev = event.events;
-			int32 events = object->getEvents();
 			printfEvent(object->getSocket(), ev);
 			if (ev & EPOLLERR)
 			{
@@ -78,7 +84,7 @@ namespace network
 			}
 			else
 			{
-				if (ev & EPOLLIN & events)
+				if (ev & EPOLLIN & object->getEvents())
 				{
 					auto& callback = object->getReadCallback();
 					if (callback)
@@ -86,7 +92,7 @@ namespace network
 						callback(object);
 					}
 				}
-				if (ev & EPOLLOUT & events)
+				if (ev & EPOLLOUT & object->getEvents())
 				{
 					auto& callback = object->getWriteCallback();
 					if (callback)
@@ -100,17 +106,13 @@ namespace network
 
 	void CEPoller::updateObject(const IOObjectPtr& object, int32 events)
 	{
-		//if (events == 0)
-		//{
-		//	removeObject(object);
-		//	return;
-		//}
 		epoll_event event;
 		event.events = events;
 		event.data.u32 = object->getKey();
 		auto socket = object->getSocket();
-		if (hasObject(object))
+		if (object->getEvents())
 		{
+			object->updateEvents(events);
 			if (::epoll_ctl(_epfd, EPOLL_CTL_MOD, socket, &event))
 			{
 				core_log_error("epoll mod error", errno);
@@ -119,23 +121,24 @@ namespace network
 		}
 		else
 		{
+			object->updateEvents(events);
 			if (::epoll_ctl(_epfd, EPOLL_CTL_ADD, socket, &event) < 0)
 			{
 				core_log_error("epoll add error", errno);
 				return;
 			}
 		}
-		object->updateEvents(events);
 	}
 
 	void CEPoller::removeObject(const IOObjectPtr& object)
 	{
-		if (!hasObject(object))
+		if (object->getEvents() == 0)
 		{
-			core_log_error("unexpect", object->getKey());
+			core_log_error("remove null event", object->getKey());
 			return;
 		}
 		auto socket = object->getSocket();
+		object->updateEvents(0);
 		if (::epoll_ctl(_epfd, EPOLL_CTL_DEL, socket, NULL))
 		{
 			core_log_error("epoll del", errno);
