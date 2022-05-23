@@ -1,15 +1,12 @@
 #pragma once
 #include "Configs.h"
 #include "IOProtocolEx.h"
-
-namespace network
-{
-	class CNetwork;
-}
+#include "Engine.h"
+#include "core/MsgQueue.h"
 
 namespace engine
 {
-	class IOEngine
+	class IOEngine : public Engine
 	{
 	public:
 		IOEngine();
