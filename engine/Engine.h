@@ -13,7 +13,7 @@ namespace engine
 		virtual~Engine();
 
 		void run();
-		void bindPDispatcher
+
 	protected:
 		virtual void onInit();
 
