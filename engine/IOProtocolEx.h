@@ -7,6 +7,16 @@ namespace engine
 	class IOProtocol : public network::IOProtocol
 	{
 	public:
+		bool isAvailable() const;
+
+		void setAvailable();
+
+		void unsetAvailable();
+
+	protected:
+		void dispatchPacket(Packet* packet);
+
+	protected:
 		virtual void onListen() override;
 
 		virtual void onUnlisten() override;
@@ -18,6 +28,9 @@ namespace engine
 		virtual void onConnect(bool dis) override;
 
 		virtual void onDisConnect() override;
+
+	protected:
+		bool _available;
 
 	};
 	USING_SHARED_PTR(IOProtocol);

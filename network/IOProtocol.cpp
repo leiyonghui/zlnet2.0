@@ -3,7 +3,7 @@
 
 namespace network
 {
-	IOProtocol::IOProtocol(EPROTOCOL type, CNetwork* net): _protocolType(type), _key(0), _network(net)
+	IOProtocol::IOProtocol(EPROTOCOL type): _protocolType(type), _key(0), _network(nullptr)
 	{
 		assert(_network);
 	}

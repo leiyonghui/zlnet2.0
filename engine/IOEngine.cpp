@@ -12,4 +12,32 @@ namespace engine
 	{
 		delete _network;
 	}
+
+	void IOEngine::dispatchIOPacket(Packet* packet)
+	{
+		switch (packet->getType())
+		{
+		case PacketListen:
+			onIOListen(packet);
+			break;
+		case PacketUnlisten:
+			onIOUnListen(packet);
+			break;
+		case PacketAccept:
+			onIOAccept(packet);
+			break;
+		case PacketConnect:
+			onIOConnect(packet);
+			break;
+		case PacketClose:
+			onIOClose(packet);
+			break;
+		case PacketMsg:
+			onIOPacket(packet);
+			break;
+		default:
+			assert(false);
+			break;
+		}
+	}
 }

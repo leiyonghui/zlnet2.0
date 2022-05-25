@@ -93,6 +93,7 @@
     <ClInclude Include="core\core\FastNode.h" />
     <ClInclude Include="core\core\KeyPool.h" />
     <ClInclude Include="core\core\Macro.h" />
+    <ClInclude Include="core\core\MsgQueue.h" />
     <ClInclude Include="core\core\NonCopyable.h" />
     <ClInclude Include="core\core\ObjectPools.h" />
     <ClInclude Include="core\core\Queue.h" />
@@ -102,7 +103,10 @@
     <ClInclude Include="core\core\TimerSet.h" />
     <ClInclude Include="core\core\TimerWheel.h" />
     <ClInclude Include="engine\Configs.h" />
+    <ClInclude Include="engine\Engine.h" />
     <ClInclude Include="engine\IOEngine.h" />
+    <ClInclude Include="engine\IONotify.h" />
+    <ClInclude Include="engine\IOPacket.h" />
     <ClInclude Include="engine\IOProtocolEx.h" />
     <ClInclude Include="engine\Packet.h" />
     <ClInclude Include="network\Address.h" />
@@ -126,11 +130,14 @@
     <ClInclude Include="network\Network.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="core\core\MsgQueue.cpp" />
     <ClCompile Include="core\core\TimeHelp.cpp" />
     <ClCompile Include="core\core\Timers.cpp" />
     <ClCompile Include="core\core\TimerSet.cpp" />
     <ClCompile Include="core\core\TimerWheel.cpp" />
+    <ClCompile Include="engine\Engine.cpp" />
     <ClCompile Include="engine\IOEngine.cpp" />
+    <ClCompile Include="engine\IOPacket.cpp" />
     <ClCompile Include="engine\IOProtocolEx.cpp" />
     <ClCompile Include="network\Address.cpp" />
     <ClCompile Include="network\Endpoint.cpp" />

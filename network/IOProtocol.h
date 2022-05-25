@@ -8,14 +8,16 @@ namespace network
 {
 	class IOProtocol : public CNoncopyable
 	{
+		friend class CNetwork;
 	public:
-		IOProtocol(EPROTOCOL type, class CNetwork* net);
+		IOProtocol(EPROTOCOL type);
 		virtual ~IOProtocol();
 
+		void setNetwork(class CNetwork* net) { _network = net; }
 		EPROTOCOL getProtocolType() const { return _protocolType; };
 		void setKey(uint32 key) { _key = key; }
 		uint32 getKey() const { return _key; }
-	public:
+	protected:
 		virtual IOProtocolPtr create() const = 0;
 
 		virtual void onSerialize(IStream* buffer) = 0;

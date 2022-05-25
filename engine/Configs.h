@@ -7,12 +7,11 @@ namespace engine
 
 	enum EPacketType
 	{
-		PacketListen		=	1,
-		PacketUnlisten		=	2,
-		PacketAccept		=	3,
-		PacketConnect		=	4,
-		PacketDisCon		=	5,
-		PacketClose			=	6,
-		PacketMsg			=	7,
+		PacketListen	=	1,
+		PacketUnlisten,
+		PacketAccept,
+		PacketConnect,
+		PacketClose,	
+		PacketMsg,
 	};
 }

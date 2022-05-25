@@ -2,6 +2,21 @@
 
 namespace engine
 {
+	bool IOProtocol::isAvailable() const
+	{
+		return _available;
+	}
+	void IOProtocol::setAvailable()
+	{
+		_available = true;
+	}
+	void IOProtocol::unsetAvailable()
+	{
+		_available = false;
+	}
+	void IOProtocol::dispatchPacket(Packet* packet)
+	{
+	}
 	void IOProtocol::onListen()
 	{
 
@@ -26,8 +41,10 @@ namespace engine
 	{
 
 	}
+
 	void IOProtocol::onDisConnect()
 	{
+
 	}
 }
 
