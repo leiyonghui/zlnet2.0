@@ -53,7 +53,12 @@ namespace network
 	{
 		assert(!_isStart);
 		_isStart = true;
+
+		init();
+
 		loop();
+
+		onQuit();
 		/*std::thread ([this]() {
 			loop();
 		}).detach();*/
@@ -128,6 +133,10 @@ namespace network
 			}
 			_shceduler->update(now);
 		}
+	}
+
+	void CNetwork::onQuit()
+	{
 	}
 
 	void CNetwork::onTimer1000ms()

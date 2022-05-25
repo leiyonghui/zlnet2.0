@@ -2,6 +2,7 @@
 #include "Configs.h"
 #include "core/TimerWheel.h"
 #include "core/MsgQueue.h"
+#include "Packet.h"
 
 namespace engine
 {
@@ -10,6 +11,7 @@ namespace engine
 	public:
 		Engine();
 		virtual~Engine();
+
 		void run();
 
 	protected:
@@ -25,11 +27,10 @@ namespace engine
 
 	private:
 		virtual void loop();
-		
 
 	private:
 		bool _runing;
 		int64 _lastClock1000ms;
-		MsgQueue* _queue;
+		MsgQueue<Packet*>* _msgqueue;
 	};
 }

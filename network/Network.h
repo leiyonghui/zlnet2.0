@@ -35,6 +35,7 @@ namespace network
 
 		void init();
 		void loop();
+		void onQuit();
 		void onTimer1000ms();
 		void pushEvent(IOEvent* event);
 		void dispatchProcess(IOEvent* event);
