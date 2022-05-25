@@ -49,7 +49,7 @@ namespace engine
 
 		TimerWheel::update(now);
 
-		_queue->poll(busy);
+		_msgqueue->poll(busy);
 	}
 
 	void Engine::onIdel()
