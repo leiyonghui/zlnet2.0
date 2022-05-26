@@ -129,7 +129,6 @@
     <ClInclude Include="network\Network.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="core\core\MsgQueue.cpp" />
     <ClCompile Include="core\core\TimeHelp.cpp" />
     <ClCompile Include="core\core\Timers.cpp" />
     <ClCompile Include="core\core\TimerSet.cpp" />

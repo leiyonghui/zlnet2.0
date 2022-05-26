@@ -230,9 +230,6 @@
     <ClCompile Include="engine\IOPacket.cpp">
       <Filter>engine</Filter>
     </ClCompile>
-    <ClCompile Include="core\core\MsgQueue.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
     <ClCompile Include="engine\Engine.cpp">
       <Filter>engine</Filter>
     </ClCompile>

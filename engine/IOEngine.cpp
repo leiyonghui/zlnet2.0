@@ -40,4 +40,62 @@ namespace engine
 			break;
 		}
 	}
+
+	void IOEngine::onListen(uint32 uid)
+	{
+
+	}
+
+	void IOEngine::onUnListen(uint32 uid)
+	{
+	}
+
+	void IOEngine::onAccept(uint32 uid)
+	{
+	}
+
+	void IOEngine::onClose(uint32 uid)
+	{
+	}
+
+	void IOEngine::onConnect(uint32 uid, bool success)
+	{
+	}
+
+	void IOEngine::onDisconnect(uint32 uid)
+	{
+	}
+
+	void IOEngine::onIOListen(Packet * packet)
+	{
+	}
+
+	void IOEngine::onIOUnListen(Packet * packet)
+	{
+
+	}
+
+	void IOEngine::onIOAccept(Packet * packet)
+	{
+
+	}
+
+	void IOEngine::onIOClose(Packet * packet)
+	{
+
+	}
+
+	void IOEngine::onIOConnect(Packet * packet)
+	{
+
+	}
+
+	void IOEngine::onIODisconnect(Packet * packet)
+	{
+
+	}
+
+	void IOEngine::onIOPacket(Packet * packet)
+	{
+	}
 }
