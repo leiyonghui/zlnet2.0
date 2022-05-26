@@ -147,7 +147,7 @@
     <ClInclude Include="engine\IOProtocolEx.h">
       <Filter>engine</Filter>
     </ClInclude>
-    <ClInclude Include="engine\Packet.h">
+    <ClInclude Include="engine\Engine.h">
       <Filter>engine</Filter>
     </ClInclude>
     <ClInclude Include="engine\Engine.h">
@@ -157,6 +157,15 @@
       <Filter>engine</Filter>
     </ClInclude>
     <ClInclude Include="engine\IONotify.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="core\core\MsgQueue.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\IONotify.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\IOPacket.h">
       <Filter>engine</Filter>
     </ClInclude>
     <ClInclude Include="core\core\MsgQueue.h">
@@ -223,6 +232,12 @@
     </ClCompile>
     <ClCompile Include="core\core\MsgQueue.cpp">
       <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\Engine.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\IOPacket.cpp">
+      <Filter>engine</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

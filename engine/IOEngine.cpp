@@ -5,7 +5,7 @@ namespace engine
 {
 	IOEngine::IOEngine():_network(new network::CNetwork())
 	{
-
+		bindMsgdispatcher(std::bind(&IOEngine::dispatchIOPacket, this, _1));
 	}
 
 	IOEngine::~IOEngine()

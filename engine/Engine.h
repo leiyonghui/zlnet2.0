@@ -14,6 +14,10 @@ namespace engine
 
 		void run();
 
+		void bindMsgdispatcher(const std::function<void(Packet*)>& func);
+
+		void bindMsgdispatcher(std::function<void(Packet*)>&& func);
+
 	protected:
 		virtual void onInit();
 

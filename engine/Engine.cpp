@@ -21,6 +21,16 @@ namespace engine
 		onQuit();
 	}
 
+	void Engine::bindMsgdispatcher(const std::function<void(Packet*)>& func)
+	{
+		_msgqueue->bindDispatcher(func);
+	}
+
+	void Engine::bindMsgdispatcher(std::function<void(Packet*)>&& func)
+	{
+		_msgqueue->bindDispatcher(std::move(func));
+	}
+
 	void Engine::onInit()
 	{
 	}

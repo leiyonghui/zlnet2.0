@@ -14,8 +14,6 @@ namespace engine
 	protected:
 		void dispatchIOPacket(Packet* packet);
 
-
-
 	protected:
 		virtual void onListen(uint32 uid);
 

@@ -108,7 +108,6 @@
     <ClInclude Include="engine\IONotify.h" />
     <ClInclude Include="engine\IOPacket.h" />
     <ClInclude Include="engine\IOProtocolEx.h" />
-    <ClInclude Include="engine\Packet.h" />
     <ClInclude Include="network\Address.h" />
     <ClInclude Include="network\Buffer.h" />
     <ClInclude Include="network\BufferReader.h" />
