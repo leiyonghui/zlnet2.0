@@ -1,10 +1,11 @@
 #pragma once
 #include "Configs.h"
 #include "network/IOProtocol.h"
+#include "core/MsgQueue.h"
 
 namespace engine
 {
-	class IOProtocol : public network::IOProtocol
+	class Protocol : public network::IOProtocol
 	{
 	public:
 		bool isAvailable() const;
@@ -13,8 +14,10 @@ namespace engine
 
 		void unsetAvailable();
 
+		void setQueue(MsgQueue<Packet*>* queue);
+
 	protected:
-		void dispatchPacket(Packet* packet);
+		void dispatchPacket(class Packet* packet);
 
 	protected:
 		virtual void onListen() override;
@@ -31,7 +34,7 @@ namespace engine
 
 	protected:
 		bool _available;
-
+		MsgQueue<Packet*>* _msgqueue;
 	};
-	USING_SHARED_PTR(IOProtocol);
+	USING_SHARED_PTR(Protocol);
 }

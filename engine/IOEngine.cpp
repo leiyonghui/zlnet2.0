@@ -1,5 +1,7 @@
 #include "network/Network.h"
 #include "IOEngine.h"
+#include "IONotify.h"
+#include "IOPacket.h"
 
 namespace engine
 {
@@ -11,6 +13,21 @@ namespace engine
 	IOEngine::~IOEngine()
 	{
 		delete _network;
+	}
+
+	ProtocolPtr IOEngine::getProtocol(uint32 key)
+	{
+		return core::find(_protocols, key, ProtocolPtr());
+	}
+
+	void IOEngine::listen(uint16 port, const ProtocolPtr& protocol)
+	{
+		if (protocol->getKey())
+		{
+			core_log_error("listen protocol unexpected");
+			return;
+		}
+		protocol->setNetwork();
 	}
 
 	void IOEngine::dispatchIOPacket(Packet* packet)
@@ -41,16 +58,16 @@ namespace engine
 		}
 	}
 
-	void IOEngine::onListen(uint32 uid)
+	void IOEngine::onListen(uint32 uid, bool success)
 	{
-
+		
 	}
 
-	void IOEngine::onUnListen(uint32 uid)
+	void IOEngine::onUnlisten(uint32 uid)
 	{
 	}
 
-	void IOEngine::onAccept(uint32 uid)
+	void IOEngine::onAccept(uint32 uid, uint32 fromUid)
 	{
 	}
 
@@ -68,6 +85,19 @@ namespace engine
 
 	void IOEngine::onIOListen(Packet * packet)
 	{
+		IONotify* notify = dynamic_cast<IONotify*>(packet);
+		auto uid = notify->getUid();
+		auto protocol = getProtocol(uid);
+		if (protocol != notify->getProtocol())
+		{
+			core_log_error("unexpect", uid);
+			return;
+		}
+		if (notify->isSuccess())
+		{
+			protocol->setAvailable();
+		}
+		onListen(uid, notify->isSuccess());
 	}
 
 	void IOEngine::onIOUnListen(Packet * packet)
@@ -77,6 +107,7 @@ namespace engine
 
 	void IOEngine::onIOAccept(Packet * packet)
 	{
+		IONotify* notify = dynamic_cast<IONotify*>(packet);
 
 	}
 

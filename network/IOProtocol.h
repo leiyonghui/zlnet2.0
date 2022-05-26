@@ -6,7 +6,7 @@
 
 namespace network
 {
-	class IOProtocol : public CNoncopyable
+	class IOProtocol : public CNoncopyable, public std::enable_shared_from_this<IOProtocol>
 	{
 		friend class CNetwork;
 	public:
