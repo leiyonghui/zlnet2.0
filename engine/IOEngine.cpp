@@ -17,17 +17,34 @@ namespace engine
 
 	ProtocolPtr IOEngine::getProtocol(uint32 key)
 	{
-		return core::find(_protocols, key, ProtocolPtr());
+		auto iter = _protocols.find(key);
+		if (iter == _protocols.end()) 
+		{
+			return nullptr;
+		}
+		return iter->second;
 	}
 
-	void IOEngine::listen(uint16 port, const ProtocolPtr& protocol)
+	uint32 IOEngine::listen(uint16 port, const ProtocolPtr& protocol)
 	{
 		if (protocol->getKey())
 		{
 			core_log_error("listen protocol unexpected");
 			return;
 		}
-		protocol->setNetwork();
+		protocol->setNetwork(_network);
+		auto key = _network->listen(port, protocol);
+		if (key <= 0) 
+		{
+			core_log_error("listen unexpected");
+			return 0;
+		}
+		if (!core::insert(_protocols, key, protocol)) 
+		{
+			core_log_error("listen unexpected");
+			return 0;
+		}
+		return key;
 	}
 
 	void IOEngine::dispatchIOPacket(Packet* packet)

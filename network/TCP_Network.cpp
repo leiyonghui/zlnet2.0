@@ -196,13 +196,14 @@ namespace network
 		auto listener = CObjectPool<TcpListener>::Instance()->create(protocol, std::move(endPoint));
 		listener->setErrorCallback(std::bind(&CNetwork::defaultErrorHandle, this, _1));
 		listener->setReadCallback(std::bind(&CNetwork::handleTcpAccept, this, _1));
+		addObject(listener);
 		if (!listener->listen())
 		{
-			protocol->onUnlisten();
+			protocol->onListen(false);
 			return;
 		}
-		addObject(listener);
 		_poller->registerReadHandler(listener);
+		protocol->onListen(true);
 	}
 
 	void CNetwork::tcpSend(const IOObjectPtr& object, IOEvent* event)

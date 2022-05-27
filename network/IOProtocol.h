@@ -24,7 +24,7 @@ namespace network
 
 		virtual void onUnserialize(IOEvent* event, IBuffer* buffer) = 0;
 
-		virtual void onListen() = 0;
+		virtual void onListen(bool success) = 0;
 
 		virtual void onUnlisten() = 0;
 

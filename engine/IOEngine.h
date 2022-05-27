@@ -13,7 +13,7 @@ namespace engine
 
 		ProtocolPtr getProtocol(uint32 key);
 
-		void listen(uint16 port, const ProtocolPtr& protocol);
+		uint32 listen(uint16 port, const ProtocolPtr& protocol);
 	protected:
 		void dispatchIOPacket(Packet* packet);
 

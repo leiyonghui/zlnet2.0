@@ -29,9 +29,10 @@ namespace engine
 		_msgqueue->pushBack(packet);
 	}
 
-	void Protocol::onListen()
+	void Protocol::onListen(bool success)
 	{
-
+		IONotify* packet = new IONotify(PacketAccept, SHARED_THIS(Protocol), nullptr, success);
+		dispatchPacket(packet);
 	}
 
 	void Protocol::onUnlisten()

@@ -71,6 +71,7 @@ namespace network
 		if (key == 0)
 			return 0;
 		protocol->setKey(key);
+		protocol->setNetwork(this);
 		pushEvent(static_cast<IOEvent*>(new IOListen(port, protocol)));
 		return key;
 	}
@@ -82,6 +83,7 @@ namespace network
 		if (key == 0)
 			return 0;
 		protocol->setKey(key);
+		protocol->setNetwork(this);
 		pushEvent(static_cast<IOEvent*>(new IOEConnect(ip, port, protocol)));
 		return key;
 	}

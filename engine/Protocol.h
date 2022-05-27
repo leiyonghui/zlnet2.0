@@ -20,7 +20,7 @@ namespace engine
 		void dispatchPacket(class Packet* packet);
 
 	protected:
-		virtual void onListen() override;
+		virtual void onListen(bool success) override;
 
 		virtual void onUnlisten() override;
 
