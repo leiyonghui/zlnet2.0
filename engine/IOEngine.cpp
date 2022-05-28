@@ -77,7 +77,6 @@ namespace engine
 
 	void IOEngine::onListen(uint32 uid, bool success)
 	{
-		
 	}
 
 	void IOEngine::onUnlisten(uint32 uid)
@@ -119,18 +118,62 @@ namespace engine
 
 	void IOEngine::onIOUnListen(Packet * packet)
 	{
-
+		IONotify* notify = dynamic_cast<IONotify*>(packet);
+		auto uid = notify->getUid();
+		auto protocol = getProtocol(uid);
+		if (protocol != notify->getProtocol())
+		{
+			core_log_error("unexpect", uid);
+			return;
+		}
+		protocol->unsetAvailable();
+		onListen(uid, notify->isSuccess());
 	}
 
 	void IOEngine::onIOAccept(Packet * packet)
 	{
 		IONotify* notify = dynamic_cast<IONotify*>(packet);
-
+		auto protocol = notify->getProtocol();
+		auto fromPtotocol = notify->getFromProtocol();
+		auto uid = protocol->getKey();
+		auto fromUid = fromPtotocol->getKey();
+		if (auto p = getProtocol(fromUid); p != fromPtotocol)
+		{
+			core_log_error("unexpect", fromPtotocol->getKey(), p ? p->getKey() : "");
+			assert(false);
+			return;
+		}
+		if (!fromPtotocol->isAvailable())
+		{
+			core_log_error("unexpect from unavailable", fromPtotocol->getKey());
+			assert(false);
+			return;
+		}
+		if (!core::insert(_protocols, uid, protocol))
+		{
+			core_log_error("listen insert unexpected", protocol->getKey());
+			return 0;
+		}
+		onAccept(uid, fromUid);
 	}
 
 	void IOEngine::onIOClose(Packet * packet)
 	{
-
+		IONotify* notify = dynamic_cast<IONotify*>(packet);
+		auto protocol = notify->getProtocol();
+		auto uid = protocol->getKey();
+		if (!protocol->isAvailable())
+		{
+			core_log_error("unexpect from unavailable", uid);
+			assert(false);
+			return;
+		}
+		protocol->unsetAvailable();
+		onClose(uid);
+		if (!core::remove(_protocols, uid)) 
+		{
+			core_log_error("unexpect", uid);
+		}
 	}
 
 	void IOEngine::onIOConnect(Packet * packet)
