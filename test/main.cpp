@@ -28,27 +28,27 @@ public:
 
 	void onUnlisten(uint32 uid) override
 	{
-
+		core_log_trace("unlist ", uid);
 	}
 
 	virtual void onAccept(uint32 uid, uint32 fromUid)
 	{
-
+		core_log_trace("accept ", uid, fromUid);
 	}
 
 	virtual void onClose(uint32 uid)
 	{
-
+		core_log_trace("close ", uid);
 	}
 
 	virtual void onConnect(uint32 uid, bool success)
 	{
-
+		core_log_trace("connect ", uid, success);
 	}
 
 	virtual void onDisconnect(uint32 uid)
 	{
-
+		core_log_trace("disconnect ", uid);
 	}
 };
 
