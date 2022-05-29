@@ -32,7 +32,7 @@ namespace engine
 	private:
 		virtual void loop();
 
-	private:
+	protected:
 		bool _runing;
 		int64 _lastClock1000ms;
 		MsgQueue<Packet*>* _msgqueue;

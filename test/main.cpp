@@ -5,16 +5,52 @@
 #include "network/Common.h"
 #include <iostream>
 #include "network/Address.h"
+#include "engine/IOEngine.h"
 
 using namespace network;
 using namespace std;
-
-
-
+using namespace engine;
 
 #ifdef __linux
 
 #endif // __Linux
+
+class TestNet : public IOEngine
+{
+public:
+	TestNet(CNetwork* net) : IOEngine(net){}
+
+	void onListen(uint32 uid, bool success) override
+	{
+		core_log_trace("list ", uid, success);
+	}
+
+
+	void onUnlisten(uint32 uid) override
+	{
+
+	}
+
+	virtual void onAccept(uint32 uid, uint32 fromUid)
+	{
+
+	}
+
+	virtual void onClose(uint32 uid)
+	{
+
+	}
+
+	virtual void onConnect(uint32 uid, bool success)
+	{
+
+	}
+
+	virtual void onDisconnect(uint32 uid)
+	{
+
+	}
+};
 
 
 int main(int argc, char** argv)

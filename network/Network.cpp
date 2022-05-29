@@ -72,6 +72,7 @@ namespace network
 			return 0;
 		protocol->setKey(key);
 		protocol->setNetwork(this);
+		protocol->setType(IO_OBJECT_LISTENER);
 		pushEvent(static_cast<IOEvent*>(new IOListen(port, protocol)));
 		return key;
 	}
@@ -84,6 +85,7 @@ namespace network
 			return 0;
 		protocol->setKey(key);
 		protocol->setNetwork(this);
+		protocol->setType(IO_OBJECT_CONNECTOR);
 		pushEvent(static_cast<IOEvent*>(new IOEConnect(ip, port, protocol)));
 		return key;
 	}

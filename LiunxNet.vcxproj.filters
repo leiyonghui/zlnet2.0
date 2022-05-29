@@ -144,7 +144,7 @@
     <ClInclude Include="engine\IOEngine.h">
       <Filter>engine</Filter>
     </ClInclude>
-    <ClInclude Include="engine\IOProtocolEx.h">
+    <ClInclude Include="engine\Protocol.h">
       <Filter>engine</Filter>
     </ClInclude>
     <ClInclude Include="engine\Engine.h">
@@ -170,6 +170,15 @@
     </ClInclude>
     <ClInclude Include="core\core\MsgQueue.h">
       <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\Packet.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\IMessage.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\NetEngine.h">
+      <Filter>engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -221,19 +230,16 @@
     <ClCompile Include="engine\IOEngine.cpp">
       <Filter>engine</Filter>
     </ClCompile>
-    <ClCompile Include="engine\IOProtocolEx.cpp">
+    <ClCompile Include="engine\Protocol.cpp">
       <Filter>engine</Filter>
     </ClCompile>
     <ClCompile Include="engine\Engine.cpp">
       <Filter>engine</Filter>
     </ClCompile>
-    <ClCompile Include="engine\IOPacket.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
     <ClCompile Include="engine\Engine.cpp">
       <Filter>engine</Filter>
     </ClCompile>
-    <ClCompile Include="engine\IOPacket.cpp">
+    <ClCompile Include="engine\NetEngine.cpp">
       <Filter>engine</Filter>
     </ClCompile>
   </ItemGroup>

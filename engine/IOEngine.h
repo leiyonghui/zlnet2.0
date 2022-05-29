@@ -8,12 +8,20 @@ namespace engine
 	class IOEngine : public Engine
 	{
 	public:
-		IOEngine();
+		IOEngine(network::CNetwork *network);
 		virtual~IOEngine();
 
-		ProtocolPtr getProtocol(uint32 key);
+		ProtocolPtr getProtocol(uint32 uid);
 
 		uint32 listen(uint16 port, const ProtocolPtr& protocol);
+
+		uint32 connect(const std::string& ip, uint16 port, const ProtocolPtr& protocol);
+
+		void close(uint32 uid);
+
+		void dispatchPacket(class IOPacket* packet);
+
+		void dispactchCallback(IOPacket* packet);
 	protected:
 		void dispatchIOPacket(Packet* packet);
 
@@ -43,6 +51,9 @@ namespace engine
 		void onIODisconnect(Packet* packet);
 
 		void onIOPacket(Packet* packet);
+
+	private:
+		bool removeObject(uint32 uid);
 	protected:
 		class network::CNetwork* _network;
 		std::unordered_map<uint32, ProtocolPtr> _protocols;

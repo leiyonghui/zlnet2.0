@@ -5,7 +5,7 @@
 
 namespace engine
 {
-	IOEngine::IOEngine():_network(new network::CNetwork())
+	IOEngine::IOEngine(network::CNetwork* network):_network(network)
 	{
 		bindMsgdispatcher(std::bind(&IOEngine::dispatchIOPacket, this, _1));
 	}
@@ -15,9 +15,9 @@ namespace engine
 		delete _network;
 	}
 
-	ProtocolPtr IOEngine::getProtocol(uint32 key)
+	ProtocolPtr IOEngine::getProtocol(uint32 uid)
 	{
-		auto iter = _protocols.find(key);
+		auto iter = _protocols.find(uid);
 		if (iter == _protocols.end()) 
 		{
 			return nullptr;
@@ -30,21 +30,85 @@ namespace engine
 		if (protocol->getKey())
 		{
 			core_log_error("listen protocol unexpected");
+			return 0;
+		}
+		auto uid = _network->listen(port, protocol);
+		if (uid <= 0)
+		{
+			core_log_error("listen unexpected");
+			return 0;
+		}
+		protocol->setQueue(_msgqueue);
+		if (!core::insert(_protocols, uid, protocol))
+		{
+			core_log_error("listen unexpected");
+			return 0;
+		}
+		return uid;
+	}
+
+	uint32 IOEngine::connect(const std::string& ip, uint16 port, const ProtocolPtr& protocol)
+	{
+		if (protocol->getKey())
+		{
+			core_log_error("connect protocol unexpected");
+			return 0;
+		}
+		auto uid = _network->connect(ip, port, protocol);
+		if (uid <= 0)
+		{
+			core_log_error("connect unexpected");
+			return 0;
+		}
+		protocol->setQueue(_msgqueue);
+		if (!core::insert(_protocols, uid, protocol))
+		{
+			core_log_error("connect unexpected");
+			return 0;
+		}
+		return uid;
+	}
+
+	void IOEngine::close(uint32 uid)
+	{
+		auto protocol = getProtocol(uid);
+		if (!protocol)
+		{
+			core_log_error("connect unexpected", uid);
 			return;
 		}
-		protocol->setNetwork(_network);
-		auto key = _network->listen(port, protocol);
-		if (key <= 0) 
+		if (!protocol->isAvailable())
 		{
-			core_log_error("listen unexpected");
-			return 0;
+			_network->close(uid, 2);
+			removeObject(uid);
+			return;
 		}
-		if (!core::insert(_protocols, key, protocol)) 
+		_network->close(uid, 2);
+		switch (protocol->getType())
 		{
-			core_log_error("listen unexpected");
-			return 0;
+		case network::IO_OBJECT_LISTENER:
+			onUnlisten(uid);
+			break;
+		case network::IO_OBJECT_CONNECTION:
+			onClose(uid);
+			break;
+		case network::IO_OBJECT_CONNECTOR:
+			onDisconnect(uid);
+			break;
+		default:
+			core_log_error("unknow close", uid);
+			assert(false);
+			break;
 		}
-		return key;
+		removeObject(uid);
+	}
+
+	void IOEngine::dispatchPacket(IOPacket* packet)
+	{
+	}
+
+	void IOEngine::dispactchCallback(IOPacket* packet)
+	{
 	}
 
 	void IOEngine::dispatchIOPacket(Packet* packet)
@@ -128,6 +192,10 @@ namespace engine
 		}
 		protocol->unsetAvailable();
 		onListen(uid, notify->isSuccess());
+		if (!removeObject(uid))
+		{
+			core_log_error("unexpect remove unlisten", uid);
+		}
 	}
 
 	void IOEngine::onIOAccept(Packet * packet)
@@ -139,20 +207,19 @@ namespace engine
 		auto fromUid = fromPtotocol->getKey();
 		if (auto p = getProtocol(fromUid); p != fromPtotocol)
 		{
-			core_log_error("unexpect", fromPtotocol->getKey(), p ? p->getKey() : "");
-			assert(false);
+			core_log_error("unexpect", fromPtotocol->getKey(), p ? p->getKey() : 0);
 			return;
 		}
 		if (!fromPtotocol->isAvailable())
 		{
 			core_log_error("unexpect from unavailable", fromPtotocol->getKey());
-			assert(false);
 			return;
 		}
+		protocol->setAvailable();
 		if (!core::insert(_protocols, uid, protocol))
 		{
 			core_log_error("listen insert unexpected", protocol->getKey());
-			return 0;
+			return;
 		}
 		onAccept(uid, fromUid);
 	}
@@ -164,13 +231,12 @@ namespace engine
 		auto uid = protocol->getKey();
 		if (!protocol->isAvailable())
 		{
-			core_log_error("unexpect from unavailable", uid);
-			assert(false);
+			core_log_warning("io close unavailable", uid);
 			return;
 		}
 		protocol->unsetAvailable();
 		onClose(uid);
-		if (!core::remove(_protocols, uid)) 
+		if (!removeObject(uid))
 		{
 			core_log_error("unexpect", uid);
 		}
@@ -178,15 +244,80 @@ namespace engine
 
 	void IOEngine::onIOConnect(Packet * packet)
 	{
-
+		IONotify* notify = dynamic_cast<IONotify*>(packet);
+		auto protocol = notify->getProtocol();
+		auto uid = protocol->getKey();
+		if (!core::exist(_protocols, uid))
+		{
+			core_log_error("unexpect connect", uid);
+			return;
+		}
+		if (notify->isSuccess())
+		{
+			if (protocol->isAvailable())
+			{
+				core_log_error("io connect unexpect");
+			}
+			protocol->setAvailable();
+		}
+		onConnect(uid, notify->isSuccess());
 	}
 
 	void IOEngine::onIODisconnect(Packet * packet)
 	{
-
+		IONotify* notify = dynamic_cast<IONotify*>(packet);
+		auto protocol = notify->getProtocol();
+		auto uid = protocol->getKey();
+		if (!core::exist(_protocols, uid))
+		{
+			core_log_error("io disconnect unexpect", uid);
+			return;
+		}
+		if (!protocol->isAvailable())
+		{
+			core_log_warning("io disconnect unexpect unavailable", uid);
+			return;
+		}
+		protocol->unsetAvailable();
+		onDisconnect(uid);
+		if (!removeObject(uid))
+		{
+			core_log_error("io disconnect unexpect", uid);
+		}
 	}
 
 	void IOEngine::onIOPacket(Packet * packet)
 	{
+		IOPacket* ioPacket = dynamic_cast<IOPacket*>(packet);
+		auto protocol = ioPacket->getProtocol();
+		if (protocol->isAvailable())
+		{
+			if (ioPacket->getCommand())
+			{
+				dispatchPacket(ioPacket);
+			}
+			else if (ioPacket->getCallbackId())
+			{
+				dispactchCallback(ioPacket);
+			}
+			else
+			{
+				core_log_error("io packet unexpect", ioPacket->getUid());
+			}
+		}
+		else
+		{
+			core_log_error("io packet unexpect", ioPacket->getUid());
+		}
+	}
+
+	bool IOEngine::removeObject(uint32 uid)
+	{
+		if (!core::remove(_protocols, uid))
+		{
+			core_log_error("remove unexpect", uid);
+			return false;
+		}
+		return true;
 	}
 }

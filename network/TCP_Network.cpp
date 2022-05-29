@@ -22,6 +22,7 @@ namespace network
 		}
 		auto conPrototcol = protocol->create();
 		conPrototcol->setKey(key);
+		conPrototcol->setType(IO_OBJECT_CONNECTION);
 		auto con = CObjectPool<Connection>::Instance()->create(conPrototcol, std::move(endPoint));
 		con->setErrorCallback(std::bind(&CNetwork::handleTcpConError, this, _1));
 		con->setReadCallback(std::bind(&CNetwork::handleTcpConRead, this, _1));

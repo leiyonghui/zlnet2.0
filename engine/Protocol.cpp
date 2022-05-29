@@ -1,9 +1,12 @@
 #include "Protocol.h"
-#include "IONotify.h"
 #include "IOPacket.h"
+#include "IONotify.h"
 
 namespace engine
 {
+	Protocol::Protocol(network::EPROTOCOL type):network::IOProtocol(type)
+	{
+	}
 	bool Protocol::isAvailable() const
 	{
 		return _available;
@@ -37,7 +40,8 @@ namespace engine
 
 	void Protocol::onUnlisten()
 	{
-
+		IONotify* packet = new IONotify(PacketUnlisten, SHARED_THIS(Protocol));
+		dispatchPacket(packet);
 	}
 
 	void Protocol::onAccept(network::IOProtocolPtr &fromProtocol)
@@ -48,22 +52,20 @@ namespace engine
 
 	void Protocol::onClose()
 	{
-
+		IONotify* packet = new IONotify(PacketClose, SHARED_THIS(Protocol));
+		dispatchPacket(packet);
 	}
 
 	void Protocol::onConnect(bool dis)
 	{
-
+		IONotify* packet = new IONotify(PacketConnect, SHARED_THIS(Protocol), nullptr, !dis);
+		dispatchPacket(packet);
 	}
 
 	void Protocol::onDisConnect()
 	{
-
-	}
-
-	void Protocol::dispatchPacket(Packet* packet)
-	{
-		
+		IONotify* packet = new IONotify(PacketDisconnect, SHARED_THIS(Protocol));
+		dispatchPacket(packet);
 	}
 }
 

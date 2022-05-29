@@ -11,6 +11,7 @@ namespace engine
 		PacketUnlisten,
 		PacketAccept,
 		PacketConnect,
+		PacketDisconnect,
 		PacketClose,	
 		PacketMsg,
 	};

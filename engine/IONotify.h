@@ -6,7 +6,7 @@ namespace engine
 	class IONotify : public Packet
 	{
 	public:
-		IONotify(EPacketType type, const ProtocolPtr & protocol, const ProtocolPtr& fromProtocol, bool success): Packet(type, protocol->getKey()),
+		IONotify(EPacketType type, const ProtocolPtr & protocol, const ProtocolPtr& fromProtocol = nullptr, bool success = false): Packet(type, protocol->getKey()),
 			_protocol(protocol), _fromProtocol(fromProtocol), _success(success)
 		{
 

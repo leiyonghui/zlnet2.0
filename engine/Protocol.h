@@ -5,9 +5,12 @@
 
 namespace engine
 {
+	class Packet;
 	class Protocol : public network::IOProtocol
 	{
 	public:
+		Protocol(network::EPROTOCOL type);
+
 		bool isAvailable() const;
 
 		void setAvailable();
@@ -17,7 +20,7 @@ namespace engine
 		void setQueue(MsgQueue<Packet*>* queue);
 
 	protected:
-		void dispatchPacket(class Packet* packet);
+		void dispatchPacket(Packet* packet);
 
 	protected:
 		virtual void onListen(bool success) override;
