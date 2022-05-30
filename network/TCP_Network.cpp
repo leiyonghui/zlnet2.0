@@ -78,7 +78,7 @@ namespace network
 			{
 				inputBuffer->write_confirm(cnt);
 			}
-			protocol->onSerialize(inputBuffer);
+			protocol->onUnserialize(inputBuffer);
 		}
 		else if (cnt == 0)
 		{
@@ -218,7 +218,7 @@ namespace network
 		}
 		auto protocol = con->getProtocol();
 		auto buffer = StackBuffer<2048>();
-		protocol->onUnserialize(event, &buffer);
+		protocol->onSerialize(event, &buffer);
 		auto size = int32(buffer.size());
 		if (size == 0)
 		{
