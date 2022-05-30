@@ -12,11 +12,14 @@ namespace engine
 		return network::IOProtocolPtr();
 	}
 
-	void InnerProtocol::onSerialize(network::IStream* buffer)
+	void InnerProtocol::onUnserialize(network::IStream* buffer)
 	{
+
 	}
 
-	void InnerProtocol::onUnserialize(network::IOEvent* event, network::IBuffer* buffer)
+	void InnerProtocol::onSerialize(network::IOEvent* event, network::IBuffer* buffer)
 	{
+
 	}
+	
 }
