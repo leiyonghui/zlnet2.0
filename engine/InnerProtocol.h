@@ -10,9 +10,9 @@ namespace engine
 
 		virtual network::IOProtocolPtr create() const override;
 
-		virtual void onSerialize(network::IStream* buffer) override;
+		virtual void onUnserialize(network::IStream* buffer) override;
 
-		virtual void onUnserialize(network::IOEvent* event, network::IBuffer* buffer) override;
+		virtual void onSerialize(network::IOEvent* event, network::IBuffer* buffer) override;
 	};
 	USING_SHARED_PTR(InnerProtocol);
 }
