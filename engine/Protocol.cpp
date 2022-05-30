@@ -34,7 +34,7 @@ namespace engine
 
 	void Protocol::onListen(bool success)
 	{
-		IONotify* packet = new IONotify(PacketAccept, SHARED_THIS(Protocol), nullptr, success);
+		IONotify* packet = new IONotify(PacketListen, SHARED_THIS(Protocol), nullptr, success);
 		dispatchPacket(packet);
 	}
 

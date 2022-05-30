@@ -5,8 +5,9 @@
 #include "network/Common.h"
 #include <iostream>
 #include "network/Address.h"
+#include "network/Network.h"
 #include "engine/IOEngine.h"
-
+#include "engine/InnerProtocol.h"
 using namespace network;
 using namespace std;
 using namespace engine;
@@ -18,7 +19,43 @@ using namespace engine;
 class TestNet : public IOEngine
 {
 public:
-	TestNet(CNetwork* net) : IOEngine(net){}
+	TestNet(CNetwork* net) : IOEngine(net),_isServer(false){}
+
+	bool _isServer;
+
+	void onInit()
+	{
+		IOEngine::onInit();
+		core_log_trace("init");
+	}
+
+	void onLoop()
+	{
+
+		auto uid = 0;
+		if (_isServer)
+		{
+			auto protocol = std::make_shared<InnerProtocol>(EPROTO_TCP);
+			uid = listen(9802, protocol);
+		}
+		else
+		{
+			auto protocol = std::make_shared<InnerProtocol>(EPROTO_TCP);
+			uid = connect("127.0.0.1", 9802, protocol);
+		}
+
+		core_log_trace("onloop", uid);
+
+		IOEngine::onLoop();
+
+
+	}
+
+	void onQuit()
+	{
+		core_log_trace("quit");
+	}
+
 
 	void onListen(uint32 uid, bool success) override
 	{
@@ -55,23 +92,21 @@ public:
 
 int main(int argc, char** argv)
 {
-	/*int32 type;
+	int32 type;
 	cin >> type;
 	if (type == 1)
 	{
-		CAddress addr("127.0.0.1", 9802);
-		CNetWork network;
-		network.createTcpListener(addr);
-		network.start();
+		CNetwork net;
+		TestNet engine(&net);
+		engine._isServer = true;
+		engine.run();
 	}
 	else
 	{
-		CAddress addr("127.0.0.1", 9802);
-		CNetWork network;
-		network.createTcpConnector(addr);
-		network.start();
-	}*/
-
+		CNetwork net;
+		TestNet engine(&net);
+		engine.run();
+	}
 	//core_log_trace("test", addr.toString());
 	return 0;
 }

@@ -12,7 +12,7 @@ namespace engine
 		Engine();
 		virtual~Engine();
 
-		void run();
+		virtual void run();
 
 		void bindMsgdispatcher(const std::function<void(Packet*)>& func);
 
@@ -29,8 +29,7 @@ namespace engine
 
 		virtual void onTimer1000ms();
 
-	private:
-		virtual void loop();
+		virtual void onLoop();
 
 	protected:
 		bool _runing;

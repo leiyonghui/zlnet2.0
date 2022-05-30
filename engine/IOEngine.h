@@ -13,6 +13,8 @@ namespace engine
 
 		ProtocolPtr getProtocol(uint32 uid);
 
+		void run() override;
+
 		uint32 listen(uint16 port, const ProtocolPtr& protocol);
 
 		uint32 connect(const std::string& ip, uint16 port, const ProtocolPtr& protocol);
@@ -22,8 +24,11 @@ namespace engine
 		void dispatchPacket(class IOPacket* packet);
 
 		void dispactchCallback(IOPacket* packet);
+
 	protected:
 		void dispatchIOPacket(Packet* packet);
+
+		void onInit();
 
 		virtual void onListen(uint32 uid, bool success);
 

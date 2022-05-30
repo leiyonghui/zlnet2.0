@@ -2,12 +2,13 @@
 
 namespace engine
 {
-	Engine::Engine():_runing(false), _lastClock1000ms(0)
+	Engine::Engine():_runing(false), _lastClock1000ms(0), _msgqueue(new MsgQueue<Packet*>())
 	{
 	}
 
 	Engine::~Engine()
 	{
+		delete _msgqueue;
 	}
 
 	void Engine::run()
@@ -16,7 +17,7 @@ namespace engine
 
 		onInit();
 
-		loop();
+		onLoop();
 
 		onQuit();
 	}
@@ -33,6 +34,7 @@ namespace engine
 
 	void Engine::onInit()
 	{
+
 	}
 
 	void Engine::onQuit()
@@ -71,7 +73,7 @@ namespace engine
 	{
 	}
 
-	void Engine::loop()
+	void Engine::onLoop()
 	{
 		while (_runing)
 		{

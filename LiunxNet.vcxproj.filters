@@ -180,6 +180,15 @@
     <ClInclude Include="engine\NetEngine.h">
       <Filter>engine</Filter>
     </ClInclude>
+    <ClInclude Include="engine\InnerProtocol.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="core\core\SkipList.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="network\EventMsgs.h">
+      <Filter>net</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="network\Address.cpp">
@@ -240,6 +249,9 @@
       <Filter>engine</Filter>
     </ClCompile>
     <ClCompile Include="engine\NetEngine.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\InnerProtocol.cpp">
       <Filter>engine</Filter>
     </ClCompile>
   </ItemGroup>

@@ -98,6 +98,7 @@
     <ClInclude Include="core\core\ObjectPools.h" />
     <ClInclude Include="core\core\Queue.h" />
     <ClInclude Include="core\core\Singleton.h" />
+    <ClInclude Include="core\core\SkipList.h" />
     <ClInclude Include="core\core\TimeHelp.h" />
     <ClInclude Include="core\core\Timers.h" />
     <ClInclude Include="core\core\TimerSet.h" />
@@ -105,6 +106,7 @@
     <ClInclude Include="engine\Configs.h" />
     <ClInclude Include="engine\Engine.h" />
     <ClInclude Include="engine\IMessage.h" />
+    <ClInclude Include="engine\InnerProtocol.h" />
     <ClInclude Include="engine\IOEngine.h" />
     <ClInclude Include="engine\IONotify.h" />
     <ClInclude Include="engine\IOPacket.h" />
@@ -119,6 +121,7 @@
     <ClInclude Include="network\Configs.h" />
     <ClInclude Include="network\Endpoint.h" />
     <ClInclude Include="network\EPoller.h" />
+    <ClInclude Include="network\EventMsgs.h" />
     <ClInclude Include="network\IBuffer.h" />
     <ClInclude Include="network\IOEvent.h" />
     <ClInclude Include="network\IOEvents.h" />
@@ -137,6 +140,7 @@
     <ClCompile Include="core\core\TimerSet.cpp" />
     <ClCompile Include="core\core\TimerWheel.cpp" />
     <ClCompile Include="engine\Engine.cpp" />
+    <ClCompile Include="engine\InnerProtocol.cpp" />
     <ClCompile Include="engine\IOEngine.cpp" />
     <ClCompile Include="engine\NetEngine.cpp" />
     <ClCompile Include="engine\Protocol.cpp" />
@@ -157,7 +161,11 @@
       <AdditionalIncludeDirectories>.\core\;.\</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>__linux;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <CppLanguageStandard>c++17</CppLanguageStandard>
+      <AdditionalOptions>-pthread</AdditionalOptions>
     </ClCompile>
+    <Link>
+      <AdditionalOptions>-pthread</AdditionalOptions>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>

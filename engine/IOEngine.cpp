@@ -2,12 +2,13 @@
 #include "IOEngine.h"
 #include "IONotify.h"
 #include "IOPacket.h"
+#include <thread>
 
 namespace engine
 {
-	IOEngine::IOEngine(network::CNetwork* network):_network(network)
+	IOEngine::IOEngine(network::CNetwork* network): Engine(), _network(network)
 	{
-		bindMsgdispatcher(std::bind(&IOEngine::dispatchIOPacket, this, _1));
+		
 	}
 
 	IOEngine::~IOEngine()
@@ -23,6 +24,18 @@ namespace engine
 			return nullptr;
 		}
 		return iter->second;
+	}
+
+	void IOEngine::run()
+	{
+		std::thread ([this]() {
+
+			core_log_trace("start net:", std::this_thread::get_id());
+			_network->start();
+
+		}).detach();
+
+		Engine::run();
 	}
 
 	uint32 IOEngine::listen(uint16 port, const ProtocolPtr& protocol)
@@ -137,6 +150,15 @@ namespace engine
 			assert(false);
 			break;
 		}
+	}
+
+	void IOEngine::onInit()
+	{
+		Engine::onInit();
+
+		bindMsgdispatcher([this](Packet* packet) {
+			dispatchIOPacket(packet);
+		});
 	}
 
 	void IOEngine::onListen(uint32 uid, bool success)

@@ -6,13 +6,16 @@ namespace engine
 	{
 
 	}
+
 	network::IOProtocolPtr InnerProtocol::create() const
 	{
 		return network::IOProtocolPtr();
 	}
+
 	void InnerProtocol::onSerialize(network::IStream* buffer)
 	{
 	}
+
 	void InnerProtocol::onUnserialize(network::IOEvent* event, network::IBuffer* buffer)
 	{
 	}
