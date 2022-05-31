@@ -9,7 +9,9 @@ namespace engine
 
 	network::IOProtocolPtr InnerProtocol::create() const
 	{
-		return network::IOProtocolPtr();
+		auto protocol = std::make_shared<InnerProtocol>(network::EPROTO_TCP);
+		protocol->setQueue(_msgqueue);
+		return protocol;
 	}
 
 	void InnerProtocol::onUnserialize(network::IStream* buffer)

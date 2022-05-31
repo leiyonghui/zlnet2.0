@@ -177,7 +177,7 @@ namespace network
 			connect->setWriteCallback(std::bind(&CNetwork::handleTcpConWrite, this, _1));
 			_poller->registerReadHandler(object);
 			auto protocol = connect->getProtocol();
-			protocol->onConnect(false);
+			protocol->onConnect(true);
 		}
 
 	}
@@ -295,13 +295,14 @@ namespace network
 
 	void CNetwork::tcpConnectError(const TcpConnectorPtr& connect)
 	{
+		CAddress address = connect->getEndPoint()->getAddress();
 		_poller->deregisterObject(connect);
 		connect->setState(DISCONNECTED);
 		connect->setEndPoint(nullptr);
 		//removeObject(connect->getKey());
 		auto protocol = connect->getProtocol();
 		protocol->onConnect(false);
-		_timerHandler->addTimer(100ms * 2, 0ms, [this, connect]() {
+		_timerHandler->addTimer(100ms * 2, 0ms, [this, connect, address]() {
 			auto object = getObject(connect->getKey());
 			if (object)
 			{
@@ -309,7 +310,7 @@ namespace network
 				assert(connect->getState() == DISCONNECTED);
 
 				auto socket = common::CreateSocket(EPROTO_TCP);
-				connect->setEndPoint(CObjectPool<CEndPoint>::Instance()->createUnique(socket, connect->getEndPoint()->getAddress()));
+				connect->setEndPoint(CObjectPool<CEndPoint>::Instance()->createUnique(socket, address));
 				connect->setState(CONNECTING);
 				auto ret = connect->getEndPoint()->connect();
 				_poller->registerWriteHandler(connect);

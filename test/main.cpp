@@ -51,6 +51,16 @@ public:
 
 	}
 
+	void onTimer1000ms()
+	{
+		static int32 i = 0;
+		if (++i % 10 == 1)
+		{
+			core::CObjectPoolMonitor::showInfo();
+		}
+
+	}
+
 	void onQuit()
 	{
 		core_log_trace("quit");
