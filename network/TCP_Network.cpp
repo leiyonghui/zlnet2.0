@@ -158,8 +158,8 @@ namespace network
 		auto state = connect->getState();
 		assert(state == CONNECTING);
 		auto endPont = connect->getEndPoint();
-		auto err = endPont->getSocketError();
-		if (err)
+		auto err = endPont->getSocketError(); //geterror会把error清理
+		if (err)//多余
 		{
 			core_log_warning("connect error", object->getSocket(), strerror(err));
 			tcpConnectError(connect);
