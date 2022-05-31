@@ -39,6 +39,7 @@ namespace network
 		con->setErrorCallback(std::bind(&CNetwork::handleTcpConError, this, _1));
 		con->setReadCallback(std::bind(&CNetwork::handleTcpConRead, this, _1));
 		con->setWriteCallback(std::bind(&CNetwork::handleTcpConWrite, this, _1));
+		con->setState(CONNECTED);
 		addObject(con);
 		_poller->registerReadHandler(con);
 		prototcol->onAccept(listener->getProtocol());
