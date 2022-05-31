@@ -205,6 +205,7 @@ namespace network
 		}
 		_poller->registerReadHandler(listener);
 		protocol->onListen(true);
+		core_log_trace("listen", port);
 	}
 
 	void CNetwork::tcpSend(const IOObjectPtr& object, IOEvent* event)
@@ -256,7 +257,9 @@ namespace network
 		connect->setReadCallback(std::bind(&CNetwork::handleTcpConnectWrite, this, _1));
 		connect->setState(CONNECTING);
 		_poller->registerWriteHandler(connect);
-		connect->getEndPoint()->connect();
+		auto ret = connect->getEndPoint()->connect();
+		auto er = connect->getEndPoint()->getSocketError();;
+		core_log_trace("connect", ret, strerror(ret), er, strerror(er));
 	}
 
 	void CNetwork::tcpConnectError(const TcpConnectorPtr& connect)

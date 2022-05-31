@@ -121,7 +121,6 @@
     <ClInclude Include="network\Configs.h" />
     <ClInclude Include="network\Endpoint.h" />
     <ClInclude Include="network\EPoller.h" />
-    <ClInclude Include="network\EventMsgs.h" />
     <ClInclude Include="network\IBuffer.h" />
     <ClInclude Include="network\IOEvent.h" />
     <ClInclude Include="network\IOEvents.h" />

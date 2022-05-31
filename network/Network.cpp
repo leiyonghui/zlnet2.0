@@ -25,8 +25,10 @@ namespace network
 	void CNetwork::addObject(const IOObjectPtr& object)
 	{
 		auto key = object->getKey();
-		assert(_objects[key] == nullptr);
-		_objects[key] = object;
+		auto index = _keyPool.index(key);
+		assert(_objects[index] == nullptr);
+		_objects[index] = object;
+		core_log_info("add object", object->getKey());
 	}
 
 	void CNetwork::removeObject(uint32 key)
@@ -36,6 +38,7 @@ namespace network
 		assert(object);
 		assert(object->getKey() == key);
 		object = nullptr;
+		core_log_info("remove object", key);
 	}
 
 	IOObjectPtr CNetwork::getObject(uint32 key) const

@@ -59,6 +59,7 @@ namespace network
 #else // __liunx
 
 #endif
+		core_log_info("close socket", _socket);
 	}
 
 #ifdef __linux

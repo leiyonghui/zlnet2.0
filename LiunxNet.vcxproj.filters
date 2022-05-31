@@ -186,9 +186,6 @@
     <ClInclude Include="core\core\SkipList.h">
       <Filter>core</Filter>
     </ClInclude>
-    <ClInclude Include="network\EventMsgs.h">
-      <Filter>net</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="network\Address.cpp">
