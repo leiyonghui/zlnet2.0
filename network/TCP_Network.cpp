@@ -40,7 +40,7 @@ namespace network
 		con->setReadCallback(std::bind(&CNetwork::handleTcpConRead, this, _1));
 		con->setWriteCallback(std::bind(&CNetwork::handleTcpConWrite, this, _1));
 		addObject(con);
-		_poller->registerReadHandler(object);
+		_poller->registerReadHandler(con);
 		prototcol->onAccept(listener->getProtocol());
 	}
 
@@ -312,6 +312,7 @@ namespace network
 				auto socket = common::CreateSocket(EPROTO_TCP);
 				connect->setEndPoint(CObjectPool<CEndPoint>::Instance()->createUnique(socket, address));
 				connect->setState(CONNECTING);
+				connect->getEndPoint()->setNonblock();
 				auto ret = connect->getEndPoint()->connect();
 				_poller->registerWriteHandler(connect);
 
