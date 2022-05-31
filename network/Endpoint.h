@@ -40,6 +40,8 @@ namespace network
 
 		void setReuseAddr(bool on = true);
 
+		void setReusePort(bool on = true);
+
 		int32 bind();
 
 		int32 listen();
@@ -59,6 +61,12 @@ namespace network
 		int32 shutdownWrite();
 
 		int32 getSocketError();
+
+		int32 getRemoteName(CAddress& address);
+
+		int32 getLocalName(CAddress& address);
+
+		bool isSelfConnect();
 	private:
 		SOCKET _socket;
 		CAddress _address;

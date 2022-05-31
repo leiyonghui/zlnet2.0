@@ -13,27 +13,13 @@ namespace network
 			_network->pushKey(_key);
 	}
 
-	void IOProtocol::setLoclAddress(const CAddress* address)
+	void IOProtocol::setLoclAddress(const CAddress& address)
 	{
-		if (address)
-		{
-			_localAddress = *address;
-		}
-		else
-		{
-			_localAddress = CAddress();
-		}
+		_localAddress = address;
 	}
 
-	void IOProtocol::setRemoteAddress(const CAddress* address)
+	void IOProtocol::setRemoteAddress(const CAddress& address)
 	{
-		if (address)
-		{
-			_remoteAddress = *address;
-		}
-		else
-		{
-			_remoteAddress = CAddress();
-		}
+		_remoteAddress = address;
 	}
 }

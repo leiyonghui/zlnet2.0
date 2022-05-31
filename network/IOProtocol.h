@@ -21,8 +21,8 @@ namespace network
 		uint32 getKey() const { return _key; }
 		CAddress getLocalAddress() const { return _localAddress; }
 		CAddress getRemoateAddress() const { return _remoteAddress; }
-		void setLoclAddress(const CAddress* address);
-		void setRemoteAddress(const CAddress* address);
+		void setLoclAddress(const CAddress& address);
+		void setRemoteAddress(const CAddress& address);
 	protected:
 		virtual IOProtocolPtr create() const = 0;
 
@@ -34,11 +34,11 @@ namespace network
 
 		virtual void onUnlisten() = 0;
 
-		virtual void onAccept(IOProtocolPtr&) = 0;
+		virtual void onAccept(const IOProtocolPtr&) = 0;
 
 		virtual void onClose() = 0;
 
-		virtual void onConnect(bool dis) = 0;
+		virtual void onConnect(bool success) = 0;
 
 		virtual void onDisConnect() = 0;
 	protected:

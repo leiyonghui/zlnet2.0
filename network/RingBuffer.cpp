@@ -117,32 +117,30 @@ namespace network
 
 	SBufferVec* CRingBuffer::getWriteableVec()
 	{
-		if (_capacity == _size)
+		_writerv[0].clear();
+		_writerv[1].clear();
+		if (_size == _capacity)
 		{
-			_writerv[0].clear();
-			_writerv[1].clear();
+			return _writerv;
+		}
+		if (_end >= _front && _size)
+		{
+#ifdef _DEBUG
+			assert(_size == 0 ? _end == _front : true);
+#endif // _DEBUG
+			uint32 len1 = _capacity - _end;
+			_writerv[0].buff = len1 > 0 ? _buff + _end : nullptr;
+			_writerv[0].len = len1;
+			uint32 len2 = _front - 1;
+			_writerv[1].buff = len1 > 0 ? _buff : nullptr;
+			_writerv[1].len = len2;
 		}
 		else
 		{
-			if (_end >= _front)
-			{
-#ifdef _DEBUG
-				assert(_size == 0 ? _end == _front : true);
-#endif // _DEBUG
-				uint32 len1 = _capacity - _end;
-				_writerv[0].buff = len1 > 0 ? _buff + _end : nullptr;
-				_writerv[0].len = len1;
-				uint32 len2 = _front - 1;
-				_writerv[1].buff = len1 > 0 ? _buff : nullptr;
-				_writerv[1].len = len2;
-			}
-			else
-			{
-				uint32 len1 = _front - _end;
-				_writerv[0].buff = _buff + _end;
-				_writerv[0].len = len1;
-				_writerv[1].clear();
-			}
+			uint32 len1 = _front - _end;
+			_writerv[0].buff = _buff + _end;
+			_writerv[0].len = len1;
+			_writerv[1].clear();
 		}
 		return _writerv;
 	}
@@ -151,6 +149,10 @@ namespace network
 	{
 		_readerv[0].clear();
 		_readerv[1].clear();
+		if (_size == 0)
+		{
+			return _readerv;
+		}
 		if (_end > _front)
 		{
 			_readerv[0].buff = _buff + _front;

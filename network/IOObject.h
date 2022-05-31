@@ -23,9 +23,11 @@ namespace network
 
 		int32 getEvents() const { return _events; }
 		void updateEvents(int32 events) { _events = events; }
+		bool hasReading() const { return READ_EVENT & _events; }
+		bool hasWriting() const { return WRITE_EVENT & _events; }
 		void setErrorCallback(ErrorCallback&& callback) { _errorCallback = std::move(callback); }
 		void setReadCallback(ReadCallback&& callback) { _readCalllback = std::move(callback); }
-		void setWriteCallbac(WriteCallback&& callback) { _writeCallback = std::move(callback); }
+		void setWriteCallback(WriteCallback&& callback) { _writeCallback = std::move(callback); }
 
 		const ErrorCallback& getErrorCallback() const { return _errorCallback; }
 		const ReadCallback& getReadCallback() const { return _readCalllback; }

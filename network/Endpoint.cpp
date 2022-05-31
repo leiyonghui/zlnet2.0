@@ -110,8 +110,13 @@ namespace network
 	void CEndPoint::setReuseAddr(bool on)
 	{
 		int32 optval = on ? 1 : 0;
-		::setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR,
-			&optval, static_cast<socklen_t>(sizeof optval));
+		::setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &optval, static_cast<socklen_t>(sizeof optval));
+	}
+
+	void CEndPoint::setReusePort(bool on)
+	{
+		int32 optval = on ? 1 : 0;
+		::setsockopt(_socket, SOL_SOCKET, SO_REUSEPORT, &optval, static_cast<socklen_t>(sizeof optval));
 	}
 
 	CEndPointUnPtr CEndPoint::accept()
@@ -130,7 +135,7 @@ namespace network
 
 	int32 CEndPoint::read(char* buff, int32 len)
 	{
-		uint32 count = (uint32)::read(_socket, buff, (size_t)len);
+		int32 count = (int32)::read(_socket, buff, (size_t)len);
 		if (count < 0)
 		{
 			core_log_warning("SocketOpt::read", errno, strerror(errno));
@@ -150,7 +155,7 @@ namespace network
 
 	int32 CEndPoint::readv(const iovec* iov, int32 iovcnt)
 	{
-		uint32 count = (uint32)::readv(_socket, iov, iovcnt);
+		int32 count = (int32)::readv(_socket, iov, iovcnt);
 		if (count < 0)
 		{
 			core_log_warning("SocketOpt::readv", errno, strerror(errno));
@@ -160,7 +165,7 @@ namespace network
 
 	int32 CEndPoint::writev(const iovec* iov, int32 iovcnt)
 	{
-		uint32 count = (uint32)::writev(_socket, iov, iovcnt);
+		int32 count = (int32)::writev(_socket, iov, iovcnt);
 		if (count < 0)
 		{
 			core_log_warning("SocketOpt::writev", errno, strerror(errno));
@@ -190,6 +195,46 @@ namespace network
 		{
 			return optval;
 		}
+	}
+
+	int32 CEndPoint::getRemoteName(CAddress& address)
+	{
+		struct sockaddr_in remoteaddr;
+		socklen_t addrlen = static_cast<socklen_t>(sizeof remoteaddr);
+		if (::getpeername(_socket, (struct sockaddr*)&remoteaddr, &addrlen) < 0)
+		{
+			core_log_error("get remote name");
+			return -1;
+		}
+		address = CAddress(remoteaddr);
+		return 0;
+	}
+
+	int32 CEndPoint::getLocalName(CAddress& address)
+	{
+		struct sockaddr_in localname;
+		socklen_t addrlen = static_cast<socklen_t>(sizeof localname);
+		if (::getsockname(_socket, (struct sockaddr*)&localname, &addrlen) < 0)
+		{
+			core_log_error("get local name");
+			return -1;
+		}
+		address = CAddress(localname);
+		return 0;
+	}
+
+	bool CEndPoint::isSelfConnect()
+	{
+		CAddress localname; 
+		getLocalName(localname);
+		CAddress remotename;
+		if (getRemoteName(remotename) < 0)
+		{
+			auto er = getSocketError();
+			core_log_error("get remote name", er, strerror(er));
+			assert(false);
+		}
+		return false;
 	}
 
 #else // __liunx

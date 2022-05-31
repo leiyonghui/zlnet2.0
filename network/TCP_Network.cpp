@@ -8,10 +8,12 @@ namespace network
 	{
 		auto listener = std::dynamic_pointer_cast<TcpListener>(object);
 		assert(listener);
-		auto protocol = listener->getProtocol();
 		auto endPoint = listener->accept();
+		core_log_trace("io accept", endPoint->getAddress().toString());
 		if (!endPoint) 
 		{
+			core_log_error("unaccept", listener->getKey());
+			removeTcpListen(listener);
 			return;
 		}
 		auto key = popKey();
@@ -20,16 +22,26 @@ namespace network
 			core_log_error("not key accept");
 			return;
 		}
-		auto conPrototcol = protocol->create();
-		conPrototcol->setKey(key);
-		conPrototcol->setType(IO_OBJECT_CONNECTION);
-		auto con = CObjectPool<Connection>::Instance()->create(conPrototcol, std::move(endPoint));
+		auto prototcol = listener->getProtocol()->create();
+		if (!prototcol)
+		{
+			core_log_error("unexpect create protocol");
+			return;
+		}
+		prototcol->setKey(key);
+		prototcol->setType(IO_OBJECT_CONNECTION);
+		CAddress localname;
+		endPoint->getLocalName(localname);
+		prototcol->setLoclAddress(localname);
+		CAddress remotename;
+		endPoint->getRemoteName(remotename);
+		auto con = CObjectPool<Connection>::Instance()->create(prototcol, std::move(endPoint));
 		con->setErrorCallback(std::bind(&CNetwork::handleTcpConError, this, _1));
 		con->setReadCallback(std::bind(&CNetwork::handleTcpConRead, this, _1));
-		con->setWriteCallbac(std::bind(&CNetwork::handleTcpConWrite, this, _1));
+		con->setWriteCallback(std::bind(&CNetwork::handleTcpConWrite, this, _1));
 		addObject(con);
 		_poller->registerReadHandler(object);
-		protocol->onAccept(conPrototcol);
+		prototcol->onAccept(listener->getProtocol());
 	}
 
 	void CNetwork::handleTcpConError(const IOObjectPtr& object)
@@ -54,7 +66,7 @@ namespace network
 		int32 writeable = writev[0].len + writev[1].len;
 		constexpr int32 extralen = 65536;
 		char extrabuf[extralen];
-		struct iovec vec[2];
+		struct iovec vec[3];
 		vec[0].iov_base = writev[0].buff;
 		vec[0].iov_len = writev[0].len;
 		vec[1].iov_base = writev[1].buff;
@@ -86,7 +98,8 @@ namespace network
 		}
 		else
 		{
-			core_log_error("tcp connection read error", endPoint->getSocketError());
+			auto er = endPoint->getSocketError();
+			core_log_error("tcp connection read error", object->getKey(), er, strerror(er));
 		}
 	}
 
@@ -133,7 +146,8 @@ namespace network
 		}
 		else
 		{
-			core_log_error("write con", con->getKey(), count);
+			auto er = endPoint->getSocketError();
+			core_log_error("write con", con->getKey(), count, er, strerror(er));
 		}
 	}
 
@@ -143,24 +157,24 @@ namespace network
 		auto state = connect->getState();
 		assert(state == CONNECTING);
 		auto endPont = connect->getEndPoint();
-		_poller->deregisterObject(object);
 		auto err = endPont->getSocketError();
 		if (err)
 		{
 			core_log_warning("connect error", object->getSocket(), strerror(err));
 			tcpConnectError(connect);
 		}
-		else if(common::isSelfConnect(endPont->getSocket()))
+		else if(endPont->isSelfConnect())
 		{
 			core_log_error("connect self connect", object->getSocket());
 			tcpConnectError(connect);
 		}
 		else
 		{
+			_poller->deregisterObject(object);
 			connect->setState(CONNECTED);
 			connect->setErrorCallback(std::bind(&CNetwork::handleTcpConError, this, _1));
 			connect->setReadCallback(std::bind(&CNetwork::handleTcpConRead, this, _1));
-			connect->setWriteCallbac(std::bind(&CNetwork::handleTcpConWrite, this, _1));
+			connect->setWriteCallback(std::bind(&CNetwork::handleTcpConWrite, this, _1));
 			_poller->registerReadHandler(object);
 			auto protocol = connect->getProtocol();
 			protocol->onConnect(false);
@@ -171,6 +185,14 @@ namespace network
 	void CNetwork::handleTcpConnectError(const IOObjectPtr& object)
 	{
 		tcpConnectError(std::dynamic_pointer_cast<TcpConnector>(object));
+	}
+
+	void CNetwork::removeTcpListen(const TcpListenerPtr& listener)
+	{
+		auto protocol = listener->getProtocol();
+		_poller->deregisterObject(listener);
+		removeObject(listener->getKey());
+		protocol->onUnlisten();
 	}
 
 	void CNetwork::removeTcpCon(const ConnectionPtr& con)
@@ -193,19 +215,28 @@ namespace network
 	{
 		auto socket = common::CreateSocket(EPROTO_TCP);
 		auto address = CAddress(INADDR_ANY, port);
-		auto endPoint = CObjectPool<CEndPoint>::Instance()->createUnique(socket, address);
-		auto listener = CObjectPool<TcpListener>::Instance()->create(protocol, std::move(endPoint));
+		auto listener = CObjectPool<TcpListener>::Instance()->create(protocol, CObjectPool<CEndPoint>::Instance()->createUnique(socket, address));
 		listener->setErrorCallback(std::bind(&CNetwork::defaultErrorHandle, this, _1));
 		listener->setReadCallback(std::bind(&CNetwork::handleTcpAccept, this, _1));
-		addObject(listener);
-		if (!listener->listen())
+		protocol->setLoclAddress(address);
+		auto endPoint = listener->getEndPoint();
+		endPoint->setReuseAddr();
+		endPoint->setReusePort();
+		if (endPoint->bind() != 0)
 		{
+			core_log_error("listen bind", address.toString());
 			protocol->onListen(false);
 			return;
 		}
+		if (endPoint->listen() != 0)
+		{
+			protocol->onListen(false);
+			core_log_error("listen", address.toString());
+			return;
+		}
 		_poller->registerReadHandler(listener);
+		addObject(listener);
 		protocol->onListen(true);
-		core_log_trace("listen", port);
 	}
 
 	void CNetwork::tcpSend(const IOObjectPtr& object, IOEvent* event)
@@ -252,22 +283,44 @@ namespace network
 		auto address = CAddress(ip, port);
 		auto endPoint = CObjectPool<CEndPoint>::Instance()->createUnique(socket, address);
 		auto connect = CObjectPool<TcpConnector>::Instance()->create(protocol, std::move(endPoint));
-		addObject(connect);
 		connect->setErrorCallback(std::bind(&CNetwork::handleTcpConnectError, this, _1));
-		connect->setReadCallback(std::bind(&CNetwork::handleTcpConnectWrite, this, _1));
+		connect->setWriteCallback(std::bind(&CNetwork::handleTcpConnectWrite, this, _1));
+		addObject(connect);
+		auto ret = connect->getEndPoint()->connect();
+		core_log_trace("connect", ret, strerror(ret));
+
 		connect->setState(CONNECTING);
 		_poller->registerWriteHandler(connect);
-		auto ret = connect->getEndPoint()->connect();
-		auto er = connect->getEndPoint()->getSocketError();;
-		core_log_trace("connect", ret, strerror(ret), er, strerror(er));
 	}
 
 	void CNetwork::tcpConnectError(const TcpConnectorPtr& connect)
 	{
+		_poller->deregisterObject(connect);
 		connect->setState(DISCONNECTED);
-		removeObject(connect->getKey());
+		connect->setEndPoint(nullptr);
+		//removeObject(connect->getKey());
 		auto protocol = connect->getProtocol();
-		protocol->onConnect(true);
+		protocol->onConnect(false);
+		_timerHandler->addTimer(100ms * 2, 0ms, [this, connect]() {
+			auto object = getObject(connect->getKey());
+			if (object)
+			{
+				core_log_trace("reconnect", connect->getKey(), connect->getState());
+				assert(connect->getState() == DISCONNECTED);
+
+				auto socket = common::CreateSocket(EPROTO_TCP);
+				connect->setEndPoint(CObjectPool<CEndPoint>::Instance()->createUnique(socket, connect->getEndPoint()->getAddress()));
+				connect->setState(CONNECTING);
+				auto ret = connect->getEndPoint()->connect();
+				_poller->registerWriteHandler(connect);
+
+				core_log_trace("reconnect", ret, strerror(ret));
+			}
+			else
+			{
+				core_log_warning("unknow", connect->getKey());
+			}
+		});
 	}
 
 	void CNetwork::tcpClose(uint32 key, uint32 second)
@@ -299,20 +352,21 @@ namespace network
 		auto type = con->getType();
 		if (type == IO_OBJECT_CONNECTOR)
 		{
-			if (state == CONNECTING)
+			if (state == CONNECTED)
 			{
-				protocol->onConnect(true);
+				protocol->onDisConnect();
 			}
 			else
 			{
-				protocol->onDisConnect();
+				core_log_trace("close connector state", con->getKey(), state);
+				//protocol->onConnect(false);
 			}
 		}
 		else
 		{
 			protocol->onClose();
 		}
-		if (second > 0)
+		if ((state == CONNECTED) && second > 0)
 		{
 			con->setState(DISCONNECTING);
 			_timerHandler->addTimer(1ms * second, 0ms, [this, con]() {

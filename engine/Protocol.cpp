@@ -44,7 +44,7 @@ namespace engine
 		dispatchPacket(packet);
 	}
 
-	void Protocol::onAccept(network::IOProtocolPtr &fromProtocol)
+	void Protocol::onAccept(const network::IOProtocolPtr &fromProtocol)
 	{
 		IONotify* packet = new IONotify(PacketAccept, SHARED_THIS(Protocol), std::dynamic_pointer_cast<Protocol>(fromProtocol), true);
 		dispatchPacket(packet);
@@ -56,9 +56,9 @@ namespace engine
 		dispatchPacket(packet);
 	}
 
-	void Protocol::onConnect(bool dis)
+	void Protocol::onConnect(bool success)
 	{
-		IONotify* packet = new IONotify(PacketConnect, SHARED_THIS(Protocol), nullptr, !dis);
+		IONotify* packet = new IONotify(PacketConnect, SHARED_THIS(Protocol), nullptr, success);
 		dispatchPacket(packet);
 	}
 

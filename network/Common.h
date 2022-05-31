@@ -151,11 +151,5 @@ namespace network
 			c._long = networkToHost64(c._long);
 			return c._double;
 		}
-
-		inline bool isSelfConnect(SOCKET socket)
-		{
-			//to do
-			return false;
-		}
 	}
 }

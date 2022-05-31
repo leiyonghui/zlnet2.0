@@ -31,7 +31,7 @@ namespace network
 
 		void clear() override;
 
-        bool empty() override { return _size > 0; }
+        bool empty() override { return _size == 0; }
 
         uint32 writableBytes() override { return _capacity - _size; };
 

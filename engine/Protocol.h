@@ -27,7 +27,7 @@ namespace engine
 
 		virtual void onUnlisten() override;
 
-		virtual void onAccept(network::IOProtocolPtr&) override;
+		virtual void onAccept(const network::IOProtocolPtr&) override;
 
 		virtual void onClose() override;
 

@@ -59,13 +59,13 @@ public:
 
 	void onListen(uint32 uid, bool success) override
 	{
-		core_log_trace("list ", uid, success);
+		core_log_trace("onListen ", uid, success);
 	}
 
 
 	void onUnlisten(uint32 uid) override
 	{
-		core_log_trace("unlist ", uid);
+		core_log_trace("onUnlisten ", uid);
 	}
 
 	virtual void onAccept(uint32 uid, uint32 fromUid)

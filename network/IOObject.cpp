@@ -13,6 +13,7 @@ namespace network
 		_key = protocl->getKey();
 		_events = 0;
 		_endpoint = std::move(endPoint);
+		_endpoint->setNonblock();
 	}
 
 	void IOObject::onRecycle()

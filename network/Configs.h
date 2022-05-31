@@ -61,6 +61,13 @@ namespace network
 		IO_EVENT_CLOSE,
 	};
 
+	enum EIOEvent
+	{
+		READ_EVENT = 1,
+		WRITE_EVENT = 2,
+		RDWR_EVENT = 1 | 2,
+	};
+
 #ifdef __linux
 	using SOCKET = int;
 #define INVALID_SOCKET -1

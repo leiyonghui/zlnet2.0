@@ -148,6 +148,7 @@
     <ClCompile Include="network\EPoller.cpp" />
     <ClCompile Include="network\IOObject.cpp" />
     <ClCompile Include="network\IOObjects.cpp" />
+    <ClCompile Include="network\Poller.cpp" />
     <ClCompile Include="network\RingBuffer.cpp" />
     <ClCompile Include="network\TCP_IOObjects.cpp" />
     <ClCompile Include="network\IOProtocol.cpp" />

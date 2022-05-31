@@ -52,6 +52,7 @@ namespace network
 		void handleTcpConWrite(const IOObjectPtr& object);
 		void handleTcpConnectWrite(const IOObjectPtr& object);
 		void handleTcpConnectError(const IOObjectPtr& object);
+		void removeTcpListen(const TcpListenerPtr& listener);
 		void removeTcpCon(const ConnectionPtr& con);
 		void tcpListen(int16 port, const IOProtocolPtr& protocol);
 		void tcpSend(const IOObjectPtr& object, IOEvent* event);

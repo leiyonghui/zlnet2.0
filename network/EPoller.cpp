@@ -35,31 +35,6 @@ namespace network
 		delete[] _events;
 	}
 
-	void CEPoller::registerReadHandler(const IOObjectPtr& object)
-	{
-		updateObject(object, object->getEvents() & EPOLLIN);
-	}
-
-	void CEPoller::registerWriteHandler(const IOObjectPtr& object)
-	{
-		updateObject(object, object->getEvents() & EPOLLOUT);
-	}
-
-	void CEPoller::deregisterReadHandler(const IOObjectPtr& object)
-	{
-		updateObject(object, object->getEvents() ^ EPOLLIN);
-	}
-
-	void CEPoller::deregisterWriteHandler(const IOObjectPtr& object)
-	{
-		updateObject(object, object->getEvents() ^ EPOLLOUT);
-	}
-
-	void CEPoller::deregisterObject(const IOObjectPtr& object)
-	{
-		removeObject(object);
-	}
-
 	void CEPoller::poll(const std::vector<IOObjectPtr>& objects, int32 millisecond)
 	{
 		int32 cnt = ::epoll_wait(_epfd, _events, MAX_OBJECT_SIZE, millisecond);
@@ -84,21 +59,17 @@ namespace network
 			}
 			else
 			{
-				if (ev & EPOLLIN & object->getEvents())
+				if ((ev & (EPOLLIN | EPOLLHUP)) && object->hasReading())
 				{
 					auto& callback = object->getReadCallback();
 					if (callback)
-					{
 						callback(object);
-					}
 				}
-				if (ev & EPOLLOUT & object->getEvents())
+				if ((ev & (EPOLLOUT | EPOLLHUP)) && object->hasWriting())
 				{
 					auto& callback = object->getWriteCallback();
 					if (callback)
-					{
 						callback(object);
-					}
 				}
 			}
 		}
@@ -106,8 +77,17 @@ namespace network
 
 	void CEPoller::updateObject(const IOObjectPtr& object, int32 events)
 	{
+		if (events == 0)
+		{
+			removeObject(object);
+			return;
+		}
 		epoll_event event;
-		event.events = events;
+		event.events = 0;
+		if (events & READ_EVENT)
+			event.events |= EPOLLIN;
+		if (events & WRITE_EVENT)
+			event.events |= EPOLLOUT;
 		event.data.u32 = object->getKey();
 		auto socket = object->getSocket();
 		if (object->getEvents())
@@ -132,11 +112,6 @@ namespace network
 
 	void CEPoller::removeObject(const IOObjectPtr& object)
 	{
-		if (object->getEvents() == 0)
-		{
-			core_log_error("remove null event", object->getKey());
-			return;
-		}
 		auto socket = object->getSocket();
 		object->updateEvents(0);
 		if (::epoll_ctl(_epfd, EPOLL_CTL_DEL, socket, NULL))
