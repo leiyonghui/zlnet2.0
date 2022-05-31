@@ -50,5 +50,6 @@ namespace network
 	void TcpConnector::setEndPoint(CEndPointUnPtr&& endPoint)
 	{
 		_endpoint = std::move(endPoint);
+		_endpoint->setNonblock();
 	}
 }
