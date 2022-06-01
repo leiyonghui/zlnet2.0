@@ -6,10 +6,10 @@
 namespace engine
 {
 	class Packet;
-	class Protocol : public network::IOProtocol
+	class Protocol : public net::IOProtocol
 	{
 	public:
-		Protocol(network::EPROTOCOL type);
+		Protocol(net::EPROTOCOL type);
 
 		bool isAvailable() const;
 
@@ -27,7 +27,7 @@ namespace engine
 
 		virtual void onUnlisten() override;
 
-		virtual void onAccept(const network::IOProtocolPtr&) override;
+		virtual void onAccept(const net::IOProtocolPtr&) override;
 
 		virtual void onClose() override;
 

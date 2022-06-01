@@ -6,7 +6,7 @@
 
 namespace engine
 {
-	IOEngine::IOEngine(network::CNetwork* network): Engine(), _network(network)
+	IOEngine::IOEngine(net::CNetwork* network): Engine(), _network(network)
 	{
 		
 	}
@@ -99,13 +99,13 @@ namespace engine
 		_network->close(uid, 2);
 		switch (protocol->getType())
 		{
-		case network::IO_OBJECT_LISTENER:
+		case net::IO_OBJECT_LISTENER:
 			onUnlisten(uid);
 			break;
-		case network::IO_OBJECT_CONNECTION:
+		case net::IO_OBJECT_CONNECTION:
 			onClose(uid);
 			break;
-		case network::IO_OBJECT_CONNECTOR:
+		case net::IO_OBJECT_CONNECTOR:
 			onDisconnect(uid);
 			break;
 		default:

@@ -4,7 +4,7 @@
 
 namespace engine
 {
-	Protocol::Protocol(network::EPROTOCOL type):network::IOProtocol(type)
+	Protocol::Protocol(net::EPROTOCOL type):net::IOProtocol(type)
 	{
 	}
 	bool Protocol::isAvailable() const
@@ -44,7 +44,7 @@ namespace engine
 		dispatchPacket(packet);
 	}
 
-	void Protocol::onAccept(const network::IOProtocolPtr &fromProtocol)
+	void Protocol::onAccept(const net::IOProtocolPtr &fromProtocol)
 	{
 		IONotify* packet = new IONotify(PacketAccept, SHARED_THIS(Protocol), std::dynamic_pointer_cast<Protocol>(fromProtocol), true);
 		dispatchPacket(packet);

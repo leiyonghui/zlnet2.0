@@ -7,7 +7,7 @@
 #include "Poller.h"
 #include "core/Queue.h"
 
-namespace network
+namespace net
 {
 	class CNetwork
 	{

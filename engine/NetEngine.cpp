@@ -2,7 +2,7 @@
 
 namespace engine
 {
-	NetEngine::NetEngine(network::CNetwork* network): IOEngine(network)
+	NetEngine::NetEngine(net::CNetwork* network): IOEngine(network)
 	{
 
 	}

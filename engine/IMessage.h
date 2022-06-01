@@ -11,9 +11,9 @@ namespace engine
 
 		//IMessage& operator = (const IMessage& o) { return *this; }
 
-		virtual void serialize(network::BufferReader& archive) = 0;
+		virtual void serialize(net::BufferReader& archive) = 0;
 
-		virtual void serialize(network::BufferWriter& archive) const = 0;
+		virtual void serialize(net::BufferWriter& archive) const = 0;
 
 		virtual int identity() const = 0;
 

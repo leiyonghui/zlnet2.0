@@ -1,7 +1,7 @@
 #pragma once
 #include "IOObjects.h"
 
-namespace network
+namespace net
 {
 	class TcpListener : public IOObject
 	{

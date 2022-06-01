@@ -5,7 +5,7 @@
 namespace engine
 {
 	using namespace core;
-	using network::EPROTOCOL;
+	using net::EPROTOCOL;
 
 	enum EPacketType
 	{

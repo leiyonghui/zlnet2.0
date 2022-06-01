@@ -2,7 +2,7 @@
 #include "Configs.h"
 #include "IStream.h"
 
-namespace network
+namespace net
 {
     class CRingBuffer : public IStream
     {

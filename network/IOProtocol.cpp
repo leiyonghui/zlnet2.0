@@ -1,7 +1,7 @@
 #include "IOProtocol.h"
 #include "Network.h"
 
-namespace network
+namespace net
 {
 	IOProtocol::IOProtocol(EPROTOCOL protocol): _protocolType(protocol), _key(0), _network(nullptr)
 	{

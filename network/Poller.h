@@ -1,7 +1,7 @@
 #pragma once
 #include "IOObject.h"
 
-namespace network
+namespace net
 {
 	class CPoller
 	{

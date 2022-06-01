@@ -1,7 +1,7 @@
 #include "RingBuffer.h"
 #include "IOObjects.h"
 
-namespace network
+namespace net
 {
 	Connection::Connection():IOObject(IO_OBJECT_CONNECTION), _inputBuffer(new CRingBuffer(1024)), _outBuffer(new CRingBuffer(1024))
 	{

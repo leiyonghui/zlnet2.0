@@ -8,7 +8,7 @@
 #include "network/Network.h"
 #include "engine/IOEngine.h"
 #include "engine/InnerProtocol.h"
-using namespace network;
+using namespace net;
 using namespace std;
 using namespace engine;
 

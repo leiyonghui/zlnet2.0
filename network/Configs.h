@@ -11,7 +11,7 @@
 #include <winsock2.h>
 #endif // _WIN32
 
-namespace network
+namespace net
 {
 	using namespace core;
 	using namespace core::types;

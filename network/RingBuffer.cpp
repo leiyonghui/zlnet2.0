@@ -1,6 +1,6 @@
 #include "RingBuffer.h"
 
-namespace network
+namespace net
 {
 	CRingBuffer::CRingBuffer(uint32 capacity) :_capacity(capacity), _front(0), _end(0), _size(0), _buff(new char[_capacity]) {
 

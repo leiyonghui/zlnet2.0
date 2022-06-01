@@ -12,7 +12,7 @@
 #include "Endpoint.h"
 
 
-namespace network
+namespace net
 {
 	CEndPoint::CEndPoint(): _socket(INVALID_SOCKET)
 	{
