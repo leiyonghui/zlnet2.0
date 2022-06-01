@@ -197,42 +197,38 @@ namespace network
 		}
 	}
 
-	int32 CEndPoint::getRemoteName(CAddress& address)
+	std::pair<CAddress, bool> CEndPoint::getRemoteName()
 	{
 		struct sockaddr_in remoteaddr;
 		socklen_t addrlen = static_cast<socklen_t>(sizeof remoteaddr);
 		if (::getpeername(_socket, (struct sockaddr*)&remoteaddr, &addrlen) < 0)
 		{
 			core_log_error("get remote name");
-			return -1;
+			return { CAddress(remoteaddr), false };
 		}
-		address = CAddress(remoteaddr);
-		return 0;
+		return { CAddress(remoteaddr) , true};
 	}
 
-	int32 CEndPoint::getLocalName(CAddress& address)
+	std::pair<CAddress, bool> CEndPoint::getLocalName()
 	{
 		struct sockaddr_in localname;
 		socklen_t addrlen = static_cast<socklen_t>(sizeof localname);
 		if (::getsockname(_socket, (struct sockaddr*)&localname, &addrlen) < 0)
 		{
 			core_log_error("get local name");
-			return -1;
+			return { CAddress(localname), false };
 		}
-		address = CAddress(localname);
-		return 0;
+		return { CAddress(localname), true };
 	}
 
 	bool CEndPoint::isSelfConnect()
 	{
-		CAddress localname; 
-		getLocalName(localname);
-		CAddress remotename;
-		if (getRemoteName(remotename) < 0)
+		auto pair1 = getLocalName();
+		auto pair2 = getRemoteName();
+		assert(pair1.second && pair2.second);
+		if(pair1.first == pair2.first)
 		{
-			auto er = getSocketError();
-			core_log_error("get remote name", er, strerror(er));
-			assert(false);
+			return true;
 		}
 		return false;
 	}

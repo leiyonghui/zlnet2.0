@@ -289,6 +289,7 @@ namespace network
 
 	void CNetwork::defaultErrorHandle(const IOObjectPtr& object)
 	{
-		core_log_error("default error", object->getKey(), object->getType());
+		auto err = object->getEndPoint()->getSocketError();
+		core_log_error("default error", object->getKey(), object->getType(), err, strerror(err));
 	}
 }

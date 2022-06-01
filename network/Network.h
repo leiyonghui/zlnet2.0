@@ -59,7 +59,9 @@ namespace network
 		void tcpConnect(const std::string& ip, uint16 port, const IOProtocolPtr& protocol);
 		void tcpConnectError(const TcpConnectorPtr& connect);
 		void tcpClose(uint32 key, uint32 second);
-		void tcpClose(const ConnectionPtr& con, int32 second);
+		void tcpClose(const TcpConnectionPtr& con, int32 second);
+		void tcpClose(const TcpConnectorPtr& con, int32 second);
+		void tcpClose(const TcpListenerPtr& listener);
 	private:
 		bool _isStart;
 		ObjecKeyPool _keyPool;
