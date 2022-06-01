@@ -17,6 +17,7 @@ namespace network
 	class TcpConnection : public Connection
 	{
 	public:
+		TcpConnection():Connection(IO_OBJECT_CONNECTION){}
 		void onAwake(const IOProtocolPtr& protocol, CEndPointUnPtr endPoint);
 		void onRecycle();
 	};
@@ -24,6 +25,7 @@ namespace network
 	class TcpConnector : public Connection
 	{
 	public:
+		TcpConnector():Connection(IO_OBJECT_CONNECTOR){}
 		void onAwake(const IOProtocolPtr& protocol, CEndPointUnPtr endPoint);
 		void onRecycle();
 

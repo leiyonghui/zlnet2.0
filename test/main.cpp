@@ -112,7 +112,7 @@ int main(int argc, char** argv)
 		engine._isServer = true;
 		engine.run();
 	}
-	else
+	else if(type == 2)
 	{
 		CNetwork net;
 		TestNet engine(&net);

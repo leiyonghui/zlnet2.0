@@ -32,7 +32,8 @@ namespace network
 		prototcol->setType(IO_OBJECT_CONNECTION);
 		prototcol->setLoclAddress(endPoint->getLocalName().first);
 		prototcol->setRemoteAddress(endPoint->getRemoteName().first);
-		auto con = CObjectPool<Connection>::Instance()->create(prototcol, std::move(endPoint));
+		prototcol->setNetwork(this);
+		auto con = CObjectPool<TcpConnection>::Instance()->create(prototcol, std::move(endPoint));
 		con->setErrorCallback(std::bind(&CNetwork::handleTcpConError, this, _1));
 		con->setReadCallback(std::bind(&CNetwork::handleTcpConRead, this, _1));
 		con->setWriteCallback(std::bind(&CNetwork::handleTcpConWrite, this, _1));
@@ -201,6 +202,7 @@ namespace network
 		auto protocol = con->getProtocol();
 		con->setState(DISCONNECTED);
 		_poller->deregisterObject(con);
+
 		removeObject(con->getKey());
 		if (con->getType() == IO_OBJECT_CONNECTION)
 		{

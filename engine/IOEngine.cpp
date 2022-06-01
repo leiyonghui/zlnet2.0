@@ -93,7 +93,7 @@ namespace engine
 		if (!protocol->isAvailable())
 		{
 			_network->close(uid, 2);
-			removeObject(uid);
+			removeProtocol(uid);
 			return;
 		}
 		_network->close(uid, 2);
@@ -113,18 +113,20 @@ namespace engine
 			assert(false);
 			break;
 		}
-		removeObject(uid);
+		removeProtocol(uid);
 	}
 
-	void IOEngine::dispatchPacket(IOPacket* packet)
+	void IOEngine::dispatchPacket(IOPacketPtr packet)
 	{
+
 	}
 
-	void IOEngine::dispactchCallback(IOPacket* packet)
+	void IOEngine::dispactchCallback(IOPacketPtr packet)
 	{
+
 	}
 
-	void IOEngine::dispatchIOPacket(Packet* packet)
+	void IOEngine::dispatchIOPacket(PacketPtr packet)
 	{
 		switch (packet->getType())
 		{
@@ -146,6 +148,9 @@ namespace engine
 		case PacketMsg:
 			onIOPacket(packet);
 			break;
+		case PacketDisconnect:
+			onIODisconnect(packet);
+			break;
 		default:
 			assert(false);
 			break;
@@ -156,7 +161,7 @@ namespace engine
 	{
 		Engine::onInit();
 
-		bindMsgdispatcher([this](Packet* packet) {
+		bindMsgdispatcher([this](const PacketPtr& packet) {
 			dispatchIOPacket(packet);
 		});
 	}
@@ -185,9 +190,9 @@ namespace engine
 	{
 	}
 
-	void IOEngine::onIOListen(Packet * packet)
+	void IOEngine::onIOListen(PacketPtr packet)
 	{
-		IONotify* notify = dynamic_cast<IONotify*>(packet);
+		IONotifyPtr notify = std::dynamic_pointer_cast<IONotify>(packet);
 		auto uid = notify->getUid();
 		auto protocol = getProtocol(uid);
 		if (protocol != notify->getProtocol())
@@ -202,9 +207,9 @@ namespace engine
 		onListen(uid, notify->isSuccess());
 	}
 
-	void IOEngine::onIOUnListen(Packet * packet)
+	void IOEngine::onIOUnListen(PacketPtr packet)
 	{
-		IONotify* notify = dynamic_cast<IONotify*>(packet);
+		IONotifyPtr notify = std::dynamic_pointer_cast<IONotify>(packet);
 		auto uid = notify->getUid();
 		auto protocol = getProtocol(uid);
 		if (protocol != notify->getProtocol())
@@ -214,15 +219,15 @@ namespace engine
 		}
 		protocol->unsetAvailable();
 		onListen(uid, notify->isSuccess());
-		if (!removeObject(uid))
+		if (!removeProtocol(uid))
 		{
 			core_log_error("unexpect remove unlisten", uid);
 		}
 	}
 
-	void IOEngine::onIOAccept(Packet * packet)
+	void IOEngine::onIOAccept(PacketPtr packet)
 	{
-		IONotify* notify = dynamic_cast<IONotify*>(packet);
+		IONotifyPtr notify = std::dynamic_pointer_cast<IONotify>(packet);
 		auto protocol = notify->getProtocol();
 		auto fromPtotocol = notify->getFromProtocol();
 		auto uid = protocol->getKey();
@@ -246,9 +251,9 @@ namespace engine
 		onAccept(uid, fromUid);
 	}
 
-	void IOEngine::onIOClose(Packet * packet)
+	void IOEngine::onIOClose(PacketPtr packet)
 	{
-		IONotify* notify = dynamic_cast<IONotify*>(packet);
+		IONotifyPtr notify = std::dynamic_pointer_cast<IONotify>(packet);
 		auto protocol = notify->getProtocol();
 		auto uid = protocol->getKey();
 		if (!protocol->isAvailable())
@@ -258,15 +263,15 @@ namespace engine
 		}
 		protocol->unsetAvailable();
 		onClose(uid);
-		if (!removeObject(uid))
+		if (!removeProtocol(uid))
 		{
 			core_log_error("unexpect", uid);
 		}
 	}
 
-	void IOEngine::onIOConnect(Packet * packet)
+	void IOEngine::onIOConnect(PacketPtr packet)
 	{
-		IONotify* notify = dynamic_cast<IONotify*>(packet);
+		IONotifyPtr notify = std::dynamic_pointer_cast<IONotify>(packet);
 		auto protocol = notify->getProtocol();
 		auto uid = protocol->getKey();
 		if (!core::exist(_protocols, uid))
@@ -285,9 +290,9 @@ namespace engine
 		onConnect(uid, notify->isSuccess());
 	}
 
-	void IOEngine::onIODisconnect(Packet * packet)
+	void IOEngine::onIODisconnect(PacketPtr packet)
 	{
-		IONotify* notify = dynamic_cast<IONotify*>(packet);
+		IONotifyPtr notify = std::dynamic_pointer_cast<IONotify>(packet);
 		auto protocol = notify->getProtocol();
 		auto uid = protocol->getKey();
 		if (!core::exist(_protocols, uid))
@@ -302,15 +307,15 @@ namespace engine
 		}
 		protocol->unsetAvailable();
 		onDisconnect(uid);
-		if (!removeObject(uid))
+		if (!removeProtocol(uid))
 		{
 			core_log_error("io disconnect unexpect", uid);
 		}
 	}
 
-	void IOEngine::onIOPacket(Packet * packet)
+	void IOEngine::onIOPacket(PacketPtr packet)
 	{
-		IOPacket* ioPacket = dynamic_cast<IOPacket*>(packet);
+		IOPacketPtr ioPacket = std::dynamic_pointer_cast<IOPacket>(packet);
 		auto protocol = ioPacket->getProtocol();
 		if (protocol->isAvailable())
 		{
@@ -333,7 +338,7 @@ namespace engine
 		}
 	}
 
-	bool IOEngine::removeObject(uint32 uid)
+	bool IOEngine::removeProtocol(uint32 uid)
 	{
 		if (!core::remove(_protocols, uid))
 		{

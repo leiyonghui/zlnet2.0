@@ -3,7 +3,7 @@
 
 namespace network
 {
-	Connection::Connection():IOObject(IO_OBJECT_CONNECTION), _inputBuffer(new CRingBuffer(1024)), _outBuffer(new CRingBuffer(1024))
+	Connection::Connection(EIOOBJECT_TYPE type):IOObject(type), _inputBuffer(new CRingBuffer(1024)), _outBuffer(new CRingBuffer(1024))
 	{
 
 	}
