@@ -186,6 +186,9 @@
     <ClInclude Include="core\core\SkipList.h">
       <Filter>core</Filter>
     </ClInclude>
+    <ClInclude Include="engine\PacketHandlers.h">
+      <Filter>engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="network\Address.cpp">
@@ -253,6 +256,9 @@
     </ClCompile>
     <ClCompile Include="network\Poller.cpp">
       <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\PacketHandlers.cpp">
+      <Filter>engine</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

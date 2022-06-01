@@ -15,6 +15,10 @@ namespace engine
 	USING_SHARED_PTR(IONotify);
 	class IOPacket;
 	USING_SHARED_PTR(IOPacket);
+	class PacketHandler;
+	USING_SHARED_PTR(PacketHandler);
+	class CallbackHandler;
+	USING_SHARED_PTR(CallbackHandler);
 
 	enum EPacketType
 	{

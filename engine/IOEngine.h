@@ -21,9 +21,9 @@ namespace engine
 
 		void close(uint32 uid);
 
-		void dispatchPacket(IOPacketPtr packet);
+		void dispatchPacket(const IOPacketPtr& packet);
 
-		void dispactchCallback(IOPacketPtr packet);
+		void dispactchCallback(const IOPacketPtr& packet);
 
 	protected:
 		void dispatchIOPacket(PacketPtr packet);
@@ -62,5 +62,7 @@ namespace engine
 	protected:
 		class network::CNetwork* _network;
 		std::unordered_map<uint32, ProtocolPtr> _protocols;
+		std::unordered_map<uint32, PacketHandlerPtr> _packetHandlers;
+		std::unordered_map<uint32, CallbackHandlerPtr> _callbacks;
 	};
 }

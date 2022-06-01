@@ -112,6 +112,7 @@
     <ClInclude Include="engine\IOPacket.h" />
     <ClInclude Include="engine\NetEngine.h" />
     <ClInclude Include="engine\Packet.h" />
+    <ClInclude Include="engine\PacketHandlers.h" />
     <ClInclude Include="engine\Protocol.h" />
     <ClInclude Include="network\Address.h" />
     <ClInclude Include="network\Buffer.h" />
@@ -142,6 +143,7 @@
     <ClCompile Include="engine\InnerProtocol.cpp" />
     <ClCompile Include="engine\IOEngine.cpp" />
     <ClCompile Include="engine\NetEngine.cpp" />
+    <ClCompile Include="engine\PacketHandlers.cpp" />
     <ClCompile Include="engine\Protocol.cpp" />
     <ClCompile Include="network\Address.cpp" />
     <ClCompile Include="network\Endpoint.cpp" />

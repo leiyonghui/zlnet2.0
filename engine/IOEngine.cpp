@@ -1,8 +1,8 @@
+#include "PacketHandlers.h"
 #include "network/Network.h"
 #include "IOEngine.h"
 #include "IONotify.h"
 #include "IOPacket.h"
-#include <thread>
 
 namespace engine
 {
@@ -116,12 +116,20 @@ namespace engine
 		removeProtocol(uid);
 	}
 
-	void IOEngine::dispatchPacket(IOPacketPtr packet)
+	void IOEngine::dispatchPacket(const IOPacketPtr& packet)
 	{
-
+		auto iter = _packetHandlers.find(packet->getCommand());
+		if (iter == _packetHandlers.end())
+		{
+			core_log_error("cmd no handler", packet->getCommand());
+		}
+		else
+		{
+			iter->second->onPacket(packet);
+		}
 	}
 
-	void IOEngine::dispactchCallback(IOPacketPtr packet)
+	void IOEngine::dispactchCallback(const IOPacketPtr& packet)
 	{
 
 	}
