@@ -5,7 +5,7 @@
 #include <arpa/inet.h>
 #endif // __linux
 
-namespace network
+namespace net
 {
 #define  BYTESWAP16(A) (((A&0xff00)>>8) | ((A&0x00ff)<<8))
 #define  BYTESWAP32(A) \

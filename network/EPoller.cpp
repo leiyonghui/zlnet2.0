@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include "EPoller.h"
 
-namespace network
+namespace net
 {
 	void printfEvent(int32 fd, int32 ev)
 	{

@@ -2,7 +2,7 @@
 #include "IOObject.h"
 #include "IStream.h"
 
-namespace network
+namespace net
 {
 	class Connection : public IOObject
 	{

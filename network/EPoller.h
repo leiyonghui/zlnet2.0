@@ -2,7 +2,7 @@
 #ifdef __linux
 #include "Poller.h"
 
-namespace network
+namespace net
 {
 	class CEPoller : public CPoller
 	{

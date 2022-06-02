@@ -2,7 +2,7 @@
 #include "Configs.h"
 #include "Address.h"
 
-namespace network
+namespace net
 {
 	typedef std::shared_ptr<class CEndPoint> CEndPointPtr;
 	typedef std::unique_ptr<class CEndPoint, std::function<void(CEndPoint*)>> CEndPointUnPtr;

@@ -5,7 +5,7 @@
 #include "IBuffer.h"
 #include "Address.h"
 
-namespace network
+namespace net
 {
 	class IOProtocol : public CNoncopyable, public std::enable_shared_from_this<IOProtocol>
 	{

@@ -6,6 +6,6 @@ namespace engine
 	class NetEngine : public IOEngine
 	{
 	public:
-		NetEngine(network::CNetwork* network);
+		NetEngine(net::CNetwork* network);
 	};
 }

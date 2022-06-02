@@ -1,6 +1,6 @@
 #include "IOObject.h"
 
-namespace network
+namespace net
 {
 	IOObject::IOObject(EIOOBJECT_TYPE type):_type(type),_key(0),_events(0)
 	{

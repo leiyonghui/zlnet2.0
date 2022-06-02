@@ -9,7 +9,7 @@
 
 #include "Address.h"
 
-namespace network
+namespace net
 {
 	using namespace common;
 

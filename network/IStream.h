@@ -1,6 +1,6 @@
 #pragma once
 
-namespace network
+namespace net
 {
 	struct SBufferVec
 	{

@@ -2,7 +2,7 @@
 #include "TCP_IOObjects.h"
 #include "Buffer.h"
 
-namespace network
+namespace net
 {
 	void CNetwork::handleTcpAccept(const IOObjectPtr& object)
 	{

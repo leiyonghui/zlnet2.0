@@ -1,7 +1,7 @@
 #pragma once
 #include "IBuffer.h"
 
-namespace network
+namespace net
 {
     class Buffer : IBuffer
     {

@@ -1,6 +1,6 @@
 #include "TCP_IOObjects.h"
 
-namespace network
+namespace net
 {
 	TcpListener::TcpListener():IOObject(IO_OBJECT_LISTENER)
 	{

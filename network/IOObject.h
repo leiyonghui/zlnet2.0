@@ -2,7 +2,7 @@
 #include "IOProtocol.h"
 #include "Endpoint.h"
 
-namespace network
+namespace net
 {
 	using ErrorCallback = std::function<void(const IOObjectPtr&)>;
 	using ReadCallback = std::function<void(const IOObjectPtr&)>;

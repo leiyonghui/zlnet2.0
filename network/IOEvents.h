@@ -3,7 +3,7 @@
 #include "Address.h"
 #include "IOProtocol.h"
 
-namespace network
+namespace net
 {
 	class IOListen : public IOEvent
 	{

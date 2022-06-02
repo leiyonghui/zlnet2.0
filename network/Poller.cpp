@@ -1,6 +1,6 @@
 #include "Poller.h"
 
-namespace network
+namespace net
 {
 	void CPoller::registerReadHandler(const IOObjectPtr& object)
 	{

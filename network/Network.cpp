@@ -9,7 +9,7 @@
 #include "EPoller.h"
 #endif // __linux
 
-namespace network
+namespace net
 {
 	CNetwork::CNetwork() :_isStart(false),_poller(new CEPoller()),_shceduler(new timerset::TimerSet()), _timerHandler(nullptr), _lastclock(0)
 	{
@@ -62,9 +62,6 @@ namespace network
 		loop();
 
 		onQuit();
-		/*std::thread ([this]() {
-			loop();
-		}).detach();*/
 	}
 
 	uint32 CNetwork::listen(uint16 port, IOProtocolPtr protocol)

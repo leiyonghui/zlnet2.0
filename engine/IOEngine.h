@@ -8,7 +8,7 @@ namespace engine
 	class IOEngine : public Engine
 	{
 	public:
-		IOEngine(network::CNetwork *network);
+		IOEngine(net::CNetwork *network);
 		virtual~IOEngine();
 
 		ProtocolPtr getProtocol(uint32 uid);
@@ -60,7 +60,7 @@ namespace engine
 	private:
 		bool removeProtocol(uint32 uid);
 	protected:
-		class network::CNetwork* _network;
+		class net::CNetwork* _network;
 		std::unordered_map<uint32, ProtocolPtr> _protocols;
 		std::unordered_map<uint32, PacketHandlerPtr> _packetHandlers;
 		std::unordered_map<uint32, CallbackHandlerPtr> _callbacks;

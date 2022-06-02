@@ -6,7 +6,7 @@
 #include <iostream>
 #include <windows.h>
 #pragma comment(lib, "wsock32.lib")
-using namespace network;
+using namespace net;
 using namespace std;
 
 int main()

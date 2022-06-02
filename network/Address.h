@@ -1,7 +1,7 @@
 #pragma once
 #include "Configs.h"
 
-namespace network
+namespace net
 {
 	class CAddress
 	{

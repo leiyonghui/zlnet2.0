@@ -1,7 +1,7 @@
 #pragma once
 #include "Buffer.h"
 
-namespace network
+namespace net
 {
     using namespace common;
 

@@ -4,7 +4,7 @@
 #include "Buffer.h"
 #include "Configs.h"
 
-namespace network
+namespace net
 {
     using namespace common;
 

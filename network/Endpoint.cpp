@@ -12,16 +12,12 @@
 #include "Endpoint.h"
 
 
-namespace network
+namespace net
 {
 	CEndPoint::CEndPoint(): _socket(INVALID_SOCKET)
 	{
 
 	}
-
-	//CEndPoint::CEndPoint(SOCKET s, const CAddress& address): _socket(s), _address(address)
-	//{
-	//}
 
 	CEndPoint::~CEndPoint()
 	{
