@@ -123,10 +123,16 @@ namespace net
 			std::list<IOEvent*> events;
 			_eventQueue.pop(events);
 
+			auto final = CFinalize([&events]() -> void {
+				for (auto iter : events)
+				{
+					delete iter;
+				}
+			});
+
 			for (std::list<IOEvent*>::iterator iter = events.begin(); iter != events.end(); ++iter)
 			{
 				dispatchProcess(*iter);
-				delete* iter;
 			}
 
 			auto now = TimeHelp::clock_ms().count();
