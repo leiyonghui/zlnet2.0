@@ -62,9 +62,6 @@ namespace net
 		loop();
 
 		onQuit();
-		/*std::thread ([this]() {
-			loop();
-		}).detach();*/
 	}
 
 	uint32 CNetwork::listen(uint16 port, IOProtocolPtr protocol)

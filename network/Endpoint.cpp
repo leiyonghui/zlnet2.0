@@ -19,10 +19,6 @@ namespace net
 
 	}
 
-	//CEndPoint::CEndPoint(SOCKET s, const CAddress& address): _socket(s), _address(address)
-	//{
-	//}
-
 	CEndPoint::~CEndPoint()
 	{
 		close();
