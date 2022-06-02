@@ -2,14 +2,19 @@
 
 namespace engine
 {
-	InnerProtocol::InnerProtocol(net::EPROTOCOL type): Protocol(type)
-	{
+    void InnerProtocol::onAwake(net::EPROTOCOL pType)
+    {
+		Protocol::onAwake(pType);
+    }
 
-	}
+    void InnerProtocol::onRecycle()
+    {
+		Protocol::onRecycle();
+    }
 
-	net::IOProtocolPtr InnerProtocol::create() const
+    net::IOProtocolPtr InnerProtocol::create() const
 	{
-		auto protocol = std::make_shared<InnerProtocol>(net::EPROTO_TCP);
+		auto protocol = CObjectPool<InnerProtocol>::Instance()->create(net::EPROTO_TCP);
 		protocol->setQueue(_msgqueue);
 		return protocol;
 	}

@@ -35,12 +35,12 @@ public:
 		auto uid = 0;
 		if (_isServer)
 		{
-			auto protocol = std::make_shared<InnerProtocol>(EPROTO_TCP);
+			auto protocol = CObjectPool<InnerProtocol>::Instance()->create(net::EPROTO_TCP);
 			uid = listen(9802, protocol);
 		}
 		else
 		{
-			auto protocol = std::make_shared<InnerProtocol>(EPROTO_TCP);
+			auto protocol = CObjectPool<InnerProtocol>::Instance()->create(net::EPROTO_TCP);
 			uid = connect("127.0.0.1", 9802, protocol);
 		}
 

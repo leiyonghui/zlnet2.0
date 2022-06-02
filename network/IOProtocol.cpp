@@ -3,14 +3,27 @@
 
 namespace net
 {
-	IOProtocol::IOProtocol(EPROTOCOL protocol): _protocolType(protocol), _key(0), _network(nullptr)
+	IOProtocol::IOProtocol(): _protocolType(EPROTO_TCP), _key(0), _network(nullptr)
 	{
 	}
 
 	IOProtocol::~IOProtocol()
 	{
-		if (_key)
+		assert(!_key);
+	}
+
+	void IOProtocol::onAwake(EPROTOCOL pType)
+	{
+		_protocolType = pType;
+	}
+
+	void IOProtocol::onRecycle()
+	{
+		if (_key) 
+		{
 			_network->pushKey(_key);
+			_key = 0;
+		}
 	}
 
 	void IOProtocol::setLoclAddress(const CAddress& address)

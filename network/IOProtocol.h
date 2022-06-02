@@ -7,16 +7,21 @@
 
 namespace net
 {
-	class IOProtocol : public CNoncopyable, public std::enable_shared_from_this<IOProtocol>
+	class IOProtocol : public CNoncopyable, public std::enable_shared_from_this<IOProtocol>, public CPoolObject
 	{
 		friend class CNetwork;
 	public:
-		IOProtocol(EPROTOCOL protocol);
+		IOProtocol();
 		virtual ~IOProtocol();
+
+		void onAwake(EPROTOCOL pType);
+		void onRecycle();
+
 		EIOOBJECT_TYPE getType() const { return _type; }
 		void setType(EIOOBJECT_TYPE type) { _type = type; };
 		void setNetwork(class CNetwork* net) { _network = net; }
 		EPROTOCOL getProtocolType() const { return _protocolType; };
+		void setProtocolType(EPROTOCOL type) { _protocolType = type; }
 		void setKey(uint32 key) { _key = key; }
 		uint32 getKey() const { return _key; }
 		CAddress getLocalAddress() const { return _localAddress; }

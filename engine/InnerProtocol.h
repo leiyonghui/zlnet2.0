@@ -6,7 +6,9 @@ namespace engine
 	class InnerProtocol : public Protocol
 	{
 	public:
-		InnerProtocol(net::EPROTOCOL type);
+		void onAwake(net::EPROTOCOL pType);
+
+		void onRecycle();
 
 		virtual net::IOProtocolPtr create() const override;
 

@@ -5,11 +5,11 @@
 
 namespace engine
 {
-	class Packet;
 	class Protocol : public net::IOProtocol
 	{
 	public:
-		Protocol(net::EPROTOCOL type);
+		void onAwake(EPROTOCOL pType);
+		void onRecycle();
 
 		bool isAvailable() const;
 
@@ -17,10 +17,10 @@ namespace engine
 
 		void unsetAvailable();
 
-		void setQueue(MsgQueue<Packet*>* queue);
+		void setQueue(MsgQueue<PacketPtr>* queue);
 
 	protected:
-		void dispatchPacket(Packet* packet);
+		void dispatchPacket(PacketPtr packet);
 
 	protected:
 		virtual void onListen(bool success) override;
@@ -37,7 +37,6 @@ namespace engine
 
 	protected:
 		bool _available;
-		MsgQueue<Packet*>* _msgqueue;
+		MsgQueue<PacketPtr>* _msgqueue;
 	};
-	USING_SHARED_PTR(Protocol);
 }

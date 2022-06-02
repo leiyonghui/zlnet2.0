@@ -4,9 +4,17 @@
 
 namespace engine
 {
-	Protocol::Protocol(net::EPROTOCOL type):net::IOProtocol(type)
+
+	void Protocol::onAwake(EPROTOCOL pType)
 	{
+		net::IOProtocol::onAwake(pType);
 	}
+
+	void Protocol::onRecycle()
+	{
+		net::IOProtocol::onRecycle();
+	}
+
 	bool Protocol::isAvailable() const
 	{
 		return _available;
