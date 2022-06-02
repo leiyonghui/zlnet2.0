@@ -7,7 +7,7 @@ namespace net
 	class Connection : public IOObject
 	{
 	public:
-		Connection();
+		Connection(EIOOBJECT_TYPE type);
 		void onAwake(const IOProtocolPtr& protocol, CEndPointUnPtr endPoint);
 		void onRecycle();
 

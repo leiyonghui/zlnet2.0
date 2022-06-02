@@ -62,9 +62,9 @@ namespace net
 
 		int32 getSocketError();
 
-		int32 getRemoteName(CAddress& address);
+		std::pair<CAddress, bool> getRemoteName();
 
-		int32 getLocalName(CAddress& address);
+		std::pair<CAddress, bool> getLocalName();
 
 		bool isSelfConnect();
 	private:

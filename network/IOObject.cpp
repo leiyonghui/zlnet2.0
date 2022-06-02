@@ -19,5 +19,6 @@ namespace net
 	void IOObject::onRecycle()
 	{
 		_protocol = nullptr;
+		_endpoint = nullptr;
 	}
 }

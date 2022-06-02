@@ -54,7 +54,7 @@ public:
 	void onTimer1000ms()
 	{
 		static int32 i = 0;
-		if (++i % 10 == 1)
+		if (++i % 30 == 1)
 		{
 			core::CObjectPoolMonitor::showInfo();
 		}
@@ -104,6 +104,7 @@ int main(int argc, char** argv)
 {
 	int32 type;
 	cin >> type;
+	TimeHelp::StartUp();
 	if (type == 1)
 	{
 		CNetwork net;
@@ -111,7 +112,7 @@ int main(int argc, char** argv)
 		engine._isServer = true;
 		engine.run();
 	}
-	else
+	else if(type == 2)
 	{
 		CNetwork net;
 		TestNet engine(&net);

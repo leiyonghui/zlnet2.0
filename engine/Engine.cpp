@@ -2,7 +2,7 @@
 
 namespace engine
 {
-	Engine::Engine():_runing(false), _lastClock1000ms(0), _msgqueue(new MsgQueue<Packet*>())
+	Engine::Engine():_runing(false), _lastClock1000ms(0), _msgqueue(new MsgQueue<PacketPtr>())
 	{
 	}
 
@@ -22,12 +22,12 @@ namespace engine
 		onQuit();
 	}
 
-	void Engine::bindMsgdispatcher(const std::function<void(Packet*)>& func)
+	void Engine::bindMsgdispatcher(const std::function<void(const PacketPtr&)>& func)
 	{
 		_msgqueue->bindDispatcher(func);
 	}
 
-	void Engine::bindMsgdispatcher(std::function<void(Packet*)>&& func)
+	void Engine::bindMsgdispatcher(std::function<void(const PacketPtr&)>&& func)
 	{
 		_msgqueue->bindDispatcher(std::move(func));
 	}

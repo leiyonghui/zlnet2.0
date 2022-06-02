@@ -14,9 +14,9 @@ namespace engine
 
 		virtual void run();
 
-		void bindMsgdispatcher(const std::function<void(Packet*)>& func);
+		void bindMsgdispatcher(const std::function<void(const PacketPtr&)>& func);
 
-		void bindMsgdispatcher(std::function<void(Packet*)>&& func);
+		void bindMsgdispatcher(std::function<void(const PacketPtr&)>&& func);
 
 	protected:
 		virtual void onInit();
@@ -34,6 +34,6 @@ namespace engine
 	protected:
 		bool _runing;
 		int64 _lastClock1000ms;
-		MsgQueue<Packet*>* _msgqueue;
+		MsgQueue<PacketPtr>* _msgqueue;
 	};
 }

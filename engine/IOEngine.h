@@ -21,12 +21,12 @@ namespace engine
 
 		void close(uint32 uid);
 
-		void dispatchPacket(class IOPacket* packet);
+		void dispatchPacket(IOPacketPtr packet);
 
-		void dispactchCallback(IOPacket* packet);
+		void dispactchCallback(IOPacketPtr packet);
 
 	protected:
-		void dispatchIOPacket(Packet* packet);
+		void dispatchIOPacket(PacketPtr packet);
 
 		void onInit();
 
@@ -43,22 +43,22 @@ namespace engine
 		virtual void onDisconnect(uint32 uid);
 
 	private:
-		void onIOListen(Packet* packet);
+		void onIOListen(PacketPtr packet);
 
-		void onIOUnListen(Packet* packet);
+		void onIOUnListen(PacketPtr packet);
 
-		void onIOAccept(Packet* packet);
+		void onIOAccept(PacketPtr packet);
 
-		void onIOClose(Packet* packet);
+		void onIOClose(PacketPtr packet);
 
-		void onIOConnect(Packet* packet);
+		void onIOConnect(PacketPtr packet);
 
-		void onIODisconnect(Packet* packet);
+		void onIODisconnect(PacketPtr packet);
 
-		void onIOPacket(Packet* packet);
+		void onIOPacket(PacketPtr packet);
 
 	private:
-		bool removeObject(uint32 uid);
+		bool removeProtocol(uint32 uid);
 	protected:
 		class net::CNetwork* _network;
 		std::unordered_map<uint32, ProtocolPtr> _protocols;
