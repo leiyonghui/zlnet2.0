@@ -91,6 +91,7 @@
     <ClInclude Include="core\core\Common.h" />
     <ClInclude Include="core\core\Configs.h" />
     <ClInclude Include="core\core\FastNode.h" />
+    <ClInclude Include="core\core\IntrusiveNode.h" />
     <ClInclude Include="core\core\KeyPool.h" />
     <ClInclude Include="core\core\Macro.h" />
     <ClInclude Include="core\core\MsgQueue.h" />
@@ -110,10 +111,12 @@
     <ClInclude Include="engine\IOEngine.h" />
     <ClInclude Include="engine\IONotify.h" />
     <ClInclude Include="engine\IOPacket.h" />
+    <ClInclude Include="engine\Messages.h" />
     <ClInclude Include="engine\NetEngine.h" />
     <ClInclude Include="engine\Packet.h" />
     <ClInclude Include="engine\PacketHandlers.h" />
     <ClInclude Include="engine\Protocol.h" />
+    <ClInclude Include="engine\Serializes.h" />
     <ClInclude Include="network\Address.h" />
     <ClInclude Include="network\Buffer.h" />
     <ClInclude Include="network\BufferReader.h" />
@@ -142,9 +145,11 @@
     <ClCompile Include="engine\Engine.cpp" />
     <ClCompile Include="engine\InnerProtocol.cpp" />
     <ClCompile Include="engine\IOEngine.cpp" />
+    <ClCompile Include="engine\Messages.cpp" />
     <ClCompile Include="engine\NetEngine.cpp" />
     <ClCompile Include="engine\PacketHandlers.cpp" />
     <ClCompile Include="engine\Protocol.cpp" />
+    <ClCompile Include="engine\Serializes.cpp" />
     <ClCompile Include="network\Address.cpp" />
     <ClCompile Include="network\Endpoint.cpp" />
     <ClCompile Include="network\EPoller.cpp" />

@@ -53,7 +53,7 @@ namespace net
 	class IOEventData : public IOEvent
 	{
 	public:
-		IOEventData(uint32 key) :IOEvent(IO_EVENT_DATA, key)
+		IOEventData(uint32 key, const UserData& data) :IOEvent(IO_EVENT_DATA, key), _data(data)
 		{
 
 		}

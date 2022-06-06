@@ -2,10 +2,10 @@
 #include "Configs.h"
 #include "network/IOProtocol.h"
 #include "core/MsgQueue.h"
+#include "PacketHandlers.h"
 
 namespace engine
 {
-	class Packet;
 	class Protocol : public net::IOProtocol
 	{
 	public:
@@ -17,10 +17,11 @@ namespace engine
 
 		void unsetAvailable();
 
-		void setQueue(MsgQueue<Packet*>* queue);
+		void setQueue(MsgQueue<PacketPtr>* queue);
 
+		CallbackHandlerExistList& getCallbackList();
 	protected:
-		void dispatchPacket(Packet* packet);
+		void dispatchPacket(PacketPtr packet);
 
 	protected:
 		virtual void onListen(bool success) override;
@@ -37,7 +38,8 @@ namespace engine
 
 	protected:
 		bool _available;
-		MsgQueue<Packet*>* _msgqueue;
+		MsgQueue<PacketPtr>* _msgqueue;
+		CallbackHandlerExistList _callbacklist;
 	};
 	USING_SHARED_PTR(Protocol);
 }

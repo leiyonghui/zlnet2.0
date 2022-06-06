@@ -1,5 +1,7 @@
 #pragma once
 #include "Configs.h"
+#include "core/IntrusiveNode.h"
+#include "Messages.h"
 
 namespace engine
 {
@@ -8,35 +10,68 @@ namespace engine
 	public:
 		virtual ~PacketHandler() = default;
 
-		virtual void onPacket(const PacketPtr& packet) = 0;
+		virtual void onPacket(const IOPacketPtr& packet) = 0;
 	};
+	USING_SHARED_PTR(PacketHandler);
 
-	class CallbackHandler : public PacketHandler
+	class CallbackHandler;
+
+	class CallbackHandlerExistTag;
+
+	class CallbackHandlerTimeoutTag;
+
+	using CallbackHandlerExistList = IntrusiveNode<CallbackHandler, CallbackHandlerExistTag>;
+
+	using CallbackHandlerTimeoutList = IntrusiveNode<CallbackHandler, CallbackHandlerTimeoutTag>;
+
+	class CallbackHandler : public PacketHandler, public CallbackHandlerExistList, public CallbackHandlerTimeoutList
 	{
 	public:
+		CallbackHandler() : _uid(0), _cbId(0), _toMs(0), _cmd(0)
+		{
 
-	private:
+		}
+
 		uint32 _uid;
 		uint32 _cbId;
+		uint32 _toMs;
 		uint32 _cmd;
 	};
+	USING_SHARED_PTR(CallbackHandler);
+
+	class CallbackHandlerImpl : public CallbackHandler
+	{
+	public:
+		CallbackHandlerImpl(const std::function<void(const IOPacketPtr& packet)>& func):_func(func){}
+
+		virtual void onPacket(const IOPacketPtr& packet);
+		
+	protected:
+		std::function<void(const IOPacketPtr&packet)> _func;
+	};
+
 
 	class MessageHandler : public PacketHandler
 	{
 	public:
+		virtual void onPacket(const IOPacketPtr& packet) override;
 
-		virtual void onPacket(const PacketPtr& packet) override;
-
-		//virtual void onMessage(CMessageContext& context) = 0;
 	private:
+		virtual IMessagePtr onMessageConvert(const IMessagePtr& message);
 
+		virtual void onMessage(CMessageContext& context) = 0;
 	};
+	USING_SHARED_PTR(MessageHandler);
 
-	class MessageHandlerBinding : public MessageHandler
+
+	class CMessageHandlerBinding : public MessageHandler
 	{
-	public:
-
 	private:
-		std::function<void()> _func;
+		std::function<void(CMessageContext&)> _func;
+
+	public:
+		explicit CMessageHandlerBinding(const std::function<void(CMessageContext&)>& func);
+
+		virtual void onMessage(CMessageContext& context);
 	};
 }

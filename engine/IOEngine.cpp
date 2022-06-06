@@ -6,7 +6,7 @@
 
 namespace engine
 {
-	IOEngine::IOEngine(net::CNetwork* network): Engine(), _network(network)
+	IOEngine::IOEngine(net::CNetwork* network): Engine(), _network(network), _nextCallbackId(0)
 	{
 		
 	}
@@ -116,6 +116,37 @@ namespace engine
 		removeProtocol(uid);
 	}
 
+	void IOEngine::send(IOPacketPtr packet)
+	{
+		send(CallbackHandlerPtr(), packet);
+	}
+
+	void IOEngine::send(const std::function<void(const IOPacketPtr&)>& func, IOPacketPtr packet)
+	{
+		send(std::make_shared<CallbackHandlerImpl>(func), packet);
+	}
+
+	void IOEngine::send(CallbackHandlerPtr callbackHander, IOPacketPtr packet)
+	{
+		auto protocol = getProtocol(packet->getUid());
+		if (!callbackHander)
+		{
+			if (packet->getCommand())
+			{
+				
+			}
+			else
+			{
+				core_log_error("no cmd", packet->getUid());
+				assert(false);
+			}
+		}
+		else
+		{
+
+		}
+	}
+
 	void IOEngine::dispatchPacket(const IOPacketPtr& packet)
 	{
 		auto iter = _packetHandlers.find(packet->getCommand());
@@ -131,7 +162,19 @@ namespace engine
 
 	void IOEngine::dispactchCallback(const IOPacketPtr& packet)
 	{
-
+		auto cbId = packet->getCallbackId();
+		auto iter = _callbackHandlers.find(cbId);
+		if (iter == _callbackHandlers.end())
+		{
+			core_log_warning("no callback handler", packet->getUid(), packet->getError());
+			return;
+		}
+		assert(iter->second->_uid == packet->getUid());
+		auto handler = iter->second;
+		core::remove(_callbackHandlers, cbId);
+		handler->CallbackHandlerExistList::leave();
+		handler->CallbackHandlerTimeoutList::leave();
+		handler->onPacket(packet);
 	}
 
 	void IOEngine::dispatchIOPacket(PacketPtr packet)
@@ -172,6 +215,13 @@ namespace engine
 		bindMsgdispatcher([this](const PacketPtr& packet) {
 			dispatchIOPacket(packet);
 		});
+	}
+
+	void IOEngine::onTimer1000ms()
+	{
+		Engine::onTimer1000ms();
+		
+		checkCallbackTimeout();
 	}
 
 	void IOEngine::onListen(uint32 uid, bool success)
@@ -324,8 +374,8 @@ namespace engine
 	void IOEngine::onIOPacket(PacketPtr packet)
 	{
 		IOPacketPtr ioPacket = std::dynamic_pointer_cast<IOPacket>(packet);
-		auto protocol = ioPacket->getProtocol();
-		if (protocol->isAvailable())
+		auto protocol = getProtocol(packet->getUid());
+		if (protocol && protocol->isAvailable())
 		{
 			if (ioPacket->getCommand())
 			{
@@ -354,5 +404,35 @@ namespace engine
 			return false;
 		}
 		return true;
+	}
+
+	uint32 IOEngine::makeCallbackId()
+	{
+		if (_nextCallbackId < 0xffffffff)
+			_nextCallbackId++;
+		else 
+			_nextCallbackId = 1;
+		if (!_callbackTimeOutList.empty() && _callbackTimeOutList.front()->_cbId == _nextCallbackId)
+			return 0;
+		return _nextCallbackId;
+	}
+
+	void IOEngine::checkCallbackTimeout()
+	{
+		auto now = TimeHelp::clock_ms().count();
+		while (!_callbackTimeOutList.empty())
+		{
+			auto handler = _callbackTimeOutList.front();
+			if (now < handler->_toMs)
+			{
+				break;
+			}
+			core_log_error("callback time out", handler->_uid, handler->_toMs);
+			core::remove(_callbackHandlers, handler->_cbId);
+			handler->CallbackHandlerExistList::leave();
+			handler->CallbackHandlerTimeoutList::leave();
+			IOPacketPtr packet = std::make_shared<IOPacket>(handler->_uid, handler->_cmd,handler->_cbId, ErrCode_Timeout);
+			handler->onPacket(packet);
+		}
 	}
 }

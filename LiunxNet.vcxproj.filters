@@ -189,6 +189,15 @@
     <ClInclude Include="engine\PacketHandlers.h">
       <Filter>engine</Filter>
     </ClInclude>
+    <ClInclude Include="core\core\IntrusiveNode.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\Messages.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\Serializes.h">
+      <Filter>engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="network\Address.cpp">
@@ -258,6 +267,12 @@
       <Filter>net</Filter>
     </ClCompile>
     <ClCompile Include="engine\PacketHandlers.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\Messages.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\Serializes.cpp">
       <Filter>engine</Filter>
     </ClCompile>
   </ItemGroup>
