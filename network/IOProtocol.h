@@ -26,9 +26,9 @@ namespace net
 	protected:
 		virtual IOProtocolPtr create() const = 0;
 
-		virtual void onUnserialize(IStream* buffer) = 0;
-
 		virtual void onSerialize(IOEvent* event, IBuffer* buffer) = 0;
+
+		virtual void onUnserialize(IStream* buffer) = 0;
 
 		virtual void onListen(bool success) = 0;
 
