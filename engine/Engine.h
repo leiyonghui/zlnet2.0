@@ -18,6 +18,7 @@ namespace engine
 
 		void bindMsgdispatcher(std::function<void(const PacketPtr&)>&& func);
 
+		void postPacket(const PacketPtr& packet);
 	protected:
 		virtual void onInit();
 

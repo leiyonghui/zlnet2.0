@@ -23,6 +23,11 @@ namespace engine
 			return _callbackId;
 		}
 
+		void setCallbackId(uint32 cdId)
+		{
+			_callbackId = cdId;
+		}
+
 		uint32 getError() const
 		{
 			return _error;

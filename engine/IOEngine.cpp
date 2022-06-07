@@ -6,7 +6,7 @@
 
 namespace engine
 {
-	IOEngine::IOEngine(net::CNetwork* network): Engine(), _network(network), _nextCallbackId(0)
+	IOEngine::IOEngine(net::CNetwork* network): Engine(), _network(network), _nextCallbackId(0), _callbackTimeoutMs(10000)
 	{
 		
 	}
@@ -129,21 +129,48 @@ namespace engine
 	void IOEngine::send(CallbackHandlerPtr callbackHander, IOPacketPtr packet)
 	{
 		auto protocol = getProtocol(packet->getUid());
-		if (!callbackHander)
+		if (packet->getCommand())
 		{
-			if (packet->getCommand())
+			if (protocol && protocol->isAvailable())
 			{
-				
+				if (callbackHander)
+				{
+					auto cbId = bindCallbackHandler(callbackHander);
+					packet->setCallbackId(cbId);
+					callbackHander->_uid = packet->getUid();
+					callbackHander->_cmd = packet->getCommand();
+					protocol->getCallbackList().pushBack(callbackHander.get());
+				}
+				_network->send<IOPacketPtr>(new net::IOEventData<IOPacketPtr>(packet->getUid(), packet));
 			}
 			else
 			{
-				core_log_error("no cmd", packet->getUid());
-				assert(false);
+				assert(packet->getUid() == 0);
+				if (callbackHander)
+				{
+					uint32 cbId = bindCallbackHandler(callbackHander);
+					callbackHander->_uid = packet->getUid();
+					callbackHander->_cmd = packet->getCommand();
+					postPacket(std::make_shared<IOPacket>(0, 0, cbId, ErrCode_CallbackBySendError));
+				}
+			}
+		}
+		else if(packet->getCallbackId())
+		{
+			assert(!callbackHander);
+			if (protocol && protocol->isAvailable())
+			{
+				_network->send<IOPacketPtr>(new net::IOEventData<IOPacketPtr>(packet->getUid(), packet));
+			}
+			else
+			{
+				core_log_warning("send protocol unavilable", packet->getUid());
 			}
 		}
 		else
 		{
-
+			core_log_error("unexpect send", packet->getUid());
+			assert(false);
 		}
 	}
 
@@ -415,6 +442,18 @@ namespace engine
 		if (!_callbackTimeOutList.empty() && _callbackTimeOutList.front()->_cbId == _nextCallbackId)
 			return 0;
 		return _nextCallbackId;
+	}
+
+	uint32 IOEngine::bindCallbackHandler(CallbackHandlerPtr& handler)
+	{
+		assert(handler->_cbId == 0);
+		auto cbId = makeCallbackId();
+		assert(cbId);
+		handler->_cbId = cbId;
+		handler->_toMs = TimeHelp::clock_ms().count() + _callbackTimeoutMs;
+		_callbackHandlers[cbId] = handler;
+		_callbackTimeOutList.pushBack(handler.get());
+		return cbId;
 	}
 
 	void IOEngine::checkCallbackTimeout()

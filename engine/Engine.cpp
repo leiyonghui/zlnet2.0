@@ -32,6 +32,11 @@ namespace engine
 		_msgqueue->bindDispatcher(std::move(func));
 	}
 
+	void Engine::postPacket(const PacketPtr& packet)
+	{
+		_msgqueue->pushBack(packet);
+	}
+
 	void Engine::onInit()
 	{
 

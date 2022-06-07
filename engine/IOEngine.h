@@ -70,6 +70,8 @@ namespace engine
 		
 		uint32 makeCallbackId();
 
+		uint32 bindCallbackHandler(CallbackHandlerPtr& handler);
+
 		void checkCallbackTimeout();
 	protected:
 		class net::CNetwork* _network;
@@ -78,5 +80,6 @@ namespace engine
 		std::unordered_map<uint32, CallbackHandlerPtr>	_callbackHandlers;
 		CallbackHandlerTimeoutList _callbackTimeOutList;
 		uint32 _nextCallbackId;
+		uint32 _callbackTimeoutMs;
 	};
 }
