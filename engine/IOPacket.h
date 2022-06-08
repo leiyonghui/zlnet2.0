@@ -1,20 +1,16 @@
 #pragma once
 #include "Packet.h"
 #include "IMessage.h"
+#include "Protocol.h"
 
 namespace engine
 {
 	class IOPacket : public Packet
 	{
 	public:
-		IOPacket(ProtocolPtr protocol, uint32 cmd, uint32 callbakdId, uint32  error) : Packet(PacketMsg, protocol->getKey()), _cmd(cmd), _callbackId(callbakdId), _error(error)
+		IOPacket(int32 uid, uint32 cmd, uint32 callbakdId, uint32  error) : Packet(PacketMsg, uid), _cmd(cmd), _callbackId(callbakdId), _error(error)
 		{
 
-		}
-
-		ProtocolPtr getProtocol() const
-		{
-			return _protocol;
 		}
 
 		uint32 getCommand() const
@@ -25,6 +21,11 @@ namespace engine
 		uint32 getCallbackId() const
 		{
 			return _callbackId;
+		}
+
+		void setCallbackId(uint32 cdId)
+		{
+			_callbackId = cdId;
 		}
 
 		uint32 getError() const
@@ -38,7 +39,6 @@ namespace engine
 		}
 
 	private:
-		ProtocolPtr _protocol;
 		uint32 _cmd;
 		uint32 _callbackId;
 		uint32 _error;

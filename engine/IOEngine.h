@@ -2,6 +2,7 @@
 #include "Configs.h"
 #include "Protocol.h"
 #include "Engine.h"
+#include "PacketHandlers.h"
 
 namespace engine
 {
@@ -21,14 +22,21 @@ namespace engine
 
 		void close(uint32 uid);
 
-		void dispatchPacket(IOPacketPtr packet);
+		void send(IOPacketPtr packet);
 
-		void dispactchCallback(IOPacketPtr packet);
+		void send(const std::function<void(const IOPacketPtr&)>& func, IOPacketPtr packet);
 
+		void send(CallbackHandlerPtr callbackHander, IOPacketPtr packet);
+
+		void dispatchPacket(const IOPacketPtr& packet);
+
+		void dispactchCallback(const IOPacketPtr& packet);
 	protected:
 		void dispatchIOPacket(PacketPtr packet);
 
-		void onInit();
+		virtual void onInit() override;
+
+		virtual void onTimer1000ms() override;
 
 		virtual void onListen(uint32 uid, bool success);
 
@@ -59,8 +67,19 @@ namespace engine
 
 	private:
 		bool removeProtocol(uint32 uid);
+		
+		uint32 makeCallbackId();
+
+		uint32 bindCallbackHandler(CallbackHandlerPtr& handler);
+
+		void checkCallbackTimeout();
 	protected:
 		class net::CNetwork* _network;
-		std::unordered_map<uint32, ProtocolPtr> _protocols;
+		std::unordered_map<uint32, ProtocolPtr>			_protocols;
+		std::unordered_map<uint32, PacketHandlerPtr>	_packetHandlers;
+		std::unordered_map<uint32, CallbackHandlerPtr>	_callbackHandlers;
+		CallbackHandlerTimeoutList _callbackTimeOutList;
+		uint32 _nextCallbackId;
+		uint32 _callbackTimeoutMs;
 	};
 }

@@ -35,6 +35,11 @@ namespace engine
 		_msgqueue = queue;
 	}
 
+	CallbackHandlerExistList& Protocol::getCallbackList()
+	{
+		return _callbacklist;
+	}
+
 	void Protocol::dispatchPacket(PacketPtr packet)
 	{
 		_msgqueue->pushBack(packet);

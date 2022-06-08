@@ -2,6 +2,7 @@
 #include "Configs.h"
 #include "network/IOProtocol.h"
 #include "core/MsgQueue.h"
+#include "PacketHandlers.h"
 
 namespace engine
 {
@@ -19,6 +20,7 @@ namespace engine
 
 		void setQueue(MsgQueue<PacketPtr>* queue);
 
+		CallbackHandlerExistList& getCallbackList();
 	protected:
 		void dispatchPacket(PacketPtr packet);
 
@@ -38,5 +40,6 @@ namespace engine
 	protected:
 		bool _available;
 		MsgQueue<PacketPtr>* _msgqueue;
+		CallbackHandlerExistList _callbacklist;
 	};
 }

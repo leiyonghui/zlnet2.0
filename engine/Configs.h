@@ -15,6 +15,10 @@ namespace engine
 	USING_SHARED_PTR(IONotify);
 	class IOPacket;
 	USING_SHARED_PTR(IOPacket);
+	//class PacketHandler;
+	//USING_SHARED_PTR(PacketHandler);
+	//class CallbackHandler;
+	//USING_SHARED_PTR(CallbackHandler);
 
 	enum EPacketType
 	{
@@ -25,5 +29,27 @@ namespace engine
 		PacketDisconnect,
 		PacketClose,	
 		PacketMsg,
+	};
+}
+
+namespace msgs
+{
+	using namespace engine;
+	using namespace net;
+}
+
+namespace engine
+{
+	enum ErrCode
+	{
+		ErrCode_None = 0,
+		ErrCode_Default = 1,
+		ErrCode_Timeout = 2,
+		ErrCode_IOError = 3,
+		ErrCode_SynchroTimeout = 4,
+		ErrCode_IONotFound = 5,
+		ErrCode_CallbackBySendError = 6,
+		ErrCode_ConfirmTimeout = 7,
+		//user define code from 100
 	};
 }

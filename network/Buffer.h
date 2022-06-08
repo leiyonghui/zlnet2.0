@@ -3,7 +3,7 @@
 
 namespace net
 {
-    class Buffer : IBuffer
+    class Buffer : public IBuffer
     {
 
         Buffer(const Buffer& buff) = delete;
