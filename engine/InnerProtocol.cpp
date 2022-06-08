@@ -4,17 +4,15 @@
 
 namespace engine
 {
-    void InnerProtocol::onAwake(net::EPROTOCOL pType)
-    {
-		Protocol::onAwake(pType);
-    }
 	static const uint32 INIT_BUFFER_SIZE = 128 * 1024;
 	static const uint32 MAX_BUFFER_SIZE = 1024 * 1024;
 
 	thread_local static net::Buffer __InnerBuf(INIT_BUFFER_SIZE);
 
-	InnerProtocol::InnerProtocol(net::EPROTOCOL type): Protocol(type)
-	{
+    void InnerProtocol::onAwake(net::EPROTOCOL pType)
+    {
+		Protocol::onAwake(pType);
+    }
 
     void InnerProtocol::onRecycle()
     {
@@ -85,7 +83,11 @@ namespace engine
 
 	void InnerProtocol::onUnserialize(net::IStream* buffer)
 	{
-
+		if (buffer->size() < sizeof(Block))
+		{
+			return;
+		}
+		auto type;
 	}
 
 	
