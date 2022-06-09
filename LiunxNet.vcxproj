@@ -126,16 +126,17 @@
     <ClInclude Include="network\Endpoint.h" />
     <ClInclude Include="network\EPoller.h" />
     <ClInclude Include="network\IBuffer.h" />
+    <ClInclude Include="network\IIOBuffer.h" />
     <ClInclude Include="network\IOEvent.h" />
     <ClInclude Include="network\IOEvents.h" />
     <ClInclude Include="network\IOObjects.h" />
-    <ClInclude Include="network\IStream.h" />
     <ClInclude Include="network\Poller.h" />
     <ClInclude Include="network\IOObject.h" />
     <ClInclude Include="network\RingBuffer.h" />
     <ClInclude Include="network\TCP_IOObjects.h" />
     <ClInclude Include="network\IOProtocol.h" />
     <ClInclude Include="network\Network.h" />
+    <ClInclude Include="test\TestMessage.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="core\core\TimeHelp.cpp" />
@@ -162,6 +163,7 @@
     <ClCompile Include="network\Network.cpp" />
     <ClCompile Include="network\TCP_Network.cpp" />
     <ClCompile Include="test\main.cpp" />
+    <ClCompile Include="test\TestMessage.cpp" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

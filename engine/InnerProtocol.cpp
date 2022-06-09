@@ -37,6 +37,7 @@ namespace engine
 			if (auto message = packet->getMessage())
 			{
 				net::BufferWriter writer(&__InnerBuf);
+				writer.writeInt32(message->identity());
 				message->serialize(writer);
 				datasize = writer.bytesWritten();
 			}
@@ -48,18 +49,18 @@ namespace engine
 					int32 totalsize = datasize + uint32(sizeof(HeaderCall));
 					HeaderCall* head =  (HeaderCall*)(buffer->write(0, totalsize));
 					head->type = HeaderTypeCall;
-					head->cmd = packet->getCommand();
-					head->callback = packet->getCallbackId();
-					head->size = totalsize;
+					head->cmd = net::hostToNetwork32(packet->getCommand());
+					head->callback = net::hostToNetwork32(packet->getCallbackId());
+					head->size = net::hostToNetwork32(totalsize);
 					__InnerBuf.read(0, (char*)(head + 1), datasize);
 				}
 				else
 				{
 					int32 totalsize = datasize + uint32(sizeof(HeaderMessage));
 					HeaderMessage* head = (HeaderMessage*)(buffer->write(0, totalsize));
-					head->type = HeaderTypeMessage;
-					head->cmd = packet->getCommand();
-					head->size = totalsize;
+					head->type = HeaderTypeCall;
+					head->cmd = net::hostToNetwork32(packet->getCommand());
+					head->size = net::hostToNetwork32(totalsize);
 					__InnerBuf.read(0, (char*)(head + 1), datasize);
 				}
 			}
@@ -68,9 +69,9 @@ namespace engine
 				int32 totalsize = datasize + uint32(sizeof(HeaderCallback));
 				HeaderCallback* head = (HeaderCallback*)(buffer->write(0, totalsize));
 				head->type = HeaderTypeCallback;
-				head->callback = packet->getCallbackId();
-				head->error = packet->getError();
-				head->size = totalsize;
+				head->callback = net::hostToNetwork32(packet->getCallbackId());
+				head->error = net::hostToNetwork32(packet->getError());
+				head->size = net::hostToNetwork32(totalsize);
 				__InnerBuf.read(0, (char*)(head + 1), datasize);
 			}
 		}
@@ -90,7 +91,49 @@ namespace engine
 		block.size = net::networkToHost32(block.size);
 		if (block.size > buffer->size())
 			return;
+		__InnerBuf.ensure(block.size);
+		buffer->read(__InnerBuf.write(0, block.size), block.size);
+		if (block.type == HeaderTypeCall)
+		{
+			HeaderCall* head = (HeaderCall*)(__InnerBuf.read(0, sizeof(HeaderCall)));
+			head->size = net::hostToNetwork32(head->size);
+			head->cmd = net::networkToHost32(head->cmd);
+			head->callback = net::networkToHost32(head->callback);
 
+			int32* id = (int32*)__InnerBuf.read(sizeof(HeaderCall), sizeof(int32));
+			auto msglen = head->size - sizeof(HeaderCall) - sizeof(int32);
+			SerializeMessagePtr message = std::make_shared<SerializeMessage>(id, __InnerBuf.read(sizeof(HeaderCall) + sizeof(int32), msglen), msglen);
+
+			IOPacketPtr packet = std::make_shared<IOPacket>(getKey(), head->cmd, head->callback, 0, message);
+			dispatchPacket(packet);
+		}
+		else if (block.type == HeaderTypeCallback)
+		{
+			HeaderCallback* head = (HeaderCallback*)(__InnerBuf.read(0, sizeof(HeaderCallback)));
+			head->size = net::hostToNetwork32(head->size);
+			head->callback = net::networkToHost32(head->callback);
+			head->error == net::hostToNetwork32(head->error);
+
+			int32* id = (int32*)__InnerBuf.read(sizeof(HeaderCallback), sizeof(int32));
+			auto msglen = head->size - sizeof(HeaderCallback) - sizeof(int32);
+			SerializeMessagePtr message = std::make_shared<SerializeMessage>(id, __InnerBuf.read(sizeof(HeaderCallback) + sizeof(int32), msglen), msglen);
+
+			IOPacketPtr packet = std::make_shared<IOPacket>(getKey(), 0, head->callback, head->error, message);
+			dispatchPacket(packet);
+		}
+		else if (block.type == HeaderTypeMessage)
+		{
+			HeaderMessage* head = (HeaderMessage*)(__InnerBuf.read(0, sizeof(HeaderMessage)));
+			head->size = net::hostToNetwork32(head->size);
+			head->cmd = net::networkToHost32(head->cmd);
+
+			int32* id = (int32*)__InnerBuf.read(sizeof(HeaderMessage), sizeof(int32));
+			auto msglen = head->size - sizeof(HeaderMessage) - sizeof(int32);
+			SerializeMessagePtr message = std::make_shared<SerializeMessage>(id, __InnerBuf.read(sizeof(HeaderMessage) + sizeof(int32), msglen), msglen);
+
+			IOPacketPtr packet = std::make_shared<IOPacket>(getKey(), head->cmd, 0, 0, message);
+			dispatchPacket(packet);
+		}
 	}
 
 	

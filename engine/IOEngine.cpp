@@ -116,17 +116,17 @@ namespace engine
 		removeProtocol(uid);
 	}
 
-	void IOEngine::send(IOPacketPtr packet)
+	void IOEngine::send(const IOPacketPtr& packet)
 	{
 		send(CallbackHandlerPtr(), packet);
 	}
 
-	void IOEngine::send(const std::function<void(const IOPacketPtr&)>& func, IOPacketPtr packet)
+	void IOEngine::send(const std::function<void(const IOPacketPtr&)>& func, const IOPacketPtr& packet)
 	{
 		send(std::make_shared<CallbackHandlerImpl>(func), packet);
 	}
 
-	void IOEngine::send(CallbackHandlerPtr callbackHander, IOPacketPtr packet)
+	void IOEngine::send(const CallbackHandlerPtr& callbackHander, const IOPacketPtr& packet)
 	{
 		auto protocol = getProtocol(packet->getUid());
 		if (packet->getCommand())
@@ -202,6 +202,11 @@ namespace engine
 		handler->CallbackHandlerExistList::leave();
 		handler->CallbackHandlerTimeoutList::leave();
 		handler->onPacket(packet);
+	}
+
+	bool IOEngine::bindPacketHandler(uint32 cmd, const PacketHandlerPtr& handler)
+	{
+		return _packetHandlers.insert({cmd, handler}).second;
 	}
 
 	void IOEngine::dispatchIOPacket(PacketPtr packet)
@@ -444,7 +449,7 @@ namespace engine
 		return _nextCallbackId;
 	}
 
-	uint32 IOEngine::bindCallbackHandler(CallbackHandlerPtr& handler)
+	uint32 IOEngine::bindCallbackHandler(const CallbackHandlerPtr& handler)
 	{
 		assert(handler->_cbId == 0);
 		auto cbId = makeCallbackId();

@@ -8,6 +8,7 @@
 #include "network/Network.h"
 #include "engine/IOEngine.h"
 #include "engine/InnerProtocol.h"
+#include "TestMessage.h"
 using namespace net;
 using namespace std;
 using namespace engine;
@@ -22,6 +23,8 @@ public:
 	TestNet(CNetwork* net) : IOEngine(net),_isServer(false){}
 
 	bool _isServer;
+	int32 _suid;
+	int32 _cuid;
 
 	void onInit()
 	{
@@ -37,6 +40,18 @@ public:
 		{
 			auto protocol = CObjectPool<InnerProtocol>::Instance()->create(net::EPROTO_TCP);
 			uid = listen(9802, protocol);
+
+			bindPacketHandler(1, std::make_shared<CMessageHandlerBinding>([](CMessageContext& context) {
+				
+				core_log_debug("=========");
+				core_log_debug(context._cmd, context._uid);
+
+				msgs::TestMessagePtr msg = std::dynamic_pointer_cast<msgs::TestMessage>(context._msg);
+				if (msg)
+				{
+					core_log_debug(msg->value1, msg->value2);
+				}
+			}));
 		}
 		else
 		{
@@ -59,6 +74,14 @@ public:
 			core::CObjectPoolMonitor::showInfo();
 		}
 
+		if (i == 40 && _suid)
+		{
+			auto msg = std::make_shared<msgs::TestMessage>();
+			msg->value1 = 1;
+			msg->value2 = 2;
+			IOPacketPtr packet = std::make_shared<IOPacket>(_suid, 1, 0, 0, msg);
+			send(packet);
+		}
 	}
 
 	void onQuit()
@@ -81,6 +104,7 @@ public:
 	virtual void onAccept(uint32 uid, uint32 fromUid)
 	{
 		core_log_trace("accept ", uid, fromUid);
+		_cuid = uid;
 	}
 
 	virtual void onClose(uint32 uid)
@@ -91,6 +115,7 @@ public:
 	virtual void onConnect(uint32 uid, bool success)
 	{
 		core_log_trace("connect ", uid, success);
+		_suid = uid;
 	}
 
 	virtual void onDisconnect(uint32 uid)

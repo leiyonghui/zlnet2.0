@@ -135,9 +135,6 @@
     <ClInclude Include="network\IBuffer.h">
       <Filter>net</Filter>
     </ClInclude>
-    <ClInclude Include="network\IStream.h">
-      <Filter>net</Filter>
-    </ClInclude>
     <ClInclude Include="network\RingBuffer.h">
       <Filter>net</Filter>
     </ClInclude>
@@ -197,6 +194,12 @@
     </ClInclude>
     <ClInclude Include="engine\Serializes.h">
       <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="test\TestMessage.h">
+      <Filter>test</Filter>
+    </ClInclude>
+    <ClInclude Include="network\IIOBuffer.h">
+      <Filter>net</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -274,6 +277,9 @@
     </ClCompile>
     <ClCompile Include="engine\Serializes.cpp">
       <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="test\TestMessage.cpp">
+      <Filter>test</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

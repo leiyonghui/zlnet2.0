@@ -5,11 +5,6 @@ namespace net
 {
     class Buffer : public IBuffer
     {
-
-        Buffer(const Buffer& buff) = delete;
-
-        Buffer& operator = (const Buffer& buff) = delete;
-
     private:
 
         uint32 _size;
@@ -28,6 +23,27 @@ namespace net
         {
             delete[] _buff;
         }
+
+        Buffer(const Buffer& buff)
+        {
+            _capacity = buff._capacity;
+            _size = buff._size;
+            _buff = new char[_capacity];
+            memcpy(_buff, buff._buff, _size);
+        }
+
+		Buffer& operator = (const Buffer& buff)
+		{
+            if (&buff == this)
+                return *this;
+
+            delete[] _buff;
+
+			_capacity = buff._capacity;
+			_size = buff._size;
+			_buff = new char[_capacity];
+			memcpy(_buff, buff._buff, _size);
+		}
 
         void swap(Buffer& obj)
         {

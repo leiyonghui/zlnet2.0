@@ -22,15 +22,18 @@ namespace engine
 
 		void close(uint32 uid);
 
-		void send(IOPacketPtr packet);
+		void send(const IOPacketPtr& packet);
 
-		void send(const std::function<void(const IOPacketPtr&)>& func, IOPacketPtr packet);
+		void send(const std::function<void(const IOPacketPtr&)>& func, const IOPacketPtr& packet);
 
-		void send(CallbackHandlerPtr callbackHander, IOPacketPtr packet);
+		void send(const CallbackHandlerPtr& callbackHander, const IOPacketPtr& packet);
 
 		void dispatchPacket(const IOPacketPtr& packet);
 
 		void dispactchCallback(const IOPacketPtr& packet);
+
+		bool bindPacketHandler(uint32 cmd, const PacketHandlerPtr& handler);
+
 	protected:
 		void dispatchIOPacket(PacketPtr packet);
 
@@ -70,9 +73,10 @@ namespace engine
 		
 		uint32 makeCallbackId();
 
-		uint32 bindCallbackHandler(CallbackHandlerPtr& handler);
+		uint32 bindCallbackHandler(const CallbackHandlerPtr& handler);
 
 		void checkCallbackTimeout();
+
 	protected:
 		class net::CNetwork* _network;
 		std::unordered_map<uint32, ProtocolPtr>			_protocols;

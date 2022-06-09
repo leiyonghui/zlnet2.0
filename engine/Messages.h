@@ -28,7 +28,13 @@ namespace engine
 	class SerializeMessage : IMessage
 	{
 	public:
+		SerializeMessage();
 
+		SerializeMessage(int32 id, const net::Buffer& buffer);
+
+		SerializeMessage(const IMessagePtr& message);
+
+		SerializeMessage(int32 id, const char* ptr, uint32 len);
 
 		virtual int32 identity() { return _id; }
 

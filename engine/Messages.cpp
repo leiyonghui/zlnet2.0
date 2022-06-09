@@ -30,4 +30,25 @@ namespace engine
 		}
 		return iter->second();
 	}
+
+	SerializeMessage::SerializeMessage():_id(0), _buffer(128)
+	{
+
+	}
+
+	SerializeMessage::SerializeMessage(int32 id, const net::Buffer& buffer):_id(id), _buffer(buffer)
+	{
+
+	}
+
+	SerializeMessage::SerializeMessage(const IMessagePtr& message):_id(message->identity()), _buffer(128)
+	{
+		net::BufferWriter writer(&_buffer);
+		message->serialize(writer);
+	}
+
+	SerializeMessage::SerializeMessage(int32 id, const char* ptr, uint32 len):_id(id), _buffer(len)
+	{
+		_buffer.write(0, ptr, len);
+	}
 }
