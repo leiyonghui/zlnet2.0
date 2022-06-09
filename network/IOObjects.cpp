@@ -8,6 +8,12 @@ namespace net
 
 	}
 
+	Connection::~Connection()
+	{
+		delete _inputBuffer;
+		delete _outBuffer;
+	}
+
 	void Connection::onAwake(const IOProtocolPtr& protocol, CEndPointUnPtr endPoint)
 	{
 		IOObject::onAwake(protocol, std::move(endPoint));

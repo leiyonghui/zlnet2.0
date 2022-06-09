@@ -115,6 +115,33 @@ namespace net
 		_size -= len;
 	}
 
+	void CRingBuffer::look(char* buff, unsigned int len)
+	{
+		assert(_size >= len && len);
+
+		if (_end > _front)
+		{
+#ifdef _DEBUG
+			assert(_end - _front >= len);
+#endif // DEBUG
+			memcpy(buff, _buff + _front, len);
+		}
+		else
+		{
+			uint32 count = _capacity - _front;
+			if (count >= len)
+			{
+				memcpy(buff, _buff + _front, len);
+			}
+			else
+			{
+				uint32 remain = len - count;
+				memcpy(buff, _buff + _front, count);
+				memcpy(buff + count, _buff, remain);
+			}
+		}
+	}
+
 	SBufferVec* CRingBuffer::getWriteableVec()
 	{
 		_writerv[0].clear();

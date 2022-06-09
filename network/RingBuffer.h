@@ -1,10 +1,10 @@
 #pragma once
 #include "Configs.h"
-#include "IStream.h"
+#include "IIOBuffer.h"
 
 namespace net
 {
-    class CRingBuffer : public IStream
+    class CRingBuffer : public IIOBuffer
     {
         using uint32 = unsigned int;
 
@@ -24,6 +24,8 @@ namespace net
         void write_confirm(uint32 len) override;
 
         void read_confirm(uint32 len) override;
+
+		void look(char* buff, unsigned int len) override;
 
         SBufferVec* getWriteableVec() override;
 

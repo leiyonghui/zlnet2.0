@@ -47,7 +47,7 @@ namespace engine
 
 		virtual net::IOProtocolPtr create() const override;
 
-		virtual void onUnserialize(net::IStream* buffer) override;
+		virtual void onUnserialize(net::IIOBuffer* buffer) override;
 
 		virtual void onSerialize(net::IOEvent* event, net::IBuffer* buffer) override;
 	};

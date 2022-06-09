@@ -1,6 +1,6 @@
 #pragma once
 #include "Configs.h"
-#include "IStream.h"
+#include "IIOBuffer.h"
 #include "IOEvent.h"
 #include "IBuffer.h"
 #include "Address.h"
@@ -33,7 +33,7 @@ namespace net
 
 		virtual void onSerialize(IOEvent* event, IBuffer* buffer) = 0;
 
-		virtual void onUnserialize(IStream* buffer) = 0;
+		virtual void onUnserialize(IIOBuffer* buffer) = 0;
 
 		virtual void onListen(bool success) = 0;
 

@@ -81,13 +81,16 @@ namespace engine
 
 	}
 
-	void InnerProtocol::onUnserialize(net::IStream* buffer)
+	void InnerProtocol::onUnserialize(net::IIOBuffer* buffer)
 	{
 		if (buffer->size() < sizeof(Block))
-		{
 			return;
-		}
-		auto type;
+		Block block;
+		buffer->look((char*)(&block), sizeof(Block));
+		block.size = net::networkToHost32(block.size);
+		if (block.size > buffer->size())
+			return;
+
 	}
 
 	
