@@ -61,6 +61,7 @@ namespace net
 		auto protocol = con->getProtocol();
 		SBufferVec* writev = inputBuffer->getWriteableVec();
 		int32 writeable = writev[0].len + writev[1].len;
+		core_log_debug("wwwwwwww", writeable);
 		constexpr int32 extralen = 65536;
 		char extrabuf[extralen];
 		struct iovec vec[3];
@@ -78,7 +79,7 @@ namespace net
 		int32 cnt = endPoint->readv(vec, iovcnt);
 		if (cnt > 0)
 		{
-			if (cnt >= writeable)
+			if (cnt >= writeable && writeable)
 			{
 				inputBuffer->write_confirm(writeable);
 				inputBuffer->write(extrabuf, cnt - writeable);

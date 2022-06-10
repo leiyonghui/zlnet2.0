@@ -13,7 +13,7 @@ namespace engine
 
 		}
 
-		IOPacket(int32 uid, uint32 cmd, uint32 callbakdId, uint32  error, IMessagePtr message) : Packet(PacketMsg, uid), _cmd(cmd), _callbackId(callbakdId), _error(error), _message(message)
+		IOPacket(int32 uid, uint32 cmd, uint32 callbakdId, uint32  error, const IMessagePtr& message) : Packet(PacketMsg, uid), _cmd(cmd), _callbackId(callbakdId), _error(error), _message(message)
 		{
 
 		}
@@ -43,7 +43,7 @@ namespace engine
 			return _message;
 		}
 
-		void setMessage(IMessagePtr message)
+		void setMessage(const IMessagePtr& message)
 		{
 			_message = message;
 		}

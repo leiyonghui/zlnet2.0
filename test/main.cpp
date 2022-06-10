@@ -9,6 +9,7 @@
 #include "engine/IOEngine.h"
 #include "engine/InnerProtocol.h"
 #include "TestMessage.h"
+#include "engine/IOPacket.h"
 using namespace net;
 using namespace std;
 using namespace engine;
@@ -20,7 +21,7 @@ using namespace engine;
 class TestNet : public IOEngine
 {
 public:
-	TestNet(CNetwork* net) : IOEngine(net),_isServer(false){}
+	TestNet(CNetwork* net) : IOEngine(net),_isServer(false),_suid(0),_cuid(0){}
 
 	bool _isServer;
 	int32 _suid;
@@ -74,12 +75,14 @@ public:
 			core::CObjectPoolMonitor::showInfo();
 		}
 
-		if (i == 40 && _suid)
+		if (i % 40 == 39 && _suid)
 		{
+			core_log_debug("---send", _suid);
 			auto msg = std::make_shared<msgs::TestMessage>();
 			msg->value1 = 1;
 			msg->value2 = 2;
-			IOPacketPtr packet = std::make_shared<IOPacket>(_suid, 1, 0, 0, msg);
+			//IOPacketPtr packet = std::make_shared<IOPacket>(_suid, 1, 0, 0, msg);
+			IOPacketPtr packet(new IOPacket(_suid, 1, 0, 0, std::static_pointer_cast<IMessage>(msg)));
 			send(packet);
 		}
 	}
@@ -110,6 +113,7 @@ public:
 	virtual void onClose(uint32 uid)
 	{
 		core_log_trace("close ", uid);
+		_cuid = 0;
 	}
 
 	virtual void onConnect(uint32 uid, bool success)
@@ -121,6 +125,7 @@ public:
 	virtual void onDisconnect(uint32 uid)
 	{
 		core_log_trace("disconnect ", uid);
+		_suid = 0;
 	}
 };
 

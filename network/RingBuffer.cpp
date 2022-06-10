@@ -15,10 +15,11 @@ namespace net
 	{
 		assert(len > 0);
 		ensure(_size + len);
+		assert(_end == _front ? (_size == 0) : true);
 		if (_end >= _front /*|| (_end == _front && !_size)*/) //ensure保证有空间
 		{
 			uint32 count = _capacity - _end;
-			if (len <= count)
+			if (len < count)
 			{
 				memcpy(_buff + _end, buff, len);
 				_end += len;
@@ -54,7 +55,7 @@ namespace net
 		else
 		{
 			uint32 count = _capacity - _front;
-			if (count >= len)
+			if (count > len)
 			{
 				memcpy(buff, _buff + _front, len);
 				_front += len;
@@ -76,7 +77,7 @@ namespace net
 		if (_end >= _front)
 		{
 			uint32 count = _capacity - _end;
-			if (len <= count)
+			if (len < count)
 				_end += len;
 			else
 				_end = len - count;
@@ -102,7 +103,7 @@ namespace net
 		else
 		{
 			uint32 count = _capacity - _front;
-			if (count >= len)
+			if (count > len)
 			{
 				_front += len;
 			}
@@ -157,10 +158,13 @@ namespace net
 #endif // _DEBUG
 			uint32 len1 = _capacity - _end;
 			_writerv[0].buff = len1 > 0 ? _buff + _end : nullptr;
-			_writerv[0].len = len1;
-			uint32 len2 = _front - 1;
-			_writerv[1].buff = len1 > 0 ? _buff : nullptr;
-			_writerv[1].len = len2;
+			_writerv[0].len = len1 > 0 ? len1 : 0;
+			if (_front > 0) 
+			{
+				uint32 len2 = _front - 1;
+				_writerv[1].buff = len2 > 0 ? _buff : nullptr;
+				_writerv[1].len = len2 > 0 ? len2 : 0;
+			}
 		}
 		else
 		{
@@ -187,8 +191,8 @@ namespace net
 		}
 		else
 		{
-			uint32 len1 = _capacity - _front;
-			uint32 len2 = _size - len1;
+			int32 len1 = _capacity - _front;
+			int32 len2 = _size - len1;
 			_readerv[0].buff = _buff + _front;
 			_readerv[0].len = len1;
 			_readerv[1].buff = _buff;
@@ -203,6 +207,7 @@ namespace net
 		_end = 0;
 		_size = 0;
 		_writerv->clear();
+		_readerv->clear();
 	}
 
 	void CRingBuffer::ensure(uint32 capacity)

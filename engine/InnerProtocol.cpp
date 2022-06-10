@@ -34,6 +34,7 @@ namespace engine
 
 			uint32 datasize = 0;
 
+			__InnerBuf.clear();
 			if (auto message = packet->getMessage())
 			{
 				net::BufferWriter writer(&__InnerBuf);
@@ -58,7 +59,7 @@ namespace engine
 				{
 					int32 totalsize = datasize + uint32(sizeof(HeaderMessage));
 					HeaderMessage* head = (HeaderMessage*)(buffer->write(0, totalsize));
-					head->type = HeaderTypeCall;
+					head->type = HeaderTypeMessage;
 					head->cmd = net::hostToNetwork32(packet->getCommand());
 					head->size = net::hostToNetwork32(totalsize);
 					__InnerBuf.read(0, (char*)(head + 1), datasize);
@@ -89,8 +90,10 @@ namespace engine
 		Block block;
 		buffer->look((char*)(&block), sizeof(Block));
 		block.size = net::networkToHost32(block.size);
+		core_log_debug("--b:", (char*)(&block));
 		if (block.size > buffer->size())
 			return;
+		__InnerBuf.clear();
 		__InnerBuf.ensure(block.size);
 		buffer->read(__InnerBuf.write(0, block.size), block.size);
 		if (block.type == HeaderTypeCall)
@@ -102,9 +105,11 @@ namespace engine
 
 			int32* id = (int32*)__InnerBuf.read(sizeof(HeaderCall), sizeof(int32));
 			auto msglen = head->size - sizeof(HeaderCall) - sizeof(int32);
-			SerializeMessagePtr message = std::make_shared<SerializeMessage>(id, __InnerBuf.read(sizeof(HeaderCall) + sizeof(int32), msglen), msglen);
+			IMessagePtr message;
+			if (msglen) 
+				message = std::make_shared<SerializeMessage>(*id, __InnerBuf.read(sizeof(HeaderCall) + sizeof(int32), msglen), msglen);
 
-			IOPacketPtr packet = std::make_shared<IOPacket>(getKey(), head->cmd, head->callback, 0, message);
+			IOPacketPtr packet(new IOPacket(getKey(), head->cmd, head->callback, 0, std::static_pointer_cast<IMessage>(message)));
 			dispatchPacket(packet);
 		}
 		else if (block.type == HeaderTypeCallback)
@@ -116,9 +121,11 @@ namespace engine
 
 			int32* id = (int32*)__InnerBuf.read(sizeof(HeaderCallback), sizeof(int32));
 			auto msglen = head->size - sizeof(HeaderCallback) - sizeof(int32);
-			SerializeMessagePtr message = std::make_shared<SerializeMessage>(id, __InnerBuf.read(sizeof(HeaderCallback) + sizeof(int32), msglen), msglen);
+			IMessagePtr message;
+			if (msglen > 0) 
+				message = std::make_shared<SerializeMessage>(*id, __InnerBuf.read(sizeof(HeaderCallback) + sizeof(int32), msglen), msglen);
 
-			IOPacketPtr packet = std::make_shared<IOPacket>(getKey(), 0, head->callback, head->error, message);
+			IOPacketPtr packet(new IOPacket(getKey(), 0, head->callback, head->error, std::static_pointer_cast<IMessage>(message)));
 			dispatchPacket(packet);
 		}
 		else if (block.type == HeaderTypeMessage)
@@ -129,9 +136,11 @@ namespace engine
 
 			int32* id = (int32*)__InnerBuf.read(sizeof(HeaderMessage), sizeof(int32));
 			auto msglen = head->size - sizeof(HeaderMessage) - sizeof(int32);
-			SerializeMessagePtr message = std::make_shared<SerializeMessage>(id, __InnerBuf.read(sizeof(HeaderMessage) + sizeof(int32), msglen), msglen);
+			IMessagePtr message;
+			if (msglen)
+				message = std::make_shared<SerializeMessage>(*id, __InnerBuf.read(sizeof(HeaderMessage) + sizeof(int32), msglen), msglen);
 
-			IOPacketPtr packet = std::make_shared<IOPacket>(getKey(), head->cmd, 0, 0, message);
+			IOPacketPtr packet = std::make_shared<IOPacket>(getKey(), head->cmd, 0, 0, std::static_pointer_cast<IMessage>(message));
 			dispatchPacket(packet);
 		}
 	}

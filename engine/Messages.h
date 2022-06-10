@@ -25,7 +25,7 @@ namespace engine
 		static IMessagePtr Create(int32 id);
 	};
 
-	class SerializeMessage : IMessage
+	class SerializeMessage : public IMessage
 	{
 	public:
 		SerializeMessage();
@@ -36,9 +36,13 @@ namespace engine
 
 		SerializeMessage(int32 id, const char* ptr, uint32 len);
 
-		virtual int32 identity() { return _id; }
+		virtual int32 identity() const override { return _id; }
 
 		net::IBuffer* getBuffer() { return static_cast<net::IBuffer*>(&_buffer); }
+
+		virtual void serialize(net::BufferReader& archive) override;
+
+		virtual void serialize(net::BufferWriter& archive) const override;
 
 	protected:
 		int32 _id;

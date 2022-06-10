@@ -51,4 +51,15 @@ namespace engine
 	{
 		_buffer.write(0, ptr, len);
 	}
+
+    void SerializeMessage::serialize(net::BufferReader& archive)
+    {
+		_buffer.clear();
+		archive.readBytes(_buffer.write(0, archive.bytesLeft()), archive.bytesLeft());
+    }
+
+    void SerializeMessage::serialize(net::BufferWriter& archive) const
+    {
+		archive.writeBytes(_buffer.read(0, _buffer.size()), _buffer.size());
+    }
 }
