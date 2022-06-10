@@ -151,7 +151,7 @@ namespace net
 		{
 			return _writerv;
 		}
-		if (_end >= _front && _size)
+		if (_end >= _front)
 		{
 #ifdef _DEBUG
 			assert(_size == 0 ? _end == _front : true);

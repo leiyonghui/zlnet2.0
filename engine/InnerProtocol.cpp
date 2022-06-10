@@ -90,7 +90,14 @@ namespace engine
 		Block block;
 		buffer->look((char*)(&block), sizeof(Block));
 		block.size = net::networkToHost32(block.size);
-		core_log_debug("--b:", (char*)(&block));
+		char str[50];
+		buffer->look(str, sizeof(Block));
+		core_log_debug("======", int16(block.type), block.size);
+		for (int32 i = 0 ; i< sizeof(Block); i++)
+		{
+			printf("%c", str[i]);
+		}
+		core_log_debug("======");
 		if (block.size > buffer->size())
 			return;
 		__InnerBuf.clear();
@@ -136,6 +143,7 @@ namespace engine
 
 			int32* id = (int32*)__InnerBuf.read(sizeof(HeaderMessage), sizeof(int32));
 			auto msglen = head->size - sizeof(HeaderMessage) - sizeof(int32);
+			core_log_debug("..", head->size, head->cmd, msglen, id);
 			IMessagePtr message;
 			if (msglen)
 				message = std::make_shared<SerializeMessage>(*id, __InnerBuf.read(sizeof(HeaderMessage) + sizeof(int32), msglen), msglen);

@@ -132,6 +132,9 @@ public:
 
 int main(int argc, char** argv)
 {
+	MessageFactory::registerMessage(9999, []() -> IMessagePtr {
+		return std::make_shared<msgs::TestMessage>();
+	});
 	int32 type;
 	cin >> type;
 	TimeHelp::StartUp();

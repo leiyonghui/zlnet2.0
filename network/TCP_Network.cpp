@@ -79,9 +79,10 @@ namespace net
 		int32 cnt = endPoint->readv(vec, iovcnt);
 		if (cnt > 0)
 		{
-			if (cnt >= writeable && writeable)
+			if (cnt >= writeable)
 			{
-				inputBuffer->write_confirm(writeable);
+				if (writeable)
+					inputBuffer->write_confirm(writeable);
 				inputBuffer->write(extrabuf, cnt - writeable);
 			}
 			else
