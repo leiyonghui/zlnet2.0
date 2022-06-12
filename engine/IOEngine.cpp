@@ -61,6 +61,37 @@ namespace engine
 		return uid;
 	}
 
+	bool IOEngine::confirmListen(uint32 uid, int64 timeout)
+	{
+		auto protocol = getProtocol(uid);
+		if (!protocol)
+		{
+			return false;
+		}
+		if (protocol->isAvailable())
+		{
+			return true;
+		}
+		pollOnePacket(timeout, [protocol](const PacketPtr& packet) -> bool {
+			if (IONotifyPtr notity = std::dynamic_pointer_cast<IONotify>(packet))
+			{
+				if (notity->getProtocol() == protocol)
+				{
+					return true;
+				}
+			}
+			return false;
+		});
+		if (protocol->isAvailable())
+		{
+			return true;
+		}
+		removeProtocol(uid);		 //confircom²»ÓÃ´¥·¢unlisten
+		_network->close(uid, 0);   
+		core_log_error("listen confircom error", uid);
+		return false;
+	}
+
 	uint32 IOEngine::connect(const std::string& ip, uint16 port, const ProtocolPtr& protocol)
 	{
 		if (protocol->getKey())
@@ -81,6 +112,36 @@ namespace engine
 			return 0;
 		}
 		return uid;
+	}
+
+	bool IOEngine::confirmConnect(uint32 uid, int64 timeout)
+	{
+		auto protocol = getProtocol(uid);
+		if (!protocol)
+		{
+			return false;
+		}
+		if (protocol->isAvailable())
+		{
+			return true;
+		}
+		pollOnePacket(timeout, [protocol](const PacketPtr& packet)->bool {
+			if (IONotifyPtr notity = std::dynamic_pointer_cast<IONotify>(packet))
+			{
+				if (notity->getProtocol() == protocol)
+				{
+					return true;
+				}
+			}
+			return false;
+		});
+		if (protocol->isAvailable())
+		{
+			return true;
+		}
+		removeProtocol(uid);
+		_network->close(uid, 0);
+		return false;
 	}
 
 	void IOEngine::close(uint32 uid)
@@ -305,7 +366,7 @@ namespace engine
 		auto protocol = getProtocol(uid);
 		if (protocol != notify->getProtocol())
 		{
-			core_log_error("unexpect", uid);
+			core_log_warning("unexpect io listen", uid);
 			return;
 		}
 		if (notify->isSuccess())
@@ -320,9 +381,14 @@ namespace engine
 		IONotifyPtr notify = std::dynamic_pointer_cast<IONotify>(packet);
 		auto uid = notify->getUid();
 		auto protocol = getProtocol(uid);
-		if (protocol != notify->getProtocol())
+		if (!protocol)
 		{
-			core_log_error("unexpect", uid);
+			core_log_warning("unexpect io on unlisten", uid);
+			return;
+		}
+		if (!protocol->isAvailable())
+		{
+			core_log_error("unexpect available", uid);
 			return;
 		}
 		protocol->unsetAvailable();
@@ -373,7 +439,7 @@ namespace engine
 		onClose(uid);
 		if (!removeProtocol(uid))
 		{
-			core_log_error("unexpect", uid);
+			core_log_error("unexpect close", uid);
 		}
 	}
 
@@ -384,7 +450,7 @@ namespace engine
 		auto uid = protocol->getKey();
 		if (!core::exist(_protocols, uid))
 		{
-			core_log_error("unexpect connect", uid);
+			core_log_warning("unexpect connect no protocol", uid);
 			return;
 		}
 		if (notify->isSuccess())

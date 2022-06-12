@@ -112,5 +112,10 @@ namespace engine
 			}
 		}
 	}
+
+	void Engine::pollOnePacket(int64 timeout, const std::function<bool(const PacketPtr&)>& condition)
+	{
+		_msgqueue->pollOne(timeout, condition);
+	}
 	
 }

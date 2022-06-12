@@ -14,6 +14,7 @@ namespace net
 		{
 			core_log_error("unaccept", listener->getKey());
 			removeTcpListen(listener);
+			listener->getProtocol()->onUnlisten();
 			return;
 		}
 		auto key = popKey();
@@ -195,7 +196,6 @@ namespace net
 		auto protocol = listener->getProtocol();
 		_poller->deregisterObject(listener);
 		removeObject(listener->getKey());
-		protocol->onUnlisten();
 	}
 
 	void CNetwork::removeTcpCon(const ConnectionPtr& con)
@@ -426,6 +426,7 @@ namespace net
 	void CNetwork::tcpClose(const TcpListenerPtr& listener)
 	{
 		removeTcpListen(listener);
+		listener->getProtocol()->onUnlisten();
 	}
 
 }

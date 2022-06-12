@@ -7,13 +7,46 @@ namespace engine
 
 	}
 
-	void NetEngine::setupNode(uint32 code, uint32 type, uint16 port, const ProtocolPtr& protocol)
+	bool NetEngine::setupNode(uint32 code, uint32 type, uint16 port, const ProtocolPtr& protocol)
 	{
+		if (_nodeUid)
+		{
+			core_log_error("setup node exist", code, _nodeUid);
+			return false;
+		}
+		NodePtr node = std::make_shared<Node>(code, type, "", port, protocol);
+		core::insert(_connetNodes, code, node);
+		_nodeUid = listen(port, protocol);
+		if (!_nodeUid)
+		{
+			core_log_error("setup node listen error");
+			return false;
+		}
+		if (!confirmListen(_nodeUid, 1000 * 3))
+		{
+			_nodeUid = 0;
+			core_log_error("setup node listen error");
+			return false;
+		}
+		core_log_trace("setup node, code:", code, "type:", type, "port:", port);
+		return true;
 	}
 
-	void NetEngine::connectNode(uint32 code, uint32 type, const std::string& ip, uint16 port, const ProtocolPtr& protocol)
+	bool NetEngine::connectNode(uint32 code, uint32 type, const std::string& ip, uint16 port, const ProtocolPtr& protocol)
 	{
-
+		if (core::exist(_connetNodes, code))
+		{
+			return false;
+		}
+		NodePtr node = std::make_shared<Node>(code, type, ip, port, protocol);
+		core::insert(_connetNodes, code, node);
+		node->_uid = connect(ip, port, protocol);
+		if (!node->_uid)
+		{
+			core::insert(_connectingNodes, code, node);
+			core_log_warning("connect node no uid");
+		}
+		return true;
 	}
 
 	void NetEngine::disConnectNode(uint32 code)
@@ -52,5 +85,51 @@ namespace engine
 	void NetEngine::handlerNodePong(CMessageContext& context)
 	{
 
+	}
+
+	void NetEngine::onTimer1000ms()
+	{
+		IOEngine::onTimer1000ms();
+
+		for (auto[code, node] : _connectingNodes)
+		{
+
+		}
+	}
+
+	void NetEngine::onAccept(uint32 uid, uint32 fromUid)
+	{
+		IOEngine::onAccept(uid, fromUid);
+	}
+
+	void NetEngine::onClose(uint32 uid)
+	{
+		IOEngine::onClose(uid);
+	}
+
+	void NetEngine::onConnect(uint32 uid, bool success)
+	{
+		IOEngine::onConnect(uid, success);
+		if (success)
+		{
+
+		}
+		else
+		{
+
+		}
+	}
+
+	void NetEngine::onDisconnect(uint32 uid)
+	{
+		IOEngine::onDisconnect(uid);
+	}
+
+	void NetEngine::onConnectNode(uint32 uid, uint32 code, uint32 type)
+	{
+	}
+
+	void NetEngine::onDisConnectNode(uint32 uid)
+	{
 	}
 }

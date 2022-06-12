@@ -18,7 +18,11 @@ namespace engine
 
 		uint32 listen(uint16 port, const ProtocolPtr& protocol);
 
+		bool confirmListen(uint32 uid, int64 timeout);
+
 		uint32 connect(const std::string& ip, uint16 port, const ProtocolPtr& protocol);
+
+		bool confirmConnect(uint32 uid, int64 timeout);
 
 		void close(uint32 uid);
 
@@ -43,17 +47,17 @@ namespace engine
 
 		virtual void onTimer1000ms() override;
 
-		virtual void onListen(uint32 uid, bool success);
+		virtual void onListen(uint32 uid, bool success);				//监听
 
-		virtual void onUnlisten(uint32 uid);
+		virtual void onUnlisten(uint32 uid);							//关闭监听
 
-		virtual void onAccept(uint32 uid, uint32 fromUid);
+		virtual void onAccept(uint32 uid, uint32 fromUid);				
 
-		virtual void onClose(uint32 uid);
+		virtual void onClose(uint32 uid);								//连接关闭
 
-		virtual void onConnect(uint32 uid, bool success);
+		virtual void onConnect(uint32 uid, bool success);				//连接
 
-		virtual void onDisconnect(uint32 uid);
+		virtual void onDisconnect(uint32 uid);							//连接关闭
 
 	private:
 		void onIOListen(PacketPtr packet);

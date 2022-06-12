@@ -36,6 +36,8 @@ namespace engine
 
 		virtual void onLoop();
 
+		void pollOnePacket(int64 timeout, const std::function<bool(const PacketPtr&)>& condition);
+
 	private:
 		bool _runing;
 		int64 _lastClock1000ms;
