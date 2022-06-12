@@ -113,12 +113,16 @@ namespace net
             return (_buff + pos);
         }
 
-        void toString()
+        void printString(int32 len)
         {
             int32 sz = _size < 512 ? _size : 512;
             char str[sz];
             memcpy(str, _buff, sz);
-            printf("%s\n", str);
+            for (int32 i = 0; i < std::min(sz, len); i++)
+            {
+                std::cout << int16(str[i]);
+            }
+            std::cout << std::endl;
         }
 
         void ensure(uint32 size)
@@ -234,7 +238,7 @@ namespace net
 
 		virtual void read(uint32 pos, char* data, uint32 size) const override
 		{
-            assert(pos + size < _size);
+            assert(pos + size <= _size);
 			memcpy(data, _ptr + pos, size);
 		}
 
@@ -246,7 +250,18 @@ namespace net
 			return _ptr + pos;
 		}
 
-	private:
+		void printString(int32 len)
+		{
+			int32 sz = _size < 512 ? _size : 512;
+			char str[sz];
+			memcpy(str, _ptr, sz);
+			for (size_t i = 0; i < std::min(sz, len); i++)
+			{
+				std::cout << int16(str[i]);
+			}
+			std::cout << std::endl;
+		}
+
 		void ensure(uint32 size)
 		{
 			if (_capacity >= size)

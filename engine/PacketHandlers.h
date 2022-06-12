@@ -34,7 +34,7 @@ namespace engine
 
 		uint32 _uid;
 		uint32 _cbId;
-		uint64 _toMs;
+		int64 _toMs;
 		uint32 _cmd;
 	};
 	USING_SHARED_PTR(CallbackHandler);

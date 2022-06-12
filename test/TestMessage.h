@@ -1,5 +1,6 @@
 #pragma once
-#include "engine/Messages.h"
+#include "engine/IMessage.h"
+#include "Configs.h"
 
 namespace msgs
 {
@@ -13,9 +14,9 @@ namespace msgs
 
         virtual ~TestMessage() {};
 
-        virtual void serialize(BufferReader& archive);
+        virtual void serialize(net::BufferReader& archive) override;
 
-        virtual void serialize(BufferWriter& archive) const;
+        virtual void serialize(net::BufferWriter& archive) const override;
 
         virtual int32 identity() const { return IDENTITY; }
 
@@ -25,11 +26,11 @@ namespace msgs
 
         int32 value1;
         int64 value2;
-        //string str;
-        //std::vector<int32> values;
-        //std::map<int32, int64> map;
-        //std::set<int32> set;
-        //std::vector<string> strValues;
+		std::string str;
+		std::vector<int32> values;
+		std::map<int32, int64> map;
+		std::set<int32> set;
+		std::vector<std::string> strValues;
     };
     USING_SHARED_PTR(TestMessage);
 }

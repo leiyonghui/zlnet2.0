@@ -3,9 +3,10 @@ cmake_minimum_required(VERSION 3.10)
 project(lyhServer)
 
 if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE "Release")
+  set(CMAKE_BUILD_TYPE "Debug")
 endif()
 
+message(status "build type: .....${CMAKE_BUILD_TYPE}")
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
 	message(status "SYSTEM: ....liunx")

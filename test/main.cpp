@@ -10,6 +10,7 @@
 #include "engine/InnerProtocol.h"
 #include "TestMessage.h"
 #include "engine/IOPacket.h"
+#include "core/Macro.h"
 using namespace net;
 using namespace std;
 using namespace engine;
@@ -44,13 +45,13 @@ public:
 
 			bindPacketHandler(1, std::make_shared<CMessageHandlerBinding>([](CMessageContext& context) {
 				
-				core_log_debug("=========");
+				core_log_debug("========= msg rev");
 				core_log_debug(context._cmd, context._uid);
 
 				msgs::TestMessagePtr msg = std::dynamic_pointer_cast<msgs::TestMessage>(context._msg);
 				if (msg)
 				{
-					core_log_debug(msg->value1, msg->value2);
+					msg->tostirng();
 				}
 			}));
 		}
@@ -75,15 +76,19 @@ public:
 			core::CObjectPoolMonitor::showInfo();
 		}
 
-		if (i % 40 == 39 && _suid)
+		if (i % 30 == 29 && _suid)
 		{
-			core_log_debug("---send", _suid);
-			auto msg = std::make_shared<msgs::TestMessage>();
-			msg->value1 = 1;
-			msg->value2 = 2;
-			//IOPacketPtr packet = std::make_shared<IOPacket>(_suid, 1, 0, 0, msg);
-			IOPacketPtr packet(new IOPacket(_suid, 1, 0, 0, std::static_pointer_cast<IMessage>(msg)));
+			msgs::TestMessagePtr msg = std::make_shared<msgs::TestMessage>();
+			msg->value1 = 1024;
+			msg->value2 = int64(1)<<52;
+			msg->values = { 1, 2, 3, 4, 5 };
+			msg->strValues = { "a", "ab", "abc" };
+			msg->str = "hellow world!";
+			msg->set = { 8, 7, 0 };
+			msg->tostirng();
+			IOPacketPtr packet(new IOPacket(_suid, 1, 0, 0, msg));
 			send(packet);
+			core_log_debug("---send2", _suid, msg->value1, msg->value2);
 		}
 	}
 
@@ -126,6 +131,7 @@ public:
 	{
 		core_log_trace("disconnect ", uid);
 		_suid = 0;
+		_runing = false;
 	}
 };
 
@@ -135,8 +141,18 @@ int main(int argc, char** argv)
 	MessageFactory::registerMessage(9999, []() -> IMessagePtr {
 		return std::make_shared<msgs::TestMessage>();
 	});
+
+	if (CheckCPUendian())
+		std::cout << " big-endian  " << std::endl;
+	else
+		std::cout << " little-endian  " << std::endl;
+
 	int32 type;
 	cin >> type;
+	if (type == 0)
+	{
+		return 0;
+	}
 	TimeHelp::StartUp();
 	if (type == 1)
 	{

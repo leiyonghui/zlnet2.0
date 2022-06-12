@@ -57,7 +57,7 @@ namespace net
 
 		inline uint64 hostToNetwork64(uint64 host64)
 		{
-			return htobe64(host64);
+			return  CheckCPUendian() ? host64 : le64toh(host64);
 		}
 
 		inline uint32 hostToNetwork32(uint32 host32)
@@ -72,7 +72,7 @@ namespace net
 
 		inline int64 networkToHost64(uint64 net64)
 		{
-			return be64toh(net64);
+			return CheckCPUendian() ? net64 : be64toh(net64);
 		}
 
 		inline uint32 networkToHost32(uint32 net32)

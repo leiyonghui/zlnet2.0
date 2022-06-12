@@ -201,6 +201,12 @@
     <ClInclude Include="network\IIOBuffer.h">
       <Filter>net</Filter>
     </ClInclude>
+    <ClInclude Include="test\Configs.h">
+      <Filter>test</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\Headers.h">
+      <Filter>engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="network\Address.cpp">

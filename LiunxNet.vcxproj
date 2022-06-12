@@ -106,6 +106,7 @@
     <ClInclude Include="core\core\TimerWheel.h" />
     <ClInclude Include="engine\Configs.h" />
     <ClInclude Include="engine\Engine.h" />
+    <ClInclude Include="engine\Headers.h" />
     <ClInclude Include="engine\IMessage.h" />
     <ClInclude Include="engine\InnerProtocol.h" />
     <ClInclude Include="engine\IOEngine.h" />
@@ -136,6 +137,7 @@
     <ClInclude Include="network\TCP_IOObjects.h" />
     <ClInclude Include="network\IOProtocol.h" />
     <ClInclude Include="network\Network.h" />
+    <ClInclude Include="test\Configs.h" />
     <ClInclude Include="test\TestMessage.h" />
   </ItemGroup>
   <ItemGroup>
