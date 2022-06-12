@@ -255,7 +255,7 @@ namespace net
 			int32 sz = _size < 512 ? _size : 512;
 			char str[sz];
 			memcpy(str, _ptr, sz);
-			for (size_t i = 0; i < std::min(sz, len); i++)
+			for (int32 i = 0; i < std::min(sz, len); i++)
 			{
 				std::cout << int16(str[i]);
 			}

@@ -4,6 +4,13 @@
 
 namespace engine
 {
+	enum EMsgCmd
+	{
+		Heart = 1,
+		Ping = 1,
+		Pong = 2
+	};
+
 	struct CMessageContext
 	{
 		CMessageContext(uint32 uid, uint32 cmd, IMessagePtr msg):_uid(uid), _cmd(cmd), _msg(msg)

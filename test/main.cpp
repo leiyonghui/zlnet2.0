@@ -70,19 +70,21 @@ public:
 
 	void onTimer1000ms()
 	{
+		IOEngine::onTimer1000ms();
+
 		static int32 i = 0;
 		if (++i % 30 == 1)
 		{
 			core::CObjectPoolMonitor::showInfo();
 		}
 
-		if (i % 2 == 1 && _suid)
+		if (i % 50 == 39 && _suid)
 		{
 			msgs::TestMessagePtr msg = std::make_shared<msgs::TestMessage>();
 			msg->value1 = 1024;
 			msg->value2 = int64(1)<<52;
 			msg->str = "hellow world!";
-			for (int32 i = 1 ; i <= 2048; i++)
+			for (int32 i = 1 ; i <= 20; i++)
 			{
 				msg->values.push_back(i);
 				msg->strValues.push_back(std::to_string(i));
@@ -90,7 +92,7 @@ public:
 				msg->map.insert({i, i});
 			}
 			core_log_debug("---send2", _suid, msg->tostirng());
-			IOPacketPtr packet(new IOPacket(_suid, 1, 0, 0, msg));
+			IOPacketPtr packet(new IOPacket(_suid, 1, 0, 0, std::make_shared<SerializeMessage>(msg)));
 			send(packet);
 		}
 	}
@@ -128,7 +130,10 @@ public:
 	virtual void onConnect(uint32 uid, bool success)
 	{
 		core_log_trace("connect ", uid, success);
-		_suid = uid;
+		if (success)
+		{
+			_suid = uid;
+		}
 	}
 
 	virtual void onDisconnect(uint32 uid)

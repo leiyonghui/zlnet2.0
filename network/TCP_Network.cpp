@@ -61,7 +61,6 @@ namespace net
 		auto protocol = con->getProtocol();
 		SBufferVec* writev = inputBuffer->getWriteableVec();
 		int32 writeable = writev[0].len + writev[1].len;
-		core_log_debug("wwwwwwww", writeable);
 		constexpr int32 extralen = 65536;
 		char extrabuf[extralen];
 		struct iovec vec[3];

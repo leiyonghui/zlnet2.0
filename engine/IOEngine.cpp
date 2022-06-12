@@ -6,6 +6,8 @@
 
 namespace engine
 {
+	const int32 MAX_HEART_COUNT = 10;
+
 	IOEngine::IOEngine(net::CNetwork* network): Engine(), _network(network), _nextCallbackId(0), _callbackTimeoutMs(10000)
 	{
 		
@@ -246,6 +248,10 @@ namespace engine
 		bindMsgdispatcher([this](const PacketPtr& packet) {
 			dispatchIOPacket(packet);
 		});
+
+		bindPacketHandler(EMsgCmd::Heart, std::make_shared<CMessageHandlerBinding>([this](CMessageContext& context) {
+			handlerProtocolHeart(context);
+		}));
 	}
 
 	void IOEngine::onQuit()
@@ -263,7 +269,9 @@ namespace engine
 	{
 		Engine::onTimer1000ms();
 		
-		checkCallbackTimeout();
+		onTimerCallbackTimeout();
+
+		onTimerProtocolHeart();
 	}
 
 	void IOEngine::onListen(uint32 uid, bool success)
@@ -471,7 +479,7 @@ namespace engine
 		return cbId;
 	}
 
-	void IOEngine::checkCallbackTimeout()
+	void IOEngine::onTimerCallbackTimeout()
 	{
 		auto now = TimeHelp::clock_ms().count();
 		while (!_callbackTimeOutList.empty())
@@ -487,6 +495,45 @@ namespace engine
 			handler->CallbackHandlerTimeoutList::leave();
 			IOPacketPtr packet = std::make_shared<IOPacket>(handler->_uid, handler->_cmd,handler->_cbId, ErrCode_Timeout);
 			handler->onPacket(packet);
+		}
+	}
+
+	void IOEngine::onTimerProtocolHeart()
+	{
+		for (auto&[uid, protocol] : _protocols)
+		{
+			if (!protocol->isAvailable())
+				continue;
+			if (protocol->getType() == net::IO_OBJECT_LISTENER)
+				continue;
+			if (protocol->getType() == net::IO_OBJECT_CONNECTOR)
+			{
+				IOPacketPtr packet(new IOPacket(uid, EMsgCmd::Heart, 0, 0, nullptr));
+				send(packet);
+			}
+			else if (protocol->getType() == net::IO_OBJECT_CONNECTION)
+			{
+				auto count = protocol->getHeartCount() + 1;
+				if (count > MAX_HEART_COUNT) {
+					core_log_trace("protocol heart close", uid, count);
+					close(uid);
+				}
+				else
+					protocol->setHeartCount(count);
+			}
+		}
+	}
+
+	void IOEngine::handlerProtocolHeart(CMessageContext& context)
+	{
+		auto protocol = getProtocol(context._uid);
+		if (protocol && protocol->isAvailable())
+		{
+			protocol->setHeartCount(0);
+		}
+		else 
+		{
+			core_log_error("unknow heart", context._uid);
 		}
 	}
 }

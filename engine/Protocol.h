@@ -9,6 +9,8 @@ namespace engine
 	class Protocol : public net::IOProtocol
 	{
 	public:
+		Protocol();
+
 		void onAwake(EPROTOCOL pType);
 		void onRecycle();
 
@@ -21,6 +23,10 @@ namespace engine
 		void setQueue(MsgQueue<PacketPtr>* queue);
 
 		CallbackHandlerExistList& getCallbackList();
+
+		int32 getHeartCount() const;
+
+		void setHeartCount(int32 count);
 	protected:
 		void dispatchPacket(PacketPtr packet);
 
@@ -39,6 +45,7 @@ namespace engine
 
 	protected:
 		bool _available;
+		int32 _heartbeat;
 		MsgQueue<PacketPtr>* _msgqueue;
 		CallbackHandlerExistList _callbacklist;
 	};

@@ -4,10 +4,15 @@
 
 namespace engine
 {
+	Protocol::Protocol():net::IOProtocol(),_available(false),_heartbeat(0)
+	{
+	}
 
 	void Protocol::onAwake(EPROTOCOL pType)
 	{
 		net::IOProtocol::onAwake(pType);
+		_available = false;
+		_heartbeat = 0;
 	}
 
 	void Protocol::onRecycle()
@@ -38,6 +43,16 @@ namespace engine
 	CallbackHandlerExistList& Protocol::getCallbackList()
 	{
 		return _callbacklist;
+	}
+
+	int32 Protocol::getHeartCount() const
+	{
+		return _heartbeat;
+	}
+
+	void Protocol::setHeartCount(int32 count)
+	{
+		_heartbeat = count;
 	}
 
 	void Protocol::dispatchPacket(PacketPtr packet)

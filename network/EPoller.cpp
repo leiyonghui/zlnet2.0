@@ -50,7 +50,7 @@ namespace net
 				continue;
 			}
 			const uint32& ev = event.events;
-			printfEvent(object->getSocket(), ev);
+			//printfEvent(object->getSocket(), ev);
 			if (ev & EPOLLERR)
 			{
 				auto& callback = object->getErrorCallback();
