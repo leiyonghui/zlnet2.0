@@ -1,7 +1,6 @@
 #include "IOPacket.h"
 #include "InnerProtocol.h"
 #include "network/IOEvents.h"
-#include "test/TestMessage.h"
 #include "Headers.h"
 
 namespace engine
@@ -41,12 +40,6 @@ namespace engine
 				writer.writeInt32(message->identity());
 				message->serialize(writer);
 				datasize = writer.bytesWritten();
-				innerBuf.printString(datasize);
-
-				if (auto msg = std::dynamic_pointer_cast<msgs::TestMessage>(packet->getMessage()))
-				{
-					core_log_debug("===============", msg->value1, msg->value2);
-				}
 			}
 
 			if (packet->getCommand())
@@ -138,7 +131,7 @@ namespace engine
 		}
 		else if (block.type == HeaderTypeMessage)
 		{
-			HeaderMessage* head = (HeaderMessage*)(innerBuf.read(0, sizeof(HeaderMessage)));
+			HeaderMessage* head = (HeaderMessage*)(innerBuf.read(0, uint32(sizeof(HeaderMessage))));
 			head->size = net::hostToNetwork32(head->size);
 			head->cmd = net::networkToHost32(head->cmd);
 

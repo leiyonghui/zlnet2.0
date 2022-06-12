@@ -14,11 +14,15 @@ namespace engine
 
 		virtual void run();
 
+		void stop();
+
 		void bindMsgdispatcher(const std::function<void(const PacketPtr&)>& func);
 
 		void bindMsgdispatcher(std::function<void(const PacketPtr&)>&& func);
 
 		void postPacket(const PacketPtr& packet);
+
+		MsgQueue<PacketPtr>* getMsgQueue();
 	protected:
 		virtual void onInit();
 
@@ -32,7 +36,7 @@ namespace engine
 
 		virtual void onLoop();
 
-	protected:
+	private:
 		bool _runing;
 		int64 _lastClock1000ms;
 		MsgQueue<PacketPtr>* _msgqueue;

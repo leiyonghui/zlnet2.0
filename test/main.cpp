@@ -51,7 +51,7 @@ public:
 				msgs::TestMessagePtr msg = std::dynamic_pointer_cast<msgs::TestMessage>(context._msg);
 				if (msg)
 				{
-					msg->tostirng();
+					core_log_debug("---rev", msg->tostirng());
 				}
 			}));
 		}
@@ -76,24 +76,28 @@ public:
 			core::CObjectPoolMonitor::showInfo();
 		}
 
-		if (i % 30 == 29 && _suid)
+		if (i % 2 == 1 && _suid)
 		{
 			msgs::TestMessagePtr msg = std::make_shared<msgs::TestMessage>();
 			msg->value1 = 1024;
 			msg->value2 = int64(1)<<52;
-			msg->values = { 1, 2, 3, 4, 5 };
-			msg->strValues = { "a", "ab", "abc" };
 			msg->str = "hellow world!";
-			msg->set = { 8, 7, 0 };
-			msg->tostirng();
+			for (int32 i = 1 ; i <= 2048; i++)
+			{
+				msg->values.push_back(i);
+				msg->strValues.push_back(std::to_string(i));
+				msg->set.insert(i);
+				msg->map.insert({i, i});
+			}
+			core_log_debug("---send2", _suid, msg->tostirng());
 			IOPacketPtr packet(new IOPacket(_suid, 1, 0, 0, msg));
 			send(packet);
-			core_log_debug("---send2", _suid, msg->value1, msg->value2);
 		}
 	}
 
 	void onQuit()
 	{
+		IOEngine::onQuit();
 		core_log_trace("quit");
 	}
 
@@ -131,7 +135,7 @@ public:
 	{
 		core_log_trace("disconnect ", uid);
 		_suid = 0;
-		_runing = false;
+		stop();
 	}
 };
 

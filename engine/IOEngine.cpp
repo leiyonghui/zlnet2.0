@@ -13,7 +13,6 @@ namespace engine
 
 	IOEngine::~IOEngine()
 	{
-		delete _network;
 	}
 
 	ProtocolPtr IOEngine::getProtocol(uint32 uid)
@@ -51,7 +50,7 @@ namespace engine
 			core_log_error("listen unexpected");
 			return 0;
 		}
-		protocol->setQueue(_msgqueue);
+		protocol->setQueue(getMsgQueue());
 		if (!core::insert(_protocols, uid, protocol))
 		{
 			core_log_error("listen unexpected");
@@ -73,7 +72,7 @@ namespace engine
 			core_log_error("connect unexpected");
 			return 0;
 		}
-		protocol->setQueue(_msgqueue);
+		protocol->setQueue(getMsgQueue());
 		if (!core::insert(_protocols, uid, protocol))
 		{
 			core_log_error("connect unexpected");
@@ -247,6 +246,17 @@ namespace engine
 		bindMsgdispatcher([this](const PacketPtr& packet) {
 			dispatchIOPacket(packet);
 		});
+	}
+
+	void IOEngine::onQuit()
+	{
+		Engine::onQuit();
+
+		_network->stop();
+		while (_network->isStart())
+		{
+			std::this_thread::sleep_for(4ms);
+		}
 	}
 
 	void IOEngine::onTimer1000ms()

@@ -27,7 +27,7 @@ namespace msgs
         int32 value1;
         int64 value2;
 		std::string str;
-		std::vector<int32> values;
+		std::vector<int64> values;
 		std::map<int32, int64> map;
 		std::set<int32> set;
 		std::vector<std::string> strValues;

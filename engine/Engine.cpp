@@ -22,6 +22,11 @@ namespace engine
 		onQuit();
 	}
 
+	void Engine::stop()
+	{
+		_runing = false;
+	}
+
 	void Engine::bindMsgdispatcher(const std::function<void(const PacketPtr&)>& func)
 	{
 		_msgqueue->bindDispatcher(func);
@@ -35,6 +40,11 @@ namespace engine
 	void Engine::postPacket(const PacketPtr& packet)
 	{
 		_msgqueue->pushBack(packet);
+	}
+
+	MsgQueue<PacketPtr>* Engine::getMsgQueue()
+	{
+		return _msgqueue;
 	}
 
 	void Engine::onInit()
@@ -71,7 +81,7 @@ namespace engine
 
 	void Engine::onIdel()
 	{
-
+		std::this_thread::sleep_for(4ms);
 	}
 
 	void Engine::onTimer1000ms()

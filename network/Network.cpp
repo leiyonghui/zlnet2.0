@@ -11,7 +11,7 @@
 
 namespace net
 {
-	CNetwork::CNetwork() :_isStart(false),_poller(new CEPoller()),_shceduler(new timerset::TimerSet()), _timerHandler(nullptr), _lastclock(0)
+	CNetwork::CNetwork() :_isStart(false), _isStop(false),_poller(new CEPoller()),_shceduler(new timerset::TimerSet()), _timerHandler(nullptr), _lastclock(0)
 	{
 		_objects.resize(MAX_OBJECT_SIZE);
 	}
@@ -56,12 +56,23 @@ namespace net
 	{
 		assert(!_isStart);
 		_isStart = true;
+		_isStop = false;
 
 		init();
 
 		loop();
 
 		onQuit();
+	}
+
+	void CNetwork::stop()
+	{
+		_isStop = true;
+	}
+
+	bool CNetwork::isStart()
+	{
+		return _isStart;
 	}
 
 	uint32 CNetwork::listen(uint16 port, IOProtocolPtr protocol)
@@ -116,7 +127,7 @@ namespace net
 	{
 		auto timer = TimerHander(_shceduler);
 		_timerHandler = &timer;
-		while (_isStart)
+		while (!_isStop)
 		{
 			_poller->poll(_objects, 1);
 
@@ -143,6 +154,7 @@ namespace net
 			}
 			_shceduler->update(now);
 		}
+		_isStart = false;
 	}
 
 	void CNetwork::onQuit()

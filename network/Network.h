@@ -16,6 +16,9 @@ namespace net
 		virtual ~CNetwork();
 	public:
 		void start();
+		void stop();
+		bool isStart();
+
 		uint32 listen(uint16 port, IOProtocolPtr protocol);//multi-thread
 		uint32 connect(const std::string& ip, uint16 port, IOProtocolPtr protocol);//multi-thread
 		void close(uint32 key, int32 second);//multi-thread
@@ -64,6 +67,7 @@ namespace net
 		void tcpClose(const TcpListenerPtr& listener);
 	private:
 		bool _isStart;
+		std::atomic_bool _isStop;
 		ObjecKeyPool _keyPool;
 		std::vector<IOObjectPtr> _objects;
 		Queue<IOEvent*> _eventQueue;

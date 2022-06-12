@@ -39,6 +39,8 @@ namespace engine
 
 		virtual void onInit() override;
 
+		virtual void onQuit() override;
+
 		virtual void onTimer1000ms() override;
 
 		virtual void onListen(uint32 uid, bool success);
