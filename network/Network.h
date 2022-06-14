@@ -17,7 +17,7 @@ namespace net
 	public:
 		void start();
 		void stop();
-		bool isStart();
+		bool isRuning();
 
 		uint32 listen(uint16 port, IOProtocolPtr protocol);//multi-thread
 		uint32 connect(const std::string& ip, uint16 port, IOProtocolPtr protocol);//multi-thread
@@ -36,6 +36,7 @@ namespace net
 		void removeObject(uint32 key);
 		IOObjectPtr getObject(uint32 key) const;
 
+		void run();
 		void init();
 		void loop();
 		void onQuit();
@@ -66,7 +67,7 @@ namespace net
 		void tcpClose(const TcpConnectorPtr& con, int32 second);
 		void tcpClose(const TcpListenerPtr& listener);
 	private:
-		bool _isStart;
+		bool _isRuning;
 		std::atomic_bool _isStop;
 		ObjecKeyPool _keyPool;
 		std::vector<IOObjectPtr> _objects;
@@ -75,5 +76,6 @@ namespace net
 		IScheduler* _shceduler;
 		TimerHander* _timerHandler;
 		int64 _lastclock;
+		std::thread _thr;
 	};
 }

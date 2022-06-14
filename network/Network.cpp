@@ -11,7 +11,7 @@
 
 namespace net
 {
-	CNetwork::CNetwork() :_isStart(false), _isStop(false),_poller(new CEPoller()),_shceduler(new timerset::TimerSet()), _timerHandler(nullptr), _lastclock(0)
+	CNetwork::CNetwork() :_isRuning(false), _isStop(false),_poller(new CEPoller()),_shceduler(new timerset::TimerSet()), _timerHandler(nullptr), _lastclock(0)
 	{
 		_objects.resize(MAX_OBJECT_SIZE);
 	}
@@ -54,25 +54,22 @@ namespace net
 
 	void CNetwork::start()
 	{
-		assert(!_isStart);
-		_isStart = true;
+		_isRuning = true;
 		_isStop = false;
-
-		init();
-
-		loop();
-
-		onQuit();
+		_thr = std::thread([this]() {
+			run();
+		});
 	}
 
 	void CNetwork::stop()
 	{
 		_isStop = true;
+		_thr.join();
 	}
 
-	bool CNetwork::isStart()
+	bool CNetwork::isRuning()
 	{
-		return _isStart;
+		return _isRuning;
 	}
 
 	uint32 CNetwork::listen(uint16 port, IOProtocolPtr protocol)
@@ -116,6 +113,16 @@ namespace net
 		_keyPool.push(key);
 	}
 
+	void CNetwork::run()
+	{
+		core_log_trace("start net:", std::this_thread::get_id());
+		init();
+
+		loop();
+
+		onQuit();
+	}
+
 	void CNetwork::init()
 	{
 #ifdef __linux
@@ -154,11 +161,11 @@ namespace net
 			}
 			_shceduler->update(now);
 		}
-		_isStart = false;
 	}
 
 	void CNetwork::onQuit()
 	{
+
 	}
 
 	void CNetwork::onTimer1000ms()

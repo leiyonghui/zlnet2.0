@@ -169,12 +169,14 @@ int main(int argc, char** argv)
 		TestNet engine(&net);
 		engine._isServer = true;
 		engine.run();
+		net.stop();
 	}
 	else if(type == 2)
 	{
 		CNetwork net;
 		TestNet engine(&net);
 		engine.run();
+		net.stop();
 	}
 	//core_log_trace("test", addr.toString());
 	return 0;

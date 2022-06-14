@@ -204,6 +204,10 @@ namespace net
 		con->setState(DISCONNECTED);
 		_poller->deregisterObject(con);
 
+		if (con->isWriting()) 
+		{
+			CORE_LOG_ERROR("remove con is writing", con->getKey());
+		}
 		removeObject(con->getKey());
 		if (con->getType() == IO_OBJECT_CONNECTION)
 		{
@@ -363,7 +367,7 @@ namespace net
 		{
 			if (state == DISCONNECTING)
 			{
-				core_log_trace("close con distonnecting", con->getKey());
+				core_log_warning("close con distonnecting", con->getKey());
 				return;
 			}
 			con->setState(DISCONNECTING);

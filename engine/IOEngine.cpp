@@ -29,13 +29,6 @@ namespace engine
 
 	void IOEngine::run()
 	{
-		std::thread ([this]() {
-
-			core_log_trace("start net:", std::this_thread::get_id());
-			_network->start();
-
-		}).detach();
-
 		Engine::run();
 	}
 
@@ -319,11 +312,6 @@ namespace engine
 	{
 		Engine::onQuit();
 
-		_network->stop();
-		while (_network->isStart())
-		{
-			std::this_thread::sleep_for(4ms);
-		}
 	}
 
 	void IOEngine::onTimer1000ms()
