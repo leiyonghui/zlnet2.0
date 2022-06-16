@@ -29,12 +29,6 @@ namespace engine
 
 		bool connectNode(uint32 code, uint32 type, const std::string& ip, uint16 port, const ProtocolPtr& protocol);
 
-		void disConnectNode(uint32 code);
-
-		uint32 getConnectNodeUid(uint32 code);
-
-		uint32 getConnectNodeCode(uint32 uid);
-
 	protected:
 		void onInit() override;
 

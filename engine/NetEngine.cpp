@@ -46,21 +46,6 @@ namespace engine
 		return true;
 	}
 
-	void NetEngine::disConnectNode(uint32 code)
-	{
-
-	}
-
-	uint32 NetEngine::getConnectNodeUid(uint32 code)
-	{
-		return uint32();
-	}
-
-	uint32 NetEngine::getConnectNodeCode(uint32 uid)
-	{
-		return uint32();
-	}
-
 	void NetEngine::onInit()
 	{
 		IOEngine::onInit();
