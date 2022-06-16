@@ -37,6 +37,7 @@ namespace net
 	protected:
 		EIOOBJECT_TYPE _type;
 		uint32 _key;
+		int32 _group;
 		IOProtocolPtr _protocol;
 
 		int32 _events;

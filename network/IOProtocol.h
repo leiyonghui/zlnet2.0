@@ -28,8 +28,10 @@ namespace net
 		CAddress getRemoateAddress() const { return _remoteAddress; }
 		void setLoclAddress(const CAddress& address);
 		void setRemoteAddress(const CAddress& address);
-	protected:
+
 		virtual IOProtocolPtr create() const = 0;
+
+	protected:
 
 		virtual void onSerialize(IOEvent* event, IBuffer* buffer) = 0;
 

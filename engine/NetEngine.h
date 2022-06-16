@@ -59,8 +59,8 @@ namespace engine
 	private:
 		uint32 _nodeUid;
 		std::map<uint32, NodePtr> _connetNodes;			//<code, node>节点
-		std::map<uint32, NodePtr> _connectingNodes;		//<code, node>正在连接
+		std::map<uint32, NodePtr> _connectingNodes;		//<uid, node>正在连接
 		std::set<uint32> _accpetedNodes;				//<code> 等待ping
-		std::map<uint32, NodePtr> _peersByUid;			//<uid, Node> 已pong
+		std::map<uint32, NodePtr> _peersByUid;			//<uid, Node> 已ping/pong
 	};
 }

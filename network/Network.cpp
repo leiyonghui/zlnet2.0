@@ -148,7 +148,7 @@ namespace net
 				}
 			});
 
-			for (std::list<IOEvent*>::iterator iter = events.begin(); iter != events.end(); ++iter)
+			for (auto iter = events.begin(); iter != events.end(); ++iter)
 			{
 				dispatchProcess(*iter);
 			}
@@ -165,7 +165,30 @@ namespace net
 
 	void CNetwork::onQuit()
 	{
+		if(!_eventQueue.empty())
+		{
+			std::list<IOEvent*> events;
+			_eventQueue.pop(events);
 
+			auto final = CFinalize([&events]() -> void {
+				for (auto iter : events)
+				{
+					delete iter;
+				}
+			});
+
+			for (auto iter = events.begin(); iter != events.end(); ++iter)
+			{
+				dispatchProcess(*iter);
+			}			
+		}
+
+		if (!_eventQueue.empty()) 
+		{
+			core_log_error("net quit existed event ");
+		}
+
+		//to do...
 	}
 
 	void CNetwork::onTimer1000ms()

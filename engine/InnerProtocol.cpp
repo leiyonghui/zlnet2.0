@@ -5,7 +5,7 @@
 
 namespace engine
 {
-	static const uint32 INIT_BUFFER_SIZE = 128 * 1024;
+	static const uint32 INIT_BUFFER_SIZE = 2 * 1024;
 	static const uint32 MAX_BUFFER_SIZE = 1024 * 1024;
 
     void InnerProtocol::onAwake(net::EPROTOCOL pType)
@@ -32,7 +32,7 @@ namespace engine
 			auto packet = ev->getData();
 
 			uint32 datasize = 0;
-			net::StackBuffer<1024> innerBuf;
+			net::StackBuffer<INIT_BUFFER_SIZE> innerBuf;
 
 			if (auto message = packet->getMessage())
 			{
@@ -91,7 +91,7 @@ namespace engine
 		block.size = net::networkToHost32(block.size);
 		if (block.size > buffer->size())
 			return;
-		net::StackBuffer<1024> innerBuf;
+		net::StackBuffer<INIT_BUFFER_SIZE> innerBuf;
 		innerBuf.ensure(block.size);
 		buffer->read(innerBuf.write(0, block.size), block.size);
 		if (block.type == HeaderTypeCall)

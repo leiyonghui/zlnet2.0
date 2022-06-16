@@ -41,11 +41,8 @@ namespace engine
 		NodePtr node = std::make_shared<Node>(code, type, ip, port, protocol);
 		core::insert(_connetNodes, code, node);
 		node->_uid = connect(ip, port, protocol);
-		if (!node->_uid)
-		{
-			core::insert(_connectingNodes, code, node);
-			core_log_warning("connect node no uid");
-		}
+		if (node->_uid)
+			core::insert(_connectingNodes, node->_uid, node);
 		return true;
 	}
 
@@ -93,7 +90,13 @@ namespace engine
 
 		for (auto[code, node] : _connectingNodes)
 		{
-
+			if (node->_uid) 
+				continue;
+			node->_uid = connect(node->_host, node->_port, std::static_pointer_cast<Protocol>(node->_protocol->create()));
+			if (node->_uid) 
+			{
+				_connectingNodes[node->_uid] = node;
+			}
 		}
 	}
 
@@ -110,14 +113,19 @@ namespace engine
 	void NetEngine::onConnect(uint32 uid, bool success)
 	{
 		IOEngine::onConnect(uid, success);
-		if (success)
+		auto iter = _connectingNodes.find(uid);
+		if (iter != _connectingNodes.end()) 
 		{
-
+			if (success)
+			{
+				
+			}
+			else
+			{
+				_connectingNodes.erase(iter);
+			}
 		}
-		else
-		{
-
-		}
+		
 	}
 
 	void NetEngine::onDisconnect(uint32 uid)

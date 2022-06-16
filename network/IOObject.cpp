@@ -2,7 +2,7 @@
 
 namespace net
 {
-	IOObject::IOObject(EIOOBJECT_TYPE type):_type(type),_key(0),_events(0)
+	IOObject::IOObject(EIOOBJECT_TYPE type):_type(type),_key(0),_group(0),_events(0)
 	{
 
 	}
