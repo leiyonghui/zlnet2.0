@@ -303,7 +303,7 @@ namespace engine
 			dispatchIOPacket(packet);
 		});
 
-		bindPacketHandler(EMsgCmd::Heart, std::make_shared<CMessageHandlerBinding>([this](CMessageContext& context) {
+		bindPacketHandler(MsgCmd::Heart, std::make_shared<CMessageHandlerBinding>([this](CMessageContext& context) {
 			handlerProtocolHeart(context);
 		}));
 	}
@@ -562,7 +562,7 @@ namespace engine
 				continue;
 			if (protocol->getType() == net::IO_OBJECT_CONNECTOR)
 			{
-				IOPacketPtr packet(new IOPacket(uid, EMsgCmd::Heart, 0, 0, nullptr));
+				IOPacketPtr packet(new IOPacket(uid, MsgCmd::Heart, 0, 0, nullptr));
 				send(packet);
 			}
 			else if (protocol->getType() == net::IO_OBJECT_CONNECTION)

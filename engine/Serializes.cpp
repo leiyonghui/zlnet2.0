@@ -1,6 +1,6 @@
 #include "Serializes.h"
 
-namespace msgs
+namespace engine
 {
     void Serialize(BufferWriter& writer, int8 value)
     {

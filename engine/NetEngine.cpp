@@ -65,11 +65,11 @@ namespace engine
 	{
 		IOEngine::onInit();
 
-		bindPacketHandler(EMsgCmd::Ping, std::make_shared<CMessageHandlerBinding>([this](CMessageContext& context) {
+		bindPacketHandler(MsgCmd::Ping, std::make_shared<CMessageHandlerBinding>([this](CMessageContext& context) {
 			handlerNodePing(context);
 		}));
 
-		bindPacketHandler(EMsgCmd::Pong, std::make_shared<CMessageHandlerBinding>([this](CMessageContext& context) {
+		bindPacketHandler(MsgCmd::Pong, std::make_shared<CMessageHandlerBinding>([this](CMessageContext& context) {
 			handlerNodePong(context);
 		}));
 	}
@@ -103,11 +103,27 @@ namespace engine
 	void NetEngine::onAccept(uint32 uid, uint32 fromUid)
 	{
 		IOEngine::onAccept(uid, fromUid);
+
+		if (_nodeUid == fromUid)
+		{
+			if (core::insert(_accpetedNodes, uid))
+			{
+				core_log_error("accept node existed", uid);
+			}			
+		}
 	}
 
 	void NetEngine::onClose(uint32 uid)
 	{
 		IOEngine::onClose(uid);
+
+		auto iter = _peersByUid.find(uid);
+		if (iter != _peersByUid.end())
+		{
+			onDisConnectNode(uid);
+			iter->second->_uid = 0;
+			_peersByUid.erase(iter);
+		}
 	}
 
 	void NetEngine::onConnect(uint32 uid, bool success)
@@ -116,12 +132,16 @@ namespace engine
 		auto iter = _connectingNodes.find(uid);
 		if (iter != _connectingNodes.end()) 
 		{
+			auto& node = iter->second;
 			if (success)
 			{
-				
+
+				IOPacketPtr packet = std::make_shared<IOPacket>(node->_uid, MsgCmd::Ping, 0, 0, nullptr);
+				send(packet);
 			}
 			else
 			{
+				node->_uid = 0;
 				_connectingNodes.erase(iter);
 			}
 		}
@@ -131,13 +151,23 @@ namespace engine
 	void NetEngine::onDisconnect(uint32 uid)
 	{
 		IOEngine::onDisconnect(uid);
+
+		auto iter = _peersByUid.find(uid);
+		if (iter != _peersByUid.end())
+		{
+			onDisConnectNode(uid);
+			iter->second->_uid = 0;
+			_peersByUid.erase(iter);
+		}
 	}
 
 	void NetEngine::onConnectNode(uint32 uid, uint32 code, uint32 type)
 	{
+
 	}
 
 	void NetEngine::onDisConnectNode(uint32 uid)
 	{
+
 	}
 }

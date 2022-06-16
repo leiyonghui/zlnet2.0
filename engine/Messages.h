@@ -4,7 +4,7 @@
 
 namespace engine
 {
-	enum EMsgCmd
+	enum MsgCmd
 	{
 		Heart = 1,
 		Ping = 1,
@@ -56,4 +56,15 @@ namespace engine
 		net::Buffer _buffer;
 	};
 	USING_SHARED_PTR(SerializeMessage);
+
+	//class SPingMessage : public IMessage
+	//{
+	//public:
+	//	virtual int32 identity() const override { return ; }
+
+	//	virtual void serialize(net::BufferReader& archive) override;
+
+	//	virtual void serialize(net::BufferWriter& archive) const override;
+	//};
+	//USING_SHARED_PTR(SPingMessage);
 }

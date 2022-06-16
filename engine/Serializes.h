@@ -3,8 +3,11 @@
 #include "network/BufferReader.h"
 #include "network/BufferWriter.h"
 
-namespace msgs
+namespace engine
 {
+    using net::BufferReader;
+    using net::BufferWriter;
+
     void Serialize(BufferWriter& writer, int8 value);
     void Serialize(BufferWriter& writer, int16 value);
     void Serialize(BufferWriter& writer, int32 value);

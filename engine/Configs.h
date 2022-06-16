@@ -32,12 +32,6 @@ namespace engine
 	};
 }
 
-namespace msgs
-{
-	using namespace engine;
-	using namespace net;
-}
-
 namespace engine
 {
 	enum ErrCode
