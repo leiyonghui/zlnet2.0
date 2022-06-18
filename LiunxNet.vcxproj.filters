@@ -207,6 +207,15 @@
     <ClInclude Include="engine\Headers.h">
       <Filter>engine</Filter>
     </ClInclude>
+    <ClInclude Include="app\Server.h">
+      <Filter>app</Filter>
+    </ClInclude>
+    <ClInclude Include="test\TestApp.h">
+      <Filter>test</Filter>
+    </ClInclude>
+    <ClInclude Include="app\Module.h">
+      <Filter>app</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="network\Address.cpp">
@@ -286,6 +295,18 @@
     </ClCompile>
     <ClCompile Include="test\TestMessage.cpp">
       <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="app\Server.cpp">
+      <Filter>app</Filter>
+    </ClCompile>
+    <ClCompile Include="test\main_app.cpp">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="test\TestApp.cpp">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="app\Moduel.cpp">
+      <Filter>app</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

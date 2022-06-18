@@ -145,41 +145,41 @@ public:
 };
 
 
-int main(int argc, char** argv)
-{
-	MessageFactory::registerMessage(9999, []() -> IMessagePtr {
-		return std::make_shared<msgs::TestMessage>();
-	});
-
-	if (CheckCPUendian())
-		std::cout << " big-endian  " << std::endl;
-	else
-		std::cout << " little-endian  " << std::endl;
-
-	int32 type;
-	cin >> type;
-	if (type == 0)
-	{
-		return 0;
-	}
-	TimeHelp::StartUp();
-	if (type == 1)
-	{
-		CNetwork net;
-		TestNet engine(&net);
-		engine._isServer = true;
-		engine.run();
-		net.stop();
-	}
-	else if(type == 2)
-	{
-		CNetwork net;
-		TestNet engine(&net);
-		engine.run();
-		net.stop();
-	}
-	//core_log_trace("test", addr.toString());
-	return 0;
-}
+//int main(int argc, char** argv)
+//{
+//	MessageFactory::registerMessage(9999, []() -> IMessagePtr {
+//		return std::make_shared<msgs::TestMessage>();
+//	});
+//
+//	if (CheckCPUendian())
+//		std::cout << " big-endian  " << std::endl;
+//	else
+//		std::cout << " little-endian  " << std::endl;
+//
+//	int32 type;
+//	cin >> type;
+//	if (type == 0)
+//	{
+//		return 0;
+//	}
+//	TimeHelp::StartUp();
+//	if (type == 1)
+//	{
+//		CNetwork net;
+//		TestNet engine(&net);
+//		engine._isServer = true;
+//		engine.run();
+//		net.stop();
+//	}
+//	else if(type == 2)
+//	{
+//		CNetwork net;
+//		TestNet engine(&net);
+//		engine.run();
+//		net.stop();
+//	}
+//	//core_log_trace("test", addr.toString());
+//	return 0;
+//}
 
 #endif // DEBUG

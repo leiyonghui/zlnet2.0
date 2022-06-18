@@ -104,7 +104,7 @@ namespace engine
 		IOPacketPtr pongPacket = std::make_shared<IOPacket>(node->_uid, MsgCmd::Ping, 0, 0, pongMsg);
 		send(pongPacket);
 
-		onConnectNode(packet->getUid(), fromCode, fromType);
+		onNodeConnect(packet->getUid(), fromCode, fromType);
 	}
 
 	void NetEngine::handlerNodePong(const IOPacketPtr& packet)
@@ -147,7 +147,7 @@ namespace engine
 			return;
 		}
 		node->_info = info;
-		onConnectNode(packet->getUid(), node->_code, node->_type);
+		onNodeConnect(packet->getUid(), node->_code, node->_type);
 	}
 
 	void NetEngine::onTimer1000ms()
@@ -205,7 +205,7 @@ namespace engine
 		{
 			core_log_trace("remove peer node", uid, iter->second->_code);
 			auto code = iter->second->_code;
-			onDisConnectNode(uid);
+			onNodeDisConnect(uid);
 			iter->second->_uid = 0;
 			_peersByUid.erase(iter);
 		}
@@ -241,19 +241,19 @@ namespace engine
 
 		if (auto node = core::find(_peersByUid, uid, NodePtr()))
 		{
-			onDisConnectNode(uid);
+			onNodeDisConnect(uid);
 			node->_uid = 0;
 			_peersByUid.erase(uid);
 			_connectingNodes.erase(uid);
 		}
 	}
 
-	void NetEngine::onConnectNode(uint32 uid, uint32 code, uint32 type)
+	void NetEngine::onNodeConnect(uint32 uid, uint32 code, uint32 type)
 	{
 
 	}
 
-	void NetEngine::onDisConnectNode(uint32 uid)
+	void NetEngine::onNodeDisConnect(uint32 uid)
 	{
 
 	}

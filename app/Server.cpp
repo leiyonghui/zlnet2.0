@@ -21,4 +21,66 @@ namespace app
 			send(packet);
 		}
 	}
+
+	void Server::addModule(CModule* module)
+	{
+		_moduleList.push_back(module);
+	}
+
+	void Server::onInit()
+	{
+	}
+
+	void Server::onLoop()
+	{
+		for (auto module : _moduleList)
+		{
+			if (!module->onInit())
+				return;
+		}
+
+		NetEngine::onLoop();
+		
+		for (auto module : _moduleList)
+		{
+			module->onQuit();
+		}
+	}
+
+	void Server::onQuit()
+	{
+
+	}
+
+	void Server::onListen(uint32 uid, bool success)
+	{
+		for (auto module : _moduleList)
+		{
+
+		}
+	}
+
+	void Server::onUnlisten(uint32 uid)
+	{
+		for (auto module : _moduleList)
+		{
+
+		}
+	}
+
+	void Server::onNodeConnect(uint32 uid, uint32 code, uint32 type)
+	{
+		for (auto module : _moduleList)
+		{
+			module->onNodeConnect(uid, code, type);
+		}
+	}
+
+	void Server::onNodeDisConnect(uint32 uid)
+	{
+		for (auto module : _moduleList)
+		{
+			module->onNodeDisConnect(uid);
+		}
+	}
 }

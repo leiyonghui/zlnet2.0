@@ -49,9 +49,9 @@ namespace engine
 
 		virtual void onDisconnect(uint32 uid) override;
 
-		virtual void onConnectNode(uint32 uid, uint32 code, uint32 type);
+		virtual void onNodeConnect(uint32 uid, uint32 code, uint32 type);
 
-		virtual void onDisConnectNode(uint32 uid);
+		virtual void onNodeDisConnect(uint32 uid);
 
 	private:
 		uint32 _nodeUid;
