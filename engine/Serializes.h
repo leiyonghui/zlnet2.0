@@ -117,4 +117,31 @@ namespace engine
         Serialize(reader, value);
         return reader;
     }
+
+	template<class ...Args>
+	void pack(BufferWriter& writer, Args ...args)
+	{
+		try
+		{
+			(writer & ... & args);
+		}
+		catch (std::exception& e)
+		{
+			core_log_error("pack", e.what());
+		}
+	}
+
+	template<class ...Args>
+	void unpack(BufferReader& reader, Args ...args)
+	{
+		try
+		{
+			(reader & ... & args);
+		}
+		catch (std::exception& e)
+		{
+			core_log_error("unpack", e.what());
+		}
+	}
+
 }

@@ -210,6 +210,13 @@ namespace net
 		_readerv->clear();
 	}
 
+	void CRingBuffer::shrink(int32 newcapacity)
+	{
+		if (_size > newcapacity || newcapacity > _capacity)
+			return;
+		resize(newcapacity);
+	}
+
 	void CRingBuffer::ensure(uint32 capacity)
 	{
 		if (_capacity >= capacity)
@@ -219,6 +226,11 @@ namespace net
 		while (newcapacity < capacity)
 			newcapacity = (newcapacity << 1) + 1;
 
+		resize(newcapacity);
+	}
+
+	void CRingBuffer::resize(uint32 newcapacity)
+	{
 		char* tembuff = new char[newcapacity];
 		if (_end <= _front && _size)
 		{

@@ -43,8 +43,12 @@ namespace net
 
         uint32 capacity() { return _capacity; }
 
+		void shrink(int32 newcapacity);
+
     private:
         void ensure(uint32 capacity);
+
+		void resize(uint32 newcapacity);
 
         uint32 _capacity;
         uint32 _front;
