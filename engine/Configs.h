@@ -1,5 +1,6 @@
 #pragma once
 #include "core/Configs.h"
+#include "core/IntrusiveNode.h"
 #include "network/Configs.h"
 
 namespace engine
@@ -15,10 +16,16 @@ namespace engine
 	USING_SHARED_PTR(IONotify);
 	class IOPacket;
 	USING_SHARED_PTR(IOPacket);
-	//class PacketHandler;
-	//USING_SHARED_PTR(PacketHandler);
-	//class CallbackHandler;
-	//USING_SHARED_PTR(CallbackHandler);
+
+	class CallbackHandler;
+
+	class CallbackHandlerExistTag;
+
+	class CallbackHandlerTimeoutTag;
+
+	using CallbackHandlerExistList = IntrusiveNode<CallbackHandler, CallbackHandlerExistTag>;
+
+	using CallbackHandlerTimeoutList = IntrusiveNode<CallbackHandler, CallbackHandlerTimeoutTag>;
 
 	enum EPacketType
 	{

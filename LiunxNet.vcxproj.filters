@@ -210,11 +210,14 @@
     <ClInclude Include="app\Server.h">
       <Filter>app</Filter>
     </ClInclude>
+    <ClInclude Include="app\Module.h">
+      <Filter>app</Filter>
+    </ClInclude>
     <ClInclude Include="test\TestApp.h">
       <Filter>test</Filter>
     </ClInclude>
-    <ClInclude Include="app\Module.h">
-      <Filter>app</Filter>
+    <ClInclude Include="test\TestModule.h">
+      <Filter>test</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -299,14 +302,20 @@
     <ClCompile Include="app\Server.cpp">
       <Filter>app</Filter>
     </ClCompile>
+    <ClCompile Include="app\Moduel.cpp">
+      <Filter>app</Filter>
+    </ClCompile>
     <ClCompile Include="test\main_app.cpp">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="test\main_win.cpp">
       <Filter>test</Filter>
     </ClCompile>
     <ClCompile Include="test\TestApp.cpp">
       <Filter>test</Filter>
     </ClCompile>
-    <ClCompile Include="app\Moduel.cpp">
-      <Filter>app</Filter>
+    <ClCompile Include="test\TestModule.cpp">
+      <Filter>test</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

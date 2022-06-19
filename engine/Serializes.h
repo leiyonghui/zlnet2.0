@@ -8,17 +8,21 @@ namespace engine
     using net::BufferReader;
     using net::BufferWriter;
 
-    void Serialize(BufferWriter& writer, int8 value);
-    void Serialize(BufferWriter& writer, int16 value);
-    void Serialize(BufferWriter& writer, int32 value);
-    void Serialize(BufferWriter& writer, int64 value);
+    void Serialize(BufferWriter& writer, uint8 value);
+    void Serialize(BufferWriter& writer, uint16 value);
+    void Serialize(BufferWriter& writer, uint32 value);
+    void Serialize(BufferWriter& writer, uint64 value);
+	void Serialize(BufferWriter& writer, int8 value);
+	void Serialize(BufferWriter& writer, int16 value);
+	void Serialize(BufferWriter& writer, int32 value);
+	void Serialize(BufferWriter& writer, int64 value);
     void Serialize(BufferWriter& writer, const std::string& value);
 
     template<typename T>
     inline void Serialize(BufferWriter& writer, const T& value)
     {
         value.serialize(writer);
-    }
+	}
 
     template<typename T>
     inline void Serialize(BufferWriter& writer, const std::vector<T>& vec)
@@ -54,10 +58,14 @@ namespace engine
         }
     }
 
-    void Serialize(BufferReader& reader, int8& value);
-    void Serialize(BufferReader& reader, int16& value);
-    void Serialize(BufferReader& reader, int32& value);
-    void Serialize(BufferReader& reader, int64& value);
+	void Serialize(BufferReader& reader, uint8& value);
+	void Serialize(BufferReader& reader, uint16& value);
+	void Serialize(BufferReader& reader, uint32& value);
+	void Serialize(BufferReader& reader, uint64& value);
+	void Serialize(BufferReader& reader, int8& value);
+	void Serialize(BufferReader& reader, int16& value);
+	void Serialize(BufferReader& reader, int32& value);
+	void Serialize(BufferReader& reader, int64& value);
     void Serialize(BufferReader& reader, std::string& value);
 
     template<typename T>
@@ -119,7 +127,7 @@ namespace engine
     }
 
 	template<class ...Args>
-	void pack(BufferWriter& writer, Args ...args)
+	void pack(BufferWriter& writer, const Args& ...args)
 	{
 		try
 		{
@@ -132,7 +140,7 @@ namespace engine
 	}
 
 	template<class ...Args>
-	void unpack(BufferReader& reader, Args ...args)
+	void unpack(BufferReader& reader, Args& ...args)
 	{
 		try
 		{

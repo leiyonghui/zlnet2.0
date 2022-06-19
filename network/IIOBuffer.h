@@ -29,6 +29,6 @@ namespace net
 		virtual unsigned int size() = 0;
 		virtual unsigned int readableBytes() = 0;
 		virtual unsigned int writableBytes() = 0;
-		virtual void shrink(int newcapacity) = 0;
+		virtual void shrink(unsigned int newcapacity) = 0;
 	};
 }

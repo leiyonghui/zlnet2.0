@@ -2,8 +2,9 @@
 
 namespace app
 {
-	TestApp::TestApp(SSeting seting, net::CNetwork* net):Server(net)
+	TestApp::TestApp(net::CNetwork* net):Server(net)
 	{
 
 	}
+	TestApp* __AppInstant = nullptr;
 }

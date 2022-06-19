@@ -1,4 +1,5 @@
 #include "Server.h"
+#include "Module.h"
 #include "engine/Messages.h"
 
 namespace app
@@ -29,6 +30,7 @@ namespace app
 
 	void Server::onInit()
 	{
+		NetEngine::onInit();
 	}
 
 	void Server::onLoop()
@@ -49,27 +51,23 @@ namespace app
 
 	void Server::onQuit()
 	{
-
+		NetEngine::onQuit();
 	}
 
-	void Server::onListen(uint32 uid, bool success)
+	void Server::onAccept(uint32 uid, uint32 fromUid)
 	{
+		NetEngine::onAccept(uid, fromUid);
+
 		for (auto module : _moduleList)
 		{
-
-		}
-	}
-
-	void Server::onUnlisten(uint32 uid)
-	{
-		for (auto module : _moduleList)
-		{
-
+			module->onAccepct(uid, fromUid);
 		}
 	}
 
 	void Server::onNodeConnect(uint32 uid, uint32 code, uint32 type)
 	{
+		NetEngine::onNodeConnect(uid, code, type);
+
 		for (auto module : _moduleList)
 		{
 			module->onNodeConnect(uid, code, type);
@@ -78,6 +76,8 @@ namespace app
 
 	void Server::onNodeDisConnect(uint32 uid)
 	{
+		NetEngine::onNodeDisConnect(uid);
+
 		for (auto module : _moduleList)
 		{
 			module->onNodeDisConnect(uid);

@@ -210,7 +210,7 @@ namespace net
 		_readerv->clear();
 	}
 
-	void CRingBuffer::shrink(int32 newcapacity)
+	void CRingBuffer::shrink(uint32 newcapacity)
 	{
 		if (_size > newcapacity || newcapacity > _capacity)
 			return;

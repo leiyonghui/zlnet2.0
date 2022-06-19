@@ -43,7 +43,7 @@ namespace net
 
         uint32 capacity() { return _capacity; }
 
-		void shrink(int32 newcapacity);
+		void shrink(uint32 newcapacity);
 
     private:
         void ensure(uint32 capacity);

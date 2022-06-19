@@ -206,7 +206,7 @@ namespace net
 
 		if (con->isWriting()) 
 		{
-			CORE_LOG_ERROR("remove con is writing", con->getKey());
+			core_log_error("remove con is writing", con->getKey());
 		}
 		removeObject(con->getKey());
 		if (con->getType() == IO_OBJECT_CONNECTION)

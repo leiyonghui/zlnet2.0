@@ -303,7 +303,7 @@ namespace engine
 			dispatchIOPacket(packet);
 		});
 
-		bindPacketHandler(MsgCmd::Heart, std::make_shared<CMessageHandlerBinding>([this](CMessageContext& context) {
+		bindPacketHandler(MsgCmd::Heart, std::make_shared<MessageHandlerBinding>([this](CMessageContext& context) {
 			handlerProtocolHeart(context);
 		}));
 	}

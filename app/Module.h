@@ -9,12 +9,14 @@ namespace app
 		CModule() = default;
 		virtual ~CModule() = default;
 
-		virtual bool onInit() = 0;
+		virtual bool onInit();
 		
-		virtual void onQuit() = 0;
+		virtual void onQuit();
 
-		virtual void onNodeConnect(uint32 uid, uint32 code, uint32 type) = 0;
+		virtual void onAccepct(uint32 uid, uint32 fromUid);
 
-		virtual void onNodeDisConnect(uint32 uid) = 0;
+		virtual void onNodeConnect(uint32 uid, uint32 code, uint32 type);
+
+		virtual void onNodeDisConnect(uint32 uid);
 	};
 }

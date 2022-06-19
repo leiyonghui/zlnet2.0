@@ -1,7 +1,7 @@
 #pragma once
 #include "Configs.h"
-#include "core/IntrusiveNode.h"
 #include "Messages.h"
+#include "IOPacket.h"
 
 namespace engine
 {
@@ -14,15 +14,19 @@ namespace engine
 	};
 	USING_SHARED_PTR(PacketHandler);
 
-	class CallbackHandler;
 
-	class CallbackHandlerExistTag;
+	class PacketHandlerImpl : public PacketHandler
+	{
+	public:
+		PacketHandlerImpl(const std::function<void(const IOPacketPtr& packet)>& func);
 
-	class CallbackHandlerTimeoutTag;
+		virtual void onPacket(const IOPacketPtr& packet);
 
-	using CallbackHandlerExistList = IntrusiveNode<CallbackHandler, CallbackHandlerExistTag>;
+	protected:
+		std::function<void(const IOPacketPtr& packet)> _func;
+	};
+	USING_SHARED_PTR(PacketHandlerImpl);
 
-	using CallbackHandlerTimeoutList = IntrusiveNode<CallbackHandler, CallbackHandlerTimeoutTag>;
 
 	class CallbackHandler : public PacketHandler, public CallbackHandlerExistList, public CallbackHandlerTimeoutList
 	{
@@ -39,17 +43,18 @@ namespace engine
 	};
 	USING_SHARED_PTR(CallbackHandler);
 
+
 	class CallbackHandlerImpl : public CallbackHandler
 	{
 	public:
-		CallbackHandlerImpl(const std::function<void(const IOPacketPtr& packet)>& func):_func(func){}
+		CallbackHandlerImpl(const std::function<void(const IOPacketPtr& packet)>& func);
 
 		virtual void onPacket(const IOPacketPtr& packet);
-		
-	protected:
-		std::function<void(const IOPacketPtr&packet)> _func;
-	};
 
+	protected:
+		std::function<void(const IOPacketPtr& packet)> _func;
+	};
+	USING_SHARED_PTR(CallbackHandlerImpl);
 
 	class MessageHandler : public PacketHandler
 	{
@@ -64,14 +69,15 @@ namespace engine
 	USING_SHARED_PTR(MessageHandler);
 
 
-	class CMessageHandlerBinding : public MessageHandler
+	class MessageHandlerBinding : public MessageHandler
 	{
 	private:
 		std::function<void(CMessageContext&)> _func;
 
 	public:
-		explicit CMessageHandlerBinding(const std::function<void(CMessageContext&)>& func);
+		explicit MessageHandlerBinding(const std::function<void(CMessageContext&)>& func);
 
 		virtual void onMessage(CMessageContext& context);
 	};
+	USING_SHARED_PTR(MessageHandlerBinding);
 }

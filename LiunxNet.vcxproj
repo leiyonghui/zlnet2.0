@@ -87,8 +87,8 @@
     <Text Include="test\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="app\Module.h" />
     <ClInclude Include="app\Configs.h" />
+    <ClInclude Include="app\Module.h" />
     <ClInclude Include="app\Server.h" />
     <ClInclude Include="core\core\Common.h" />
     <ClInclude Include="core\core\Configs.h" />
@@ -142,6 +142,7 @@
     <ClInclude Include="test\Configs.h" />
     <ClInclude Include="test\TestApp.h" />
     <ClInclude Include="test\TestMessage.h" />
+    <ClInclude Include="test\TestModule.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="app\Moduel.cpp" />
@@ -171,8 +172,10 @@
     <ClCompile Include="network\TCP_Network.cpp" />
     <ClCompile Include="test\main.cpp" />
     <ClCompile Include="test\main_app.cpp" />
+    <ClCompile Include="test\main_win.cpp" />
     <ClCompile Include="test\TestApp.cpp" />
     <ClCompile Include="test\TestMessage.cpp" />
+    <ClCompile Include="test\TestModule.cpp" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

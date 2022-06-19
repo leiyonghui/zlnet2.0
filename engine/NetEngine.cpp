@@ -9,43 +9,43 @@ namespace engine
 
 	}
 
-	bool NetEngine::setupNode(uint32 code, uint32 type, uint16 port, const ProtocolPtr& protocol)
+	uint32 NetEngine::setupNode(uint32 code, uint32 type, uint16 port, const ProtocolPtr& protocol)
 	{
 		if (_nodeUid)
 		{
 			core_log_error("setup node exist", code, _nodeUid);
-			return false;
+			return 0;
 		}
 		NodePtr node = std::make_shared<Node>(code, type, "", port, protocol);
-		core::insert(_connetNodes, code, node);
 		_nodeUid = listen(port, protocol);
 		if (!_nodeUid)
 		{
 			core_log_error("setup node listen error");
-			return false;
+			return 0;
 		}
 		if (!confirmListen(_nodeUid, 1000 * 3))
 		{
 			_nodeUid = 0;
 			core_log_error("setup node listen error");
-			return false;
+			return 0;
 		}
+		node->_uid = _nodeUid;
 		core_log_trace("setup node, code:", code, "type:", type, "port:", port);
-		return true;
+		return _nodeUid;
 	}
 
-	bool NetEngine::connectNode(uint32 code, uint32 type, const std::string& ip, uint16 port, const ProtocolPtr& protocol)
+	uint32 NetEngine::connectNode(uint32 code, uint32 type, const std::string& ip, uint16 port, const ProtocolPtr& protocol)
 	{
 		if (core::exist(_connetNodes, code))
 		{
-			return false;
+			return 0;
 		}
 		NodePtr node = std::make_shared<Node>(code, type, ip, port, protocol);
 		core::insert(_connetNodes, code, node);
 		node->_uid = connect(ip, port, protocol);
 		if (node->_uid)
 			core::insert(_connectingNodes, node->_uid, node);
-		return true;
+		return node->_uid;
 	}
 
 	void NetEngine::onInit()
@@ -70,10 +70,10 @@ namespace engine
 			close(packet->getUid());
 			return;
 		}
-		int32 fromCode = 0;
-		int32 fromType = 0; 
-		int32 toCode = 0;
-		int32 toType = 0;
+		uint32 fromCode = 0;
+		uint32 fromType = 0; 
+		uint32 toCode = 0;
+		uint32 toType = 0;
 		std::string info;
 		net::BufferReader reader(msg->getBuffer());
 		engine::unpack(reader, fromCode, fromType, info, toCode, toType);
@@ -89,7 +89,10 @@ namespace engine
 			close(packet->getUid());
 			return;
 		}
-		NodePtr node = std::make_shared<Node>(packet->getUid(), fromCode, fromType);
+		NodePtr node = std::make_shared<Node>();
+		node->_code = fromCode;
+		node->_type = fromType;
+		node->_info = info;
 		if (!core::insert(_peersByUid, packet->getUid(), node)) 
 		{
 			core_log_error("unexpect peer node", packet->getUid(), fromCode);
@@ -116,11 +119,13 @@ namespace engine
 			close(packet->getUid());
 			return;
 		}
-		int32 fromCode = 0;
-		int32 fromType = 0;
-		int32 toCode = 0;
-		int32 toType = 0;
+		uint32 fromCode = 0;
+		uint32 fromType = 0;
+		uint32 toCode = 0;
+		uint32 toType = 0;
 		std::string info;
+		net::BufferReader reader(msg->getBuffer());
+		engine::unpack(reader, fromCode, fromType, info, toCode, toType);
 		if (toCode != _nodeCode || toType != _nodeType)
 		{
 			core_log_error("pong node error", packet->getUid(), fromCode, fromType, toCode, toType, info);
@@ -154,7 +159,7 @@ namespace engine
 	{
 		IOEngine::onTimer1000ms();
 
-		for (auto[code, node] : _connectingNodes)
+		for (auto[code, node] : _connetNodes)
 		{
 			if (node->_uid) 
 				continue;
@@ -183,9 +188,10 @@ namespace engine
 
 		if (_nodeUid == fromUid)
 		{
-			if (core::insert(_accpetedNodes, uid))
+			if (!core::insert(_accpetedNodes, uid))
 			{
 				core_log_error("accept node existed", uid);
+				close(uid);
 			}			
 		}
 	}
@@ -204,7 +210,6 @@ namespace engine
 		if (iter != _peersByUid.end())
 		{
 			core_log_trace("remove peer node", uid, iter->second->_code);
-			auto code = iter->second->_code;
 			onNodeDisConnect(uid);
 			iter->second->_uid = 0;
 			_peersByUid.erase(iter);

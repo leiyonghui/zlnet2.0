@@ -1,8 +1,27 @@
 #include "PacketHandlers.h"
-#include "IOPacket.h"
 
 namespace engine
 {
+	PacketHandlerImpl::PacketHandlerImpl(const std::function<void(const IOPacketPtr& packet)>& func):_func(func)
+	{
+	}
+	void PacketHandlerImpl::onPacket(const IOPacketPtr& packet)
+	{
+		try
+		{
+			_func(packet);
+		}
+		catch (std::exception& ex)
+		{
+			core_log_error("PacketHandlerImpl on Packet", ex.what());
+		}
+	}
+
+	CallbackHandlerImpl::CallbackHandlerImpl(const std::function<void(const IOPacketPtr& packet)>& func):_func(func)
+	{
+
+	}
+
 	void CallbackHandlerImpl::onPacket(const IOPacketPtr& packet)
 	{
 		try
@@ -40,12 +59,12 @@ namespace engine
 		}
 	}
 
-	CMessageHandlerBinding::CMessageHandlerBinding(const std::function<void(CMessageContext&)>& func):_func(func)
+	MessageHandlerBinding::MessageHandlerBinding(const std::function<void(CMessageContext&)>& func):_func(func)
 	{
 
 	}
 
-	void CMessageHandlerBinding::onMessage(CMessageContext& context)
+	void MessageHandlerBinding::onMessage(CMessageContext& context)
 	{
 		try
 		{
@@ -55,7 +74,6 @@ namespace engine
 		{
 			core_log_error("onMessage", e.what());
 		}
-	}
+	}	
 
-	
 }

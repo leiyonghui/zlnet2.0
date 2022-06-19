@@ -1,9 +1,11 @@
-#pragma once
 #include "engine/IMessage.h"
 #include "Configs.h"
 
+
 namespace msgs
 {
+    
+
     class TestMessage : public engine::IMessage
     {
     public:

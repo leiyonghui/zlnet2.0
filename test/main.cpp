@@ -43,7 +43,7 @@ public:
 			auto protocol = CObjectPool<InnerProtocol>::Instance()->create(net::EPROTO_TCP);
 			uid = listen(9802, protocol);
 
-			bindPacketHandler(1, std::make_shared<CMessageHandlerBinding>([](CMessageContext& context) {
+			bindPacketHandler(1, std::make_shared<MessageHandlerBinding>([](CMessageContext& context) {
 				
 				core_log_debug("========= msg rev");
 				core_log_debug(context._cmd, context._uid);
