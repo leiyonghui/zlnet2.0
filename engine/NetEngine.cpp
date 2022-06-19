@@ -9,7 +9,7 @@ namespace engine
 
 	}
 
-	uint32 NetEngine::setupNode(uint32 code, uint32 type, uint16 port, const ProtocolPtr& protocol)
+	uint32 NetEngine::setupNode(uint32 code, uint32 type, uint16 port, const ProtocolPtr& protocol, std::string info)
 	{
 		if (_nodeUid)
 		{
@@ -18,6 +18,9 @@ namespace engine
 		}
 		NodePtr node = std::make_shared<Node>(code, type, "", port, protocol);
 		_nodeUid = listen(port, protocol);
+		_nodeCode = code;
+		_nodeType = type;
+		_nodeInfo = info;
 		if (!_nodeUid)
 		{
 			core_log_error("setup node listen error");
@@ -52,11 +55,11 @@ namespace engine
 	{
 		IOEngine::onInit();
 
-		bindPacketHandler(MsgCmd::Ping, std::make_shared<CallbackHandlerImpl>([this](const IOPacketPtr& packet) {
+		bindPacketHandler(MsgCmd::Ping, std::make_shared<PacketHandlerImpl>([this](const IOPacketPtr& packet) {
 			handlerNodePing(packet);
 		}));
 
-		bindPacketHandler(MsgCmd::Pong, std::make_shared<CallbackHandlerImpl>([this](const IOPacketPtr& packet) {
+		bindPacketHandler(MsgCmd::Pong, std::make_shared<PacketHandlerImpl>([this](const IOPacketPtr& packet) {
 			handlerNodePong(packet);
 		}));
 	}
@@ -90,6 +93,7 @@ namespace engine
 			return;
 		}
 		NodePtr node = std::make_shared<Node>();
+		node->_uid = packet->getUid();
 		node->_code = fromCode;
 		node->_type = fromType;
 		node->_info = info;
@@ -101,10 +105,10 @@ namespace engine
 		}
 		node->_info = info;
 
-		SerializeMessagePtr pongMsg = std::make_shared<SerializeMessage>();
-		net::BufferWriter writer(msg->getBuffer());
+		SerializeMessagePtr pong = std::make_shared<SerializeMessage>();
+		net::BufferWriter writer(pong->getBuffer());
 		engine::pack(writer, _nodeCode, _nodeType, _nodeInfo, node->_code, node->_type);
-		IOPacketPtr pongPacket = std::make_shared<IOPacket>(node->_uid, MsgCmd::Ping, 0, 0, pongMsg);
+		IOPacketPtr pongPacket = std::make_shared<IOPacket>(node->_uid, MsgCmd::Pong, 0, 0, pong);
 		send(pongPacket);
 
 		onNodeConnect(packet->getUid(), fromCode, fromType);
@@ -139,6 +143,7 @@ namespace engine
 			close(packet->getUid());
 			return;
 		}
+		core::remove(_accpetedNodes, packet->getUid());
 		if (node->_code != fromCode || node->_type != fromType) 
 		{
 			core_log_error("pong node error", packet->getUid(), fromCode, fromType, toCode, toType, node->_code, node->_type, info);
@@ -231,11 +236,6 @@ namespace engine
 				IOPacketPtr packet = std::make_shared<IOPacket>(node->_uid, MsgCmd::Ping, 0, 0, msg);
 				send(packet);
 			}
-			else
-			{
-				node->_uid = 0;
-				_connectingNodes.erase(iter);
-			}
 		}
 		
 	}
@@ -244,12 +244,17 @@ namespace engine
 	{
 		IOEngine::onDisconnect(uid);
 
+		if (auto node = core::find(_connectingNodes, uid, NodePtr()))
+		{
+			core::remove(_connectingNodes, uid);
+			node->_uid = 0;
+		}
+
 		if (auto node = core::find(_peersByUid, uid, NodePtr()))
 		{
 			onNodeDisConnect(uid);
 			node->_uid = 0;
 			_peersByUid.erase(uid);
-			_connectingNodes.erase(uid);
 		}
 	}
 

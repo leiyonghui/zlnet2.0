@@ -6,5 +6,17 @@ namespace app
 	{
 
 	}
+
+	void TestApp::onTimer1000ms()
+	{
+		Server::onTimer1000ms();
+
+		_sec++;
+		if (_sec % 10 == 0)
+		{
+			CObjectPoolMonitor::showInfo();
+		}
+	}
 	TestApp* __AppInstant = nullptr;
+
 }

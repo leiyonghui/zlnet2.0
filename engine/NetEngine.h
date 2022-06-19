@@ -26,7 +26,7 @@ namespace engine
 	public:
 		NetEngine(net::CNetwork* network);
 
-		uint32 setupNode(uint32 code, uint32 type, uint16 port, const ProtocolPtr& protocol);
+		uint32 setupNode(uint32 code, uint32 type, uint16 port, const ProtocolPtr& protocol, std::string info = "");
 
 		uint32 connectNode(uint32 code, uint32 type, const std::string& ip, uint16 port, const ProtocolPtr& protocol);
 

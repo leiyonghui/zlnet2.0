@@ -17,7 +17,13 @@ public:
 
 	bool onInit() override;
 
+	void onNodeConnect(uint32 uid, uint32 code, uint32 type);
+
+	void onNodeDisConnect(uint32 uid);
+
 	bool _isServer{false};
+	bool _isNode{ false };
+	int32 _connectNum{ 0 };
 	SSeting setting;
 	SSeting setting2;
 };

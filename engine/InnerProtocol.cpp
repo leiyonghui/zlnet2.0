@@ -146,7 +146,7 @@ namespace engine
 				int32* msgId = (int32*)innerBuf.read(uint32(sizeof(HeaderMessage)), uint32(sizeof(int32)));
 				*msgId = net::networkToHost32(*msgId);
 				auto msglen = head->size - uint32(sizeof(HeaderMessage) + sizeof(int32));
-				core_log_debug(" onUnserialize ", head->size, head->cmd, msglen, msgId);
+				//core_log_debug(" onUnserialize ", head->size, head->cmd, msglen, *msgId);
 				if (msglen)
 					message = std::make_shared<SerializeMessage>(*msgId, innerBuf.read(uint32(sizeof(HeaderMessage) + sizeof(int32)), msglen), msglen);
 			}

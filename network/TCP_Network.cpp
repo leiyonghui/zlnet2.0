@@ -9,7 +9,6 @@ namespace net
 		auto listener = std::dynamic_pointer_cast<TcpListener>(object);
 		assert(listener);
 		auto endPoint = listener->accept();
-		core_log_trace("io accept", endPoint->getAddress().toString());
 		if (!endPoint) 
 		{
 			core_log_error("unaccept", listener->getKey());
@@ -17,6 +16,7 @@ namespace net
 			listener->getProtocol()->onUnlisten();
 			return;
 		}
+		//core_log_trace("io accept", endPoint->getAddress().toString());
 		auto key = popKey();
 		if (!key) 
 		{
@@ -46,7 +46,7 @@ namespace net
 
 	void CNetwork::handleTcpConError(const IOObjectPtr& object)
 	{
-		core_log_error("tcp connection error", object->getKey(), object->getSocket());
+		core_log_error("tcp connection error", object->getKey(), object->getSocket(), strerror(object->getEndPoint()->getSocketError()));
 		auto con = std::dynamic_pointer_cast<Connection>(object);
 		removeTcpCon(con);
 	}

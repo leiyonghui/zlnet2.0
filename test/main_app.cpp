@@ -31,29 +31,30 @@ int main(int argc, char** argv)
 		op = std::atoi(argv[1]);
 	}
 	TimeHelp::StartUp();
+	CNetwork net;
+	TestApp app1(&net);
+	__AppInstant = &app1;
+	CTestModule module;
+	module.setting = st1;
+	module.setting2 = st2;
+	app1.addModule(&module);
 	if (op == 1)
 	{
-		CNetwork net;
-		TestApp app1(&net);
-		__AppInstant = &app1;
-		CTestModule module;
-		module.setting = st1;
-		module.setting2 = st2;
 		module._isServer = true;
-		app1.addModule(&module);
 		net.start();
 		app1.run();
 		net.stop();
 	}
 	else if (op == 2)
 	{
-		CNetwork net;
-		TestApp app1(&net);
-		__AppInstant = &app1;
-		CTestModule module;
-		module.setting = st1;
-		module.setting2 = st2;
-		app1.addModule(&module);
+		module._isNode = true;
+		net.start();
+		app1.run();
+		net.stop();
+	}
+	else if (op == 3)
+	{
+		cin >> module._connectNum;
 		net.start();
 		app1.run();
 		net.stop();

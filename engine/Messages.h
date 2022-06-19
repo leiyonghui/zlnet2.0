@@ -6,9 +6,9 @@ namespace engine
 {
 	enum MsgCmd
 	{
-		Heart = 1,
-		Ping = 1,
-		Pong = 2
+		Heart	= 1,
+		Ping	= 2,
+		Pong	= 3
 	};
 
 	struct CMessageContext

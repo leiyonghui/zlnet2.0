@@ -10,6 +10,9 @@ namespace app
 	public:
 		TestApp(net::CNetwork* net);
 		
+		virtual void onTimer1000ms() override;
+
+		int32 _sec{0};
 	};
 
 	extern TestApp* __AppInstant;
