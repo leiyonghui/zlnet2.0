@@ -15,12 +15,10 @@ int main(int argc, char** argv)
 	else
 		std::cout << " little-endian  " << std::endl;
 
-	SSeting st1 = {
-		1,1,"",9802,"server1"
-	};
-	SSeting st2 = {
-		2,2,"",9803,"server2"
-	};
+	SSeting1* st1 = new SSeting1(1, 1, "101.33.228.226", 9802, "server1");
+	SSeting1* st2 = new SSeting1(2, 2, "127.0.0.1", 9803, "server2");
+	std::string str = "101.33.228.226";
+	std::cout << st1->ip.empty() << "  " << st2->ip.empty() <<"  "<<str.empty()<< "  "<<st1->info<<std::endl;
 	int32 op = 0;
 	if (argc == 1)
 	{
@@ -35,8 +33,8 @@ int main(int argc, char** argv)
 	TestApp app1(&net);
 	__AppInstant = &app1;
 	CTestModule module;
-	module.setting = st1;
-	module.setting2 = st2;
+	module.setting = *st1;
+	module.setting2 = *st2;
 	app1.addModule(&module);
 	if (op == 1)
 	{

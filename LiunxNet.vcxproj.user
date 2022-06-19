@@ -2,7 +2,7 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <RemoteTarget>-1253245344;101.33.228.226 (username=, port=22, authentication=Password)</RemoteTarget>
-    <RemoteDebuggerCommandArguments>1</RemoteDebuggerCommandArguments>
+    <RemoteDebuggerCommandArguments>3</RemoteDebuggerCommandArguments>
     <DebuggerFlavor>LinuxDebugger</DebuggerFlavor>
     <RemoteDebuggingTarget>-1253245344;101.33.228.226 (username=, port=22, authentication=Password)</RemoteDebuggingTarget>
   </PropertyGroup>

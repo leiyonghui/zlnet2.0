@@ -6,7 +6,7 @@
 
 namespace engine
 {
-	const int32 MAX_HEART_COUNT = 10;
+	const int32 MAX_HEART_COUNT = 60;
 
 	IOEngine::IOEngine(net::CNetwork* network): Engine(), _network(network), _nextCallbackId(0), _callbackTimeoutMs(10000)
 	{
@@ -507,6 +507,7 @@ namespace engine
 			core_log_error("remove unexpect", uid);
 			return false;
 		}
+		core_log_trace("remove protocol", uid, _protocols.size());
 		return true;
 	}
 
@@ -554,6 +555,7 @@ namespace engine
 
 	void IOEngine::onTimerProtocolHeart()
 	{
+		std::vector<uint32> removes;
 		for (auto&[uid, protocol] : _protocols)
 		{
 			if (!protocol->isAvailable())
@@ -570,11 +572,15 @@ namespace engine
 				auto count = protocol->getHeartCount() + 1;
 				if (count > MAX_HEART_COUNT) {
 					core_log_trace("protocol heart close", uid, count);
-					close(uid);
+					removes.push_back(uid);
 				}
 				else
 					protocol->setHeartCount(count);
 			}
+		}
+		for (auto uid : removes)
+		{
+			close(uid);
 		}
 	}
 

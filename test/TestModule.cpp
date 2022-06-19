@@ -2,6 +2,8 @@
 #include "TestApp.h"
 #include "engine/InnerProtocol.h"
 
+
+
 bool CTestModule::onInit()
 {
 	if (_isServer)
@@ -25,6 +27,20 @@ bool CTestModule::onInit()
 		}
 	}
 	return true;
+}
+
+void CTestModule::onAccepct(uint32 uid, uint32 fromUid)
+{
+	_acNum++;
+	if (_acNum == 1)
+	{
+		_acCost = TimeHelp::clock_ms().count();
+	}
+	else if(_acNum%100 == 0)
+	{
+		core_log_trace("---cost", _acNum, TimeHelp::clock_ms().count() - _acCost);
+		_acCost = TimeHelp::clock_ms().count();
+	}
 }
 
 void CTestModule::onNodeConnect(uint32 uid, uint32 code, uint32 type)

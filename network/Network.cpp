@@ -28,7 +28,7 @@ namespace net
 		auto index = _keyPool.index(key);
 		assert(_objects[index] == nullptr);
 		_objects[index] = object;
-		core_log_info("add object", object->getKey());
+		//core_log_info("add object", object->getKey());
 	}
 
 	void CNetwork::removeObject(uint32 key)
