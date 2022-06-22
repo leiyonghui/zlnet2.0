@@ -29,8 +29,8 @@ int main(int argc, char** argv)
 		op = std::atoi(argv[1]);
 	}
 	TimeHelp::StartUp();
-	ConsoleLogAppender apperder;
-	Logger::Instance(&apperder);
+	FileLogAppender * apperder = new FileLogAppender("Test_Net_%T", true);
+	Logger::Instance(apperder);
 
 	CNetwork net;
 	TestApp app1(&net);
@@ -60,5 +60,14 @@ int main(int argc, char** argv)
 		app1.run();
 		net.stop();
 	}
+	else if (op == 4)
+	{
+		core_log_trace("--------1");
+		core_log_trace("--------2");
+		core_log_trace("--------3");
+		core_log_trace("--------4");
+	}
+	Logger::Instance()->stop();
+	delete apperder;
 	return 0;
 }

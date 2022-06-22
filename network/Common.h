@@ -2,6 +2,7 @@
 #include "Configs.h"
 
 #ifdef __linux
+#include <sys/socket.h>
 #include <arpa/inet.h>
 #endif // __linux
 
