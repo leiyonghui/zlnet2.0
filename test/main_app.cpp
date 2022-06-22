@@ -15,7 +15,7 @@ int main(int argc, char** argv)
 	else
 		std::cout << " little-endian  " << std::endl;
 
-	SSeting1* st1 = new SSeting1(1, 1, "101.33.228.226", 9802, "server1");
+	SSeting1* st1 = new SSeting1(1, 1, "", 9802, "server1");
 	SSeting1* st2 = new SSeting1(2, 2, "127.0.0.1", 9803, "server2");
 	std::string str = "101.33.228.226";
 	std::cout << st1->ip.empty() << "  " << st2->ip.empty() <<"  "<<str.empty()<< "  "<<st1->info<<std::endl;
@@ -29,6 +29,9 @@ int main(int argc, char** argv)
 		op = std::atoi(argv[1]);
 	}
 	TimeHelp::StartUp();
+	ConsoleLogAppender apperder;
+	Logger::Instance(&apperder);
+
 	CNetwork net;
 	TestApp app1(&net);
 	__AppInstant = &app1;

@@ -38,7 +38,7 @@ namespace net
 		assert(object);
 		assert(object->getKey() == key);
 		object = nullptr;
-		core_log_info("remove object", key);
+		core_log_trace("remove object", key);
 	}
 
 	IOObjectPtr CNetwork::getObject(uint32 key) const
@@ -153,7 +153,7 @@ namespace net
 				dispatchProcess(*iter);
 			}
 
-			auto now = TimeHelp::clock_ms().count();
+			auto now = TimeHelp::clock().count();
 			if (now - _lastclock >= 1000)
 			{
 				onTimer1000ms();

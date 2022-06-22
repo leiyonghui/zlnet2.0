@@ -15,7 +15,6 @@ namespace net
 {
 	using namespace core;
 	using namespace core::types;
-	using namespace core::logs;
 
 	const int32 MAX_OBJECT_SIZE = 1 << 16;
 	using ObjecKeyPool = KeyPool<16>;

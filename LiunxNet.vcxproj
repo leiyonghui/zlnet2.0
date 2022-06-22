@@ -95,6 +95,7 @@
     <ClInclude Include="core\core\FastNode.h" />
     <ClInclude Include="core\core\IntrusiveNode.h" />
     <ClInclude Include="core\core\KeyPool.h" />
+    <ClInclude Include="core\core\Loger.h" />
     <ClInclude Include="core\core\Macro.h" />
     <ClInclude Include="core\core\MsgQueue.h" />
     <ClInclude Include="core\core\NonCopyable.h" />
@@ -102,10 +103,12 @@
     <ClInclude Include="core\core\Queue.h" />
     <ClInclude Include="core\core\Singleton.h" />
     <ClInclude Include="core\core\SkipList.h" />
+    <ClInclude Include="core\core\SyncQueue.h" />
     <ClInclude Include="core\core\TimeHelp.h" />
     <ClInclude Include="core\core\Timers.h" />
     <ClInclude Include="core\core\TimerSet.h" />
     <ClInclude Include="core\core\TimerWheel.h" />
+    <ClInclude Include="core\core\Types.h" />
     <ClInclude Include="engine\Configs.h" />
     <ClInclude Include="engine\Engine.h" />
     <ClInclude Include="engine\Headers.h" />
@@ -147,6 +150,8 @@
   <ItemGroup>
     <ClCompile Include="app\Moduel.cpp" />
     <ClCompile Include="app\Server.cpp" />
+    <ClCompile Include="core\core\Configs.cpp" />
+    <ClCompile Include="core\core\Loger.cpp" />
     <ClCompile Include="core\core\TimeHelp.cpp" />
     <ClCompile Include="core\core\Timers.cpp" />
     <ClCompile Include="core\core\TimerSet.cpp" />

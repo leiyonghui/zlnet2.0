@@ -219,6 +219,15 @@
     <ClInclude Include="test\TestModule.h">
       <Filter>test</Filter>
     </ClInclude>
+    <ClInclude Include="core\core\Loger.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\core\Types.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\core\SyncQueue.h">
+      <Filter>core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="network\Address.cpp">
@@ -316,6 +325,12 @@
     </ClCompile>
     <ClCompile Include="test\TestModule.cpp">
       <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="core\core\Loger.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="core\core\Configs.cpp">
+      <Filter>core</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

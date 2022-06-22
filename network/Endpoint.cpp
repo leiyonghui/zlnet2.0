@@ -55,7 +55,7 @@ namespace net
 #else // __liunx
 
 #endif
-		core_log_info("close socket", _socket);
+		core_log_trace("close socket", _socket);
 	}
 
 #ifdef __linux

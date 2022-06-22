@@ -59,7 +59,7 @@ namespace engine
 
 	void Engine::onPoll(bool& busy)
 	{
-		auto now = TimeHelp::clock_ms().count();
+		auto now = TimeHelp::clock().count();
 
 		if (now - _lastClock1000ms >= 1000)
 		{

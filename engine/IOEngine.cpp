@@ -528,7 +528,7 @@ namespace engine
 		auto cbId = makeCallbackId();
 		assert(cbId);
 		handler->_cbId = cbId;
-		handler->_toMs = TimeHelp::clock_ms().count() + _callbackTimeoutMs;
+		handler->_toMs = TimeHelp::clock().count() + _callbackTimeoutMs;
 		_callbackHandlers[cbId] = handler;
 		_callbackTimeOutList.pushBack(handler.get());
 		return cbId;
@@ -536,7 +536,7 @@ namespace engine
 
 	void IOEngine::onTimerCallbackTimeout()
 	{
-		auto now = TimeHelp::clock_ms().count();
+		auto now = TimeHelp::clock().count();
 		while (!_callbackTimeOutList.empty())
 		{
 			auto handler = _callbackTimeOutList.front();
