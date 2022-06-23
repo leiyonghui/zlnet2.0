@@ -30,6 +30,7 @@ namespace net
 	CEPoller::CEPoller():_epfd(epoll_create(MAX_OBJECT_SIZE)), _events(new epoll_event[MAX_OBJECT_SIZE])
 	{
 	}
+
 	CEPoller::~CEPoller()
 	{
 		delete[] _events;

@@ -16,5 +16,4 @@ namespace engine
 		uint32 _uid;
 	};
 
-
 }

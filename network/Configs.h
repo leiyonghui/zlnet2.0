@@ -7,10 +7,6 @@
 #include "core/Timers.h"
 #include "core/KeyPool.h"
 
-#ifdef _WIN32
-#include <winsock2.h>
-#endif // _WIN32
-
 namespace net
 {
 	using namespace core;
@@ -25,6 +21,8 @@ namespace net
 	USING_SHARED_PTR(IOObject);
 	class TcpListener;
 	USING_SHARED_PTR(TcpListener);
+	class Connection;
+	USING_SHARED_PTR(Connection);
 	class TcpConnection;
 	USING_SHARED_PTR(TcpConnection);
 	class TcpConnector;
@@ -73,5 +71,3 @@ namespace net
 #endif // __linux
 
 }
-
-#include "Common.h"

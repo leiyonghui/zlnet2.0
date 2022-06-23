@@ -1,11 +1,11 @@
 #include <sstream>
 #include "Common.h"
-#include "Configs.h"
 #include <string.h>
 
 #ifdef __linux
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#include <netinet/in.h>
 #endif // __linux
 
 #include "Address.h"

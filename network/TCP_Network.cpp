@@ -1,6 +1,21 @@
+#ifdef __linux
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <sys/uio.h> 
+#include <netinet/in.h>
+#endif // __linux
+
 #include "Network.h"
-#include "TCP_IOObjects.h"
 #include "Buffer.h"
+#include "IOObject.h"
+#include "IOObjects.h"
+#include "IOProtocol.h"
+#include "TCP_IOObjects.h"
+#include "EPoller.h"
+
+#include "Common.h"
 
 namespace net
 {

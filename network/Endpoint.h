@@ -2,6 +2,8 @@
 #include "Configs.h"
 #include "Address.h"
 
+struct iovec;
+
 namespace net
 {
 	typedef std::shared_ptr<class CEndPoint> CEndPointPtr;
@@ -54,9 +56,9 @@ namespace net
 
 		int32 write(const char* buff, int32 len);
 #ifdef __linux
-		int32 readv(const struct iovec* iov, int32 iovcnt);
+		int32 readv(const iovec* iov, int32 iovcnt);
 
-		int32 writev(const struct iovec* iov, int32 iovcnt);
+		int32 writev(const iovec* iov, int32 iovcnt);
 #endif // __linux
 		int32 shutdownWrite();
 

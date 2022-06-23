@@ -1,6 +1,8 @@
 #pragma once
 #include "Configs.h"
 
+class sockaddr_in;
+
 namespace net
 {
 	class CAddress
@@ -16,7 +18,7 @@ namespace net
 
 		CAddress(const CAddress& address);
 
-		CAddress(const class sockaddr_in& addr);
+		CAddress(const sockaddr_in& addr);
 
 		inline  uint32 ip() const { return _ip; }
 

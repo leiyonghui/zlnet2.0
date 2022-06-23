@@ -1,10 +1,10 @@
 #pragma once
 #include "Configs.h"
-#include "IOObject.h"
-#include "IOObjects.h"
-#include "IOProtocol.h"
+//#include "IOObject.h"
+//#include "IOObjects.h"
+//#include "IOProtocol.h"
 #include "IOEvents.h"
-#include "Poller.h"
+//#include "Poller.h"
 #include "core/Queue.h"
 
 namespace net
@@ -72,7 +72,7 @@ namespace net
 		ObjecKeyPool _keyPool;
 		std::vector<IOObjectPtr> _objects;
 		Queue<IOEvent*> _eventQueue;
-		CPoller* _poller;
+		class CPoller* _poller;
 		IScheduler* _shceduler;
 		TimerHander* _timerHandler;
 		int64 _lastclock;

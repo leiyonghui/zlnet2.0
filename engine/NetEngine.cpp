@@ -1,6 +1,7 @@
 #include "NetEngine.h"
 #include "Serializes.h"
 #include "IOPacket.h"
+#include "Messages.h"
 
 namespace engine
 {

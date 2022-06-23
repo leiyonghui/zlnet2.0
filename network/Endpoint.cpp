@@ -1,4 +1,4 @@
-#include <string.h>
+#include "Endpoint.h"
 
 #ifdef __linux
 #include <unistd.h>
@@ -6,10 +6,9 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <sys/uio.h> 
+#include <netinet/in.h>
 //#include <netdb.h>
 #endif // __linux
-
-#include "Endpoint.h"
 
 
 namespace net

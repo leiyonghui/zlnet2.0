@@ -1,8 +1,7 @@
 #pragma once
 #include "Configs.h"
-#include "network/IOProtocol.h"
 #include "core/MsgQueue.h"
-#include "PacketHandlers.h"
+#include "network/IOProtocol.h"
 
 namespace engine
 {

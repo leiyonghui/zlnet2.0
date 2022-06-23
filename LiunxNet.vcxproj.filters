@@ -332,5 +332,8 @@
     <ClCompile Include="core\core\Configs.cpp">
       <Filter>core</Filter>
     </ClCompile>
+    <ClCompile Include="network\Common.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

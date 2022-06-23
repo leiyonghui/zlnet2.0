@@ -1,4 +1,6 @@
 #include "PacketHandlers.h"
+#include "IOPacket.h"
+#include "Messages.h"
 
 namespace engine
 {

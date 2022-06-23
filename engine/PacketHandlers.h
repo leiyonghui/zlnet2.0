@@ -1,10 +1,10 @@
 #pragma once
 #include "Configs.h"
-#include "Messages.h"
-#include "IOPacket.h"
 
 namespace engine
 {
+	class CMessageContext;
+
 	class PacketHandler
 	{
 	public:

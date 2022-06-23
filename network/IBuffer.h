@@ -5,7 +5,6 @@ namespace net
 {
     class IBuffer
     {
-
     public:
         virtual const char* data() const = 0;
 

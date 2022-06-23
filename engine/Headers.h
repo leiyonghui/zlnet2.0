@@ -1,8 +1,10 @@
 #pragma once
-#include "Configs.h"
+#include "core/Types.h"
 
 namespace engine
 {
+	using namespace core::types;
+
 #pragma pack(1)
 	enum HeaderType
 	{

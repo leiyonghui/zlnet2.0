@@ -1,8 +1,7 @@
 #pragma once
-#include <string.h>
 #include <assert.h>
 #include "Buffer.h"
-#include "Configs.h"
+#include "Common.h"
 
 namespace net
 {
