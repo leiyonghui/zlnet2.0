@@ -11,6 +11,7 @@
 #include "TestMessage.h"
 #include "engine/IOPacket.h"
 #include "core/Macro.h"
+#include "engine/Messages.h"
 using namespace net;
 using namespace std;
 using namespace engine;

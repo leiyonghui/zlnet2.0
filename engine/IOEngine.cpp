@@ -3,6 +3,7 @@
 #include "IOEngine.h"
 #include "IONotify.h"
 #include "IOPacket.h"
+#include "Messages.h"
 
 namespace engine
 {

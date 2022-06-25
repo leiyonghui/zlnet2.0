@@ -1,6 +1,7 @@
 #include "Server.h"
 #include "Module.h"
 #include "engine/Messages.h"
+#include "engine/IOPacket.h"
 
 namespace app
 {

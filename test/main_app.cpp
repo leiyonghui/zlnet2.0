@@ -2,6 +2,7 @@
 #include "TestApp.h"
 #include "TestModule.h"
 #include "network/Network.h"
+#include "network/Common.h"
 
 using namespace std;
 using namespace app;
@@ -10,7 +11,7 @@ using namespace net;
 
 int main(int argc, char** argv)
 {
-	if (CheckCPUendian())
+	if (net::common::CheckCPUendian())
 		std::cout << " big-endian  " << std::endl;
 	else
 		std::cout << " little-endian  " << std::endl;

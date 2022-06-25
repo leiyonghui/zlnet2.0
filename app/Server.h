@@ -1,6 +1,7 @@
 #pragma once
 #include "Configs.h"
 #include "engine/NetEngine.h"
+#include "engine/Messages.h"
 
 namespace app
 {
