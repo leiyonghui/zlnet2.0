@@ -7,8 +7,6 @@
 
 namespace engine
 {
-	const int32 MAX_HEART_COUNT = 60;
-
 	IOEngine::IOEngine(net::CNetwork* network): Engine(), _network(network), _nextCallbackId(0), _callbackTimeoutMs(10000)
 	{
 		
@@ -303,10 +301,6 @@ namespace engine
 		bindMsgdispatcher([this](const PacketPtr& packet) {
 			dispatchIOPacket(packet);
 		});
-
-		bindPacketHandler(MsgCmd::Heart, std::make_shared<MessageHandlerBinding>([this](CMessageContext& context) {
-			handlerProtocolHeart(context);
-		}));
 	}
 
 	void IOEngine::onQuit()
@@ -556,7 +550,6 @@ namespace engine
 
 	void IOEngine::onTimerProtocolHeart()
 	{
-		std::vector<uint32> removes;
 		for (auto&[uid, protocol] : _protocols)
 		{
 			if (!protocol->isAvailable())
@@ -568,33 +561,6 @@ namespace engine
 				IOPacketPtr packet(new IOPacket(uid, MsgCmd::Heart, 0, 0, nullptr));
 				send(packet);
 			}
-			else if (protocol->getType() == net::IO_OBJECT_CONNECTION)
-			{
-				auto count = protocol->getHeartCount() + 1;
-				if (count > MAX_HEART_COUNT) {
-					core_log_trace("protocol heart close", uid, count);
-					removes.push_back(uid);
-				}
-				else
-					protocol->setHeartCount(count);
-			}
-		}
-		for (auto uid : removes)
-		{
-			close(uid);
-		}
-	}
-
-	void IOEngine::handlerProtocolHeart(CMessageContext& context)
-	{
-		auto protocol = getProtocol(context._uid);
-		if (protocol && protocol->isAvailable())
-		{
-			protocol->setHeartCount(0);
-		}
-		else 
-		{
-			core_log_error("unknow heart", context._uid);
 		}
 	}
 }

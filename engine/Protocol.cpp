@@ -4,6 +4,8 @@
 
 namespace engine
 {
+	const int32 MAX_HEART_COUNT = 60;
+
 	Protocol::Protocol():net::IOProtocol(),_available(false),_heartbeat(0)
 	{
 	}
@@ -60,6 +62,11 @@ namespace engine
 		_msgqueue->pushBack(packet);
 	}
 
+	void Protocol::handlerHeart()
+	{
+		setHeartCount(0);
+	}
+
 	void Protocol::onListen(bool success)
 	{
 		IONotifyPtr packet = std::make_shared<IONotify>(PacketListen, SHARED_THIS(Protocol), nullptr, success);
@@ -94,6 +101,24 @@ namespace engine
 	{
 		IONotifyPtr packet = std::make_shared<IONotify>(PacketDisconnect, SHARED_THIS(Protocol));
 		dispatchPacket(packet);
+	}
+
+	bool Protocol::onTimer()
+	{
+		if (getType() == net::IO_OBJECT_CONNECTION)
+		{
+			auto count = getHeartCount() + 1;
+			if (count > MAX_HEART_COUNT)
+			{
+				core_log_trace("protocol heart close", _key, count);
+				return false;
+			}
+			else
+			{
+				setHeartCount(count);
+			}
+		}
+		return true;
 	}
 }
 

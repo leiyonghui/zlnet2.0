@@ -105,6 +105,7 @@
     <ClInclude Include="core\core\SkipList.h" />
     <ClInclude Include="core\core\SyncQueue.h" />
     <ClInclude Include="core\core\TimeHelp.h" />
+    <ClInclude Include="core\core\TimerImpl.h" />
     <ClInclude Include="core\core\Timers.h" />
     <ClInclude Include="core\core\TimerSet.h" />
     <ClInclude Include="core\core\TimerWheel.h" />

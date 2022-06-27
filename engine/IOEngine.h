@@ -85,7 +85,6 @@ namespace engine
 
 		void onTimerProtocolHeart();
 
-		void handlerProtocolHeart(CMessageContext& context);
 	protected:
 		class net::CNetwork* _network;
 		std::unordered_map<uint32, ProtocolPtr>			_protocols;

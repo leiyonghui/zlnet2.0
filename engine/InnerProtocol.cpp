@@ -154,8 +154,15 @@ namespace engine
 					message = std::make_shared<SerializeMessage>(*msgId, innerBuf.read(uint32(sizeof(HeaderMessage) + sizeof(int32)), msglen), msglen);
 			}
 
-			IOPacketPtr packet = std::make_shared<IOPacket>(getKey(), head->cmd, 0, 0, std::static_pointer_cast<IMessage>(message));
-			dispatchPacket(packet);
+			if (head->cmd == MsgCmd::Heart)
+			{
+				handlerHeart();
+			}
+			else
+			{
+				IOPacketPtr packet = std::make_shared<IOPacket>(getKey(), head->cmd, 0, 0, std::static_pointer_cast<IMessage>(message));
+				dispatchPacket(packet);
+			}
 		}
 	}
 

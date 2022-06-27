@@ -26,8 +26,11 @@ namespace engine
 		int32 getHeartCount() const;
 
 		void setHeartCount(int32 count);
+
 	protected:
 		void dispatchPacket(PacketPtr packet);
+
+		void handlerHeart();
 
 	protected:
 		virtual void onListen(bool success) override;
@@ -42,6 +45,7 @@ namespace engine
 
 		virtual void onDisConnect() override;
 
+		virtual bool onTimer() override;
 	protected:
 		bool _available;
 		int32 _heartbeat;

@@ -228,6 +228,9 @@
     <ClInclude Include="core\core\SyncQueue.h">
       <Filter>core</Filter>
     </ClInclude>
+    <ClInclude Include="core\core\TimerImpl.h">
+      <Filter>core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="network\Address.cpp">

@@ -1,6 +1,7 @@
 #pragma once
 #include "IOProtocol.h"
 #include "Endpoint.h"
+#include "core/TimerImpl.h"
 
 namespace net
 {
@@ -8,7 +9,7 @@ namespace net
 	using ReadCallback = std::function<void(const IOObjectPtr&)>;
 	using WriteCallback = std::function<void(const IOObjectPtr&)>;
 
-	class IOObject : public core::CPoolObject, public CNoncopyable
+	class IOObject : public core::CPoolObject, public CNoncopyable, public std::enable_shared_from_this<IOObject> , public TimerImpl<IOObject>
 	{
 	public:
 		IOObject(EIOOBJECT_TYPE type);
