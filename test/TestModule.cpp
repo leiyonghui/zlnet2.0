@@ -8,7 +8,7 @@
 bool CTestModule::onInit()
 {
 
-	__AppInstant->bindPacketHandler(1, std::make_shared<MessageHandlerBinding>([](CMessageContext& context) {
+	__AppInstant->bindPacketHandler(101, std::make_shared<MessageHandlerBinding>([](CMessageContext& context) {
 
 		core_log_debug("========= msg rev");
 		core_log_debug(context._cmd, context._uid);
@@ -102,7 +102,7 @@ void CTestModule::onTimer1000ms()
 			msg->set.insert(i);
 			msg->map.insert({ i, i });
 		}
-		IOPacketPtr packet(new IOPacket(uid, 1, 0, 0, std::make_shared<SerializeMessage>(msg)));
+		IOPacketPtr packet(new IOPacket(uid, 101, 0, 0, std::make_shared<SerializeMessage>(msg)));
 		__AppInstant->send(packet);
 	}
 }

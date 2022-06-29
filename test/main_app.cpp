@@ -3,6 +3,7 @@
 #include "TestModule.h"
 #include "network/Network.h"
 #include "network/Common.h"
+#include "TestMessage.h"
 
 using namespace std;
 using namespace app;
@@ -11,6 +12,11 @@ using namespace net;
 
 int main(int argc, char** argv)
 {
+
+	MessageFactory::registerMessage(9999, []() -> IMessagePtr {
+		return std::make_shared<msgs::TestMessage>();
+	});
+
 	if (net::common::CheckCPUendian())
 		std::cout << " big-endian  " << std::endl;
 	else
