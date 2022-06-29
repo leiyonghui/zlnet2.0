@@ -15,6 +15,8 @@ public:
 
 	void onNodeDisConnect(uint32 uid);
 
+	void onTimer1000ms();
+
 	bool _isServer{false};
 	bool _isNode{ false };
 	int32 _connectNum{ 0 };
@@ -22,4 +24,5 @@ public:
 	int64 _acCost{ 0 };
 	SSeting1 setting;
 	SSeting1 setting2;
+	std::vector<uint32> uids;
 };

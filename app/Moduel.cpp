@@ -9,6 +9,9 @@ namespace app
 	void CModule::onQuit()
 	{
 	}
+	void CModule::onTimer1000ms()
+	{
+	}
 	void CModule::onAccepct(uint32 uid, uint32 fromUid)
 	{
 

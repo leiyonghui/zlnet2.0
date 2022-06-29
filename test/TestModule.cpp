@@ -1,11 +1,25 @@
 #include "TestModule.h"
 #include "TestApp.h"
 #include "engine/InnerProtocol.h"
-
+#include "TestMessage.h"
+#include "engine/IOPacket.h"
 
 
 bool CTestModule::onInit()
 {
+
+	__AppInstant->bindPacketHandler(1, std::make_shared<MessageHandlerBinding>([](CMessageContext& context) {
+
+		core_log_debug("========= msg rev");
+		core_log_debug(context._cmd, context._uid);
+
+		msgs::TestMessagePtr msg = std::dynamic_pointer_cast<msgs::TestMessage>(context._msg);
+		if (msg)
+		{
+			core_log_debug("---rev", msg->tostirng());
+		}
+	}));
+
 	if (_isServer)
 	{
 		auto protocol = CObjectPool<InnerProtocol>::Instance()->create(net::EPROTO_TCP);
@@ -23,7 +37,7 @@ bool CTestModule::onInit()
 		for (int32 i = 1; i<= _connectNum; i++)
 		{
 			auto protocol = CObjectPool<InnerProtocol>::Instance()->create(net::EPROTO_TCP);
-			__AppInstant->connect("127.0.0.1", setting.port, protocol);
+			uids.push_back(__AppInstant->connect("127.0.0.1", setting.port, protocol));
 		}
 	}
 	return true;
@@ -51,4 +65,24 @@ void CTestModule::onNodeConnect(uint32 uid, uint32 code, uint32 type)
 void CTestModule::onNodeDisConnect(uint32 uid)
 {
 	core_log_trace("node dis connect", uid);
+}
+
+void CTestModule::onTimer1000ms()
+{
+	for (auto uid : uids)
+	{
+		msgs::TestMessagePtr msg = std::make_shared<msgs::TestMessage>();
+		msg->value1 = uid;
+		msg->value2 = int64(1) << (uid % 64);
+		msg->str = "hello world!";
+		for (int32 i = 1; i <= 20; i++)
+		{
+			msg->values.push_back(i);
+			msg->strValues.push_back(std::to_string(i));
+			msg->set.insert(i);
+			msg->map.insert({ i, i });
+		}
+		IOPacketPtr packet(new IOPacket(uid, 1, 0, 0, std::make_shared<SerializeMessage>(msg)));
+		__AppInstant->send(packet);
+	}
 }

@@ -22,6 +22,8 @@ namespace app
 
 		virtual void onQuit() override;
 
+		virtual void onTimer1000ms() override;
+
 		virtual void onAccept(uint32 uid, uint32 fromUid) override;
 
 		virtual void onNodeConnect(uint32 uid, uint32 code, uint32 type) override;

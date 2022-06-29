@@ -13,6 +13,8 @@ namespace app
 		
 		virtual void onQuit();
 
+		virtual void onTimer1000ms();
+
 		virtual void onAccepct(uint32 uid, uint32 fromUid);
 
 		virtual void onNodeConnect(uint32 uid, uint32 code, uint32 type);

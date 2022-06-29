@@ -12,7 +12,7 @@ namespace app
 		Server::onTimer1000ms();
 
 		_sec++;
-		if (_sec % 10 == 0)
+		if (_sec % 30 == 0)
 		{
 			CObjectPoolMonitor::showInfo();
 		}

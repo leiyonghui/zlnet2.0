@@ -55,6 +55,16 @@ namespace app
 		NetEngine::onQuit();
 	}
 
+	void Server::onTimer1000ms()
+	{
+		NetEngine::onTimer1000ms();
+
+		for (auto module : _moduleList)
+		{
+			module->onTimer1000ms();
+		}
+	}
+
 	void Server::onAccept(uint32 uid, uint32 fromUid)
 	{
 		NetEngine::onAccept(uid, fromUid);
