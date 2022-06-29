@@ -61,4 +61,17 @@ namespace net
 	private:
 		UserData _data;
 	};
+
+	class IOEventClear : public IOEvent
+	{
+	public:
+		IOEventClear(int32 group) :IOEvent(IO_EVENT_CLEAR, 0), _group(group)
+		{
+
+		}
+
+		int32 getGroup() const { return _group; }
+	private:
+		int32 _group;
+	};
 }

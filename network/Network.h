@@ -47,6 +47,7 @@ namespace net
 		void processListen(IOListen* event);
 		void processConnect(IOEConnect* event);
 		void processClose(IOClose* event);
+		void processClear(IOEventClear* event);
 
 		void defaultErrorHandle(const IOObjectPtr& object);
 
@@ -56,16 +57,18 @@ namespace net
 		void handleTcpConWrite(const IOObjectPtr& object);
 		void handleTcpConnectWrite(const IOObjectPtr& object);
 		void handleTcpConnectError(const IOObjectPtr& object);
-		void removeTcpListen(const TcpListenerPtr& listener);
-		void removeTcpCon(const ConnectionPtr& con);
 		void tcpListen(int16 port, const IOProtocolPtr& protocol);
 		void tcpSend(const IOObjectPtr& object, IOEvent* event);
 		void tcpConnect(const std::string& ip, uint16 port, const IOProtocolPtr& protocol);
 		void tcpConnectError(const TcpConnectorPtr& connect);
 		void tcpClose(uint32 key, uint32 second);
-		void tcpClose(const TcpConnectionPtr& con, int32 second);
-		void tcpClose(const TcpConnectorPtr& con, int32 second);
-		void tcpClose(const TcpListenerPtr& listener);
+		void tcpCloseCon(const ConnectionPtr& con, int32 second);
+		void tcpCloseConnection(const TcpConnectionPtr& con, int32 second);
+		void tcpCloseConnector(const TcpConnectorPtr& con, int32 second);
+		void tcpCloseListen(const TcpListenerPtr& listener);
+		void removeTcpListen(const TcpListenerPtr& listener);
+		void removeTcpCon(const ConnectionPtr& con);
+
 	private:
 		bool _isRuning;
 		std::atomic_bool _isStop;

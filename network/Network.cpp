@@ -231,6 +231,11 @@ namespace net
 			processClose(dynamic_cast<IOClose*>(event));
 			break;
 		}
+		case IO_EVENT_CLEAR:
+		{
+			processClear(dynamic_cast<IOEventClear*>(event));
+			break;
+		}
 		default:
 			core_log_error("unknow process", event->getType());
 			break;
@@ -252,8 +257,6 @@ namespace net
 		case EPROTO_TCP:
 			tcpSend(object, event);
 			break;
-		case EPROTO_UDP:
-			break;
 		case EPROTO_KCP:
 			break;
 		default:
@@ -271,10 +274,6 @@ namespace net
 		case EPROTO_TCP:
 		{
 			tcpListen(event->getPort(), protocol);
-			break;
-		}
-		case EPROTO_UDP:
-		{
 			break;
 		}
 		case EPROTO_KCP:
@@ -335,6 +334,11 @@ namespace net
 			assert(false);
 			break;
 		}
+	}
+
+	void CNetwork::processClear(IOEventClear* event)
+	{
+
 	}
 
 	void CNetwork::defaultErrorHandle(const IOObjectPtr& object)

@@ -50,6 +50,7 @@ namespace net
 		virtual void onDisConnect() = 0;
 
 		virtual bool onTimer() = 0;
+
 	protected:
 		EIOOBJECT_TYPE _type;
 		EPROTOCOL _protocolType;

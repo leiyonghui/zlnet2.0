@@ -56,6 +56,7 @@ namespace net
 		IO_EVENT_CONNECT,
 		IO_EVENT_DATA,
 		IO_EVENT_CLOSE,
+		IO_EVENT_CLEAR,
 	};
 
 	enum EIOEvent

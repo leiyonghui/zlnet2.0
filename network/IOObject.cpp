@@ -20,5 +20,6 @@ namespace net
 	{
 		_protocol = nullptr;
 		_endpoint = nullptr;
+		TimerImpl<IOObject>::reset();
 	}
 }
