@@ -69,7 +69,7 @@ void CTestModule::onConnect(uint32 uid, bool success)
 	}
 }
 
-void CTestModule::onDisConnect(uint32 uid)
+void CTestModule::onDisconnect(uint32 uid)
 {
 	if (!_isServer)
 	{

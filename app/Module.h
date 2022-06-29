@@ -21,7 +21,7 @@ namespace app
 
 		virtual void onConnect(uint32 uid, bool success);
 
-		virtual void onDisConnect(uint32 uid);
+		virtual void onDisconnect(uint32 uid);
 
 		virtual void onNodeConnect(uint32 uid, uint32 code, uint32 type);
 

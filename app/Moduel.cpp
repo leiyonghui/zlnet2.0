@@ -32,7 +32,7 @@ namespace app
 
 	}
 
-	void CModule::onDisConnect(uint32 uid)
+	void CModule::onDisconnect(uint32 uid)
 	{
 
 	}

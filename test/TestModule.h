@@ -15,7 +15,7 @@ public:
 
 	void onConnect(uint32 uid, bool success);
 
-	void onDisConnect(uint32 uid);
+	void onDisconnect(uint32 uid);
 
 	void onNodeConnect(uint32 uid, uint32 code, uint32 type);
 
