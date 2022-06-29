@@ -428,7 +428,7 @@ namespace net
 
 		if (con->getState() == CONNECTED)
 		{
-			con->getProtocol()->onClose();
+			con->getProtocol()->onDisConnect();
 		}
 
 		if (force)
