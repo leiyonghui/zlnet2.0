@@ -18,7 +18,9 @@ namespace net
 		IIOBuffer* getOutBuffer() { return _outBuffer; };
 		bool isWriting() const { return _isWriting; }
 		void setWriting(bool is) { _isWriting = is; }
-		bool enable() { return _state == CONNECTED || _state == DISCONNECTING; }
+		bool enableSend() { return _state == CONNECTED; }
+		bool enableWrite() { return _state == CONNECTED || _state == DISCONNECTING; }
+		bool enableRead() { return _state == CONNECTED || _state == DISCONNECTING; }
 	protected:
 		EConnectState _state;
 		IIOBuffer* _inputBuffer;

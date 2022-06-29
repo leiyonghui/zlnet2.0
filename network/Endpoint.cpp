@@ -178,6 +178,26 @@ namespace net
 		return 0;
 	}
 
+	int32 CEndPoint::shutdownRead()
+	{
+		if (::shutdown(_socket, SHUT_RD) < 0)
+		{
+			core_log_error("sockets::shutdownRead", errno, strerror(errno));
+			return -1;
+		}
+		return 0;
+	}
+
+	int32 CEndPoint::shutdown()
+	{
+		if (::shutdown(_socket, SHUT_RDWR) < 0)
+		{
+			core_log_error("sockets::shutdown", errno, strerror(errno));
+			return -1;
+		}
+		return 0;
+	}
+
 	int32 CEndPoint::getSocketError()
 	{
 		int optval;

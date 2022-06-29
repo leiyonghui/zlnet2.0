@@ -103,9 +103,9 @@ namespace net
 		return key;
 	}
 
-	void CNetwork::close(uint32 key, int32 second)
+	void CNetwork::close(uint32 key)
 	{
-		pushEvent(static_cast<IOEvent*>(new IOClose(key, second)));
+		pushEvent(static_cast<IOEvent*>(new IOClose(key)));
 	}
 
 	uint32 CNetwork::popKey()
@@ -324,7 +324,7 @@ namespace net
 		switch (protocol->getProtocolType())
 		{
 		case EPROTO_TCP:
-			tcpClose(event->getKey(), event->getDelay());
+			tcpClose(event->getKey(), false);
 			break;
 		case EPROTO_UDP:
 			break;

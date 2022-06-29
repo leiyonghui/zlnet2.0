@@ -38,14 +38,10 @@ namespace net
 	class IOClose : public IOEvent
 	{
 	public:
-		IOClose(uint32 key, int32 delaySec) :IOEvent(IO_EVENT_CLOSE, key), _delaySec(delaySec)
+		IOClose(uint32 key) :IOEvent(IO_EVENT_CLOSE, key)
 		{
 
 		}
-
-		int32 getDelay() const { return _delaySec; }
-	private:
-		int32 _delaySec;
 	};
 
 	template<class UserData>

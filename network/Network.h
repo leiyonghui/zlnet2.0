@@ -21,7 +21,7 @@ namespace net
 
 		uint32 listen(uint16 port, IOProtocolPtr protocol);//multi-thread
 		uint32 connect(const std::string& ip, uint16 port, IOProtocolPtr protocol);//multi-thread
-		void close(uint32 key, int32 second);//multi-thread
+		void close(uint32 key);//multi-thread
 
 		template<class UserData>
 		void send(IOEventData<UserData>* event)//multi-thread
@@ -61,10 +61,10 @@ namespace net
 		void tcpSend(const IOObjectPtr& object, IOEvent* event);
 		void tcpConnect(const std::string& ip, uint16 port, const IOProtocolPtr& protocol);
 		void tcpConnectError(const TcpConnectorPtr& connect);
-		void tcpClose(uint32 key, uint32 second);
-		void tcpCloseCon(const ConnectionPtr& con, int32 second);
-		void tcpCloseConnection(const TcpConnectionPtr& con, int32 second);
-		void tcpCloseConnector(const TcpConnectorPtr& con, int32 second);
+		void tcpClose(uint32 key, bool force);
+		void tcpCloseCon(const ConnectionPtr& con, bool force);
+		void tcpCloseConnection(const TcpConnectionPtr& con, bool force);
+		void tcpCloseConnector(const TcpConnectorPtr& con, bool force);
 		void tcpCloseListen(const TcpListenerPtr& listener);
 		void removeTcpListen(const TcpListenerPtr& listener);
 		void removeTcpCon(const ConnectionPtr& con);

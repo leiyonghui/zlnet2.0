@@ -62,6 +62,10 @@ namespace net
 #endif // __linux
 		int32 shutdownWrite();
 
+		int32 shutdownRead();
+
+		int32 shutdown();
+
 		int32 getSocketError();
 
 		std::pair<CAddress, bool> getRemoteName();

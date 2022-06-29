@@ -79,7 +79,7 @@ namespace engine
 			return true;
 		}
 		removeProtocol(uid);		 //confircom²»ÓÃ´¥·¢unlisten
-		_network->close(uid, 0);   
+		_network->close(uid);   
 		core_log_error("listen confircom error", uid);
 		return false;
 	}
@@ -132,7 +132,7 @@ namespace engine
 			return true;
 		}
 		removeProtocol(uid);
-		_network->close(uid, 0);
+		_network->close(uid);
 		return false;
 	}
 
@@ -146,11 +146,11 @@ namespace engine
 		}
 		if (!protocol->isAvailable())
 		{
-			_network->close(uid, 2);
+			_network->close(uid);
 			removeProtocol(uid);
 			return;
 		}
-		_network->close(uid, 2);
+		_network->close(uid);
 		switch (protocol->getType())
 		{
 		case net::IO_OBJECT_LISTENER:
