@@ -37,7 +37,7 @@ bool CTestModule::onInit()
 		for (int32 i = 1; i<= _connectNum; i++)
 		{
 			auto protocol = CObjectPool<InnerProtocol>::Instance()->create(net::EPROTO_TCP);
-			uids.push_back(__AppInstant->connect("127.0.0.1", setting.port, protocol));
+			__AppInstant->connect("127.0.0.1", setting.port, protocol);
 		}
 	}
 	return true;
@@ -54,6 +54,26 @@ void CTestModule::onAccepct(uint32 uid, uint32 fromUid)
 	{
 		core_log_trace("---cost", _acNum, TimeHelp::clock().count() - _acCost);
 		_acCost = TimeHelp::clock().count();
+	}
+}
+
+void CTestModule::onClose(uint32 uid)
+{
+}
+
+void CTestModule::onConnect(uint32 uid, bool success)
+{
+	if (!_isServer && success)
+	{
+		uids.insert(uid);
+	}
+}
+
+void CTestModule::onDisConnect(uint32 uid)
+{
+	if (!_isServer)
+	{
+		uids.erase(uid);
 	}
 }
 

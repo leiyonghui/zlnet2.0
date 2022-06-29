@@ -30,7 +30,7 @@ int main(int argc, char** argv)
 		op = std::atoi(argv[1]);
 	}
 	TimeHelp::StartUp();
-	FileLogAppender * apperder = new FileLogAppender(string("Test_Net_").append(op == 1 ? "Server" : "Client").append("%T"), true);
+	FileLogAppender * apperder = new FileLogAppender(string("Test_Net_").append(op == 1 ? "Server" : "Client").append("_%T"), true);
 	Logger::Instance(apperder);
 
 	CNetwork net;

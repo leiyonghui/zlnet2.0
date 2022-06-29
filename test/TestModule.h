@@ -11,6 +11,12 @@ public:
 
 	void onAccepct(uint32 uid, uint32 fromUid);
 
+	void onClose(uint32 uid);
+
+	void onConnect(uint32 uid, bool success);
+
+	void onDisConnect(uint32 uid);
+
 	void onNodeConnect(uint32 uid, uint32 code, uint32 type);
 
 	void onNodeDisConnect(uint32 uid);
@@ -24,5 +30,5 @@ public:
 	int64 _acCost{ 0 };
 	SSeting1 setting;
 	SSeting1 setting2;
-	std::vector<uint32> uids;
+	std::set<uint32> uids;
 };

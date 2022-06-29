@@ -75,6 +75,36 @@ namespace app
 		}
 	}
 
+	void Server::onClose(uint32 uid)
+	{
+		NetEngine::onClose(uid);
+
+		for (auto module : _moduleList)
+		{
+			module->onClose(uid);
+		}
+	}
+
+	void Server::onConnect(uint32 uid, bool success)
+	{
+		NetEngine::onConnect(uid, success);
+
+		for (auto module : _moduleList)
+		{
+			module->onConnect(uid, success);
+		}
+	}
+
+	void Server::onDisconnect(uint32 uid)
+	{
+		NetEngine::onDisconnect(uid);
+
+		for (auto module : _moduleList)
+		{
+			module->onDisconnect(uid);
+		}
+	}
+
 	void Server::onNodeConnect(uint32 uid, uint32 code, uint32 type)
 	{
 		NetEngine::onNodeConnect(uid, code, type);
