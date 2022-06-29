@@ -419,7 +419,7 @@ namespace net
 		auto state = con->getState();
 		auto protocol = con->getProtocol();
 		core_log_trace("close connector", con->getKey(), state);
-		if (state == DISCONNECTED || state == CONNECTED)
+		if (state == DISCONNECTED || state == CONNECTING)
 		{
 			protocol->onConnect(false);
 			removeTcpCon(con);
