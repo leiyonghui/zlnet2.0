@@ -6,3 +6,4 @@ bin
 obj
 x64
 /CMakeSettings.json
+/LiunxNet.vcxproj.user
