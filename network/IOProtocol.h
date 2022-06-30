@@ -28,6 +28,8 @@ namespace net
 		CAddress getRemoateAddress() const { return _remoteAddress; }
 		void setLoclAddress(const CAddress& address);
 		void setRemoteAddress(const CAddress& address);
+		void setGroup(int32 group) { _group = group; }
+		int32 getGroup() const { return _group; }
 
 		virtual IOProtocolPtr create() const = 0;
 
@@ -55,6 +57,7 @@ namespace net
 		EIOOBJECT_TYPE _type;
 		EPROTOCOL _protocolType;
 		uint32 _key;
+		int32 _group;
 		CNetwork* _network;
 		CAddress _localAddress;
 		CAddress _remoteAddress;

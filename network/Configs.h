@@ -12,8 +12,8 @@ namespace net
 	using namespace core;
 	using namespace core::types;
 
-	const int32 MAX_OBJECT_SIZE = 1 << 16;
 	using ObjecKeyPool = KeyPool<16>;
+	const int32 MAX_OBJECT_SIZE = ObjecKeyPool::key_maxnum;
 
 	class IOProtocol;
 	USING_SHARED_PTR(IOProtocol);

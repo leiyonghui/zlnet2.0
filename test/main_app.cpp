@@ -40,40 +40,32 @@ int main(int argc, char** argv)
 	Logger::Instance(apperder);
 
 	CNetwork net;
-	TestApp app1(&net);
-	__AppInstant = &app1;
+	TestApp app(&net);
+	__AppInstant = &app;
 	CTestModule module;
 	module.setting = *st1;
 	module.setting2 = *st2;
-	app1.addModule(&module);
+	app.addModule(&module);
 	if (op == 1)
 	{
 		module._isServer = true;
-		net.start();
-		app1.run();
-		net.stop();
 	}
 	else if (op == 2)
 	{
 		module._isNode = true;
-		net.start();
-		app1.run();
-		net.stop();
 	}
 	else if (op == 3)
 	{
 		cin >> module._connectNum;
-		net.start();
-		app1.run();
-		net.stop();
 	}
-	else if (op == 4)
+	else
 	{
-		core_log_trace("--------1");
-		core_log_trace("--------2");
-		core_log_trace("--------3");
-		core_log_trace("--------4");
+		return 0;
 	}
+	net.start();
+	app.run();
+	net.stop();
+	core_log_trace("...main end!!!");
 	Logger::Instance()->stop();
 	delete apperder;
 	return 0;

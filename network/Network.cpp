@@ -16,7 +16,7 @@
 
 namespace net
 {
-	CNetwork::CNetwork() :_isRuning(false), _isStop(false),_poller(new CEPoller()),_shceduler(new timerset::TimerSet()), _timerHandler(nullptr), _lastclock(0)
+	CNetwork::CNetwork() :_isRuning(false), _isStop(false),_poller(new CEPoller()),_shceduler(new timerset::TimerSet()), _lastclock(0)
 	{
 		_objects.resize(MAX_OBJECT_SIZE);
 	}
@@ -25,36 +25,6 @@ namespace net
 	{
 		delete _poller;
 		delete _shceduler;
-	}
-
-	void CNetwork::addObject(const IOObjectPtr& object)
-	{
-		auto key = object->getKey();
-		auto index = _keyPool.index(key);
-		assert(_objects[index] == nullptr);
-		_objects[index] = object;
-		//core_log_info("add object", object->getKey());
-	}
-
-	void CNetwork::removeObject(uint32 key)
-	{
-		auto index = _keyPool.index(key);
-		auto& object = _objects[index];
-		assert(object);
-		assert(object->getKey() == key);
-		object = nullptr;
-		core_log_trace("remove object", key);
-	}
-
-	IOObjectPtr CNetwork::getObject(uint32 key) const
-	{
-		auto index = _keyPool.index(key);
-		auto object = _objects[index];
-		if (object && object->getKey() == key)
-		{
-			return object;
-		}
-		return nullptr;
 	}
 
 	void CNetwork::start()
@@ -68,8 +38,11 @@ namespace net
 
 	void CNetwork::stop()
 	{
+		core_log_trace("net stop begine..");
 		_isStop = true;
 		_thr.join();
+		_isRuning = false;
+		core_log_trace("net stop end..");
 	}
 
 	bool CNetwork::isRuning()
@@ -108,6 +81,11 @@ namespace net
 		pushEvent(static_cast<IOEvent*>(new IOClose(key)));
 	}
 
+	void CNetwork::clear(int32 group)
+	{
+		pushEvent(static_cast<IOEvent*>(new IOEventClear(group)));
+	}
+
 	uint32 CNetwork::popKey()
 	{
 		return _keyPool.pop();
@@ -116,6 +94,58 @@ namespace net
 	void CNetwork::pushKey(uint32 key)
 	{
 		_keyPool.push(key);
+	}
+
+	void CNetwork::addObject(const IOObjectPtr& object)
+	{
+		auto key = object->getKey();
+		auto index = _keyPool.index(key);
+		assert(_objects[index] == nullptr);
+		_objects[index] = object;
+		core_log_info("add object", object->getKey());
+	}
+
+	void CNetwork::removeObject(uint32 key)
+	{
+		auto index = _keyPool.index(key);
+		auto& object = _objects[index];
+		assert(object);
+		assert(object->getKey() == key);
+		object = nullptr;
+		core_log_info("remove object", key);
+	}
+
+	IOObjectPtr CNetwork::getObject(uint32 key) const
+	{
+		auto index = _keyPool.index(key);
+		auto object = _objects[index];
+		if (object && object->getKey() == key)
+		{
+			return object;
+		}
+		return nullptr;
+	}
+
+	bool CNetwork::isEmpty() const
+	{
+		for (int32 i = 0; i < MAX_OBJECT_SIZE; i++)
+			if (_objects[i])
+				return false;
+		return true;
+	}
+
+	std::list<IOObjectPtr> CNetwork::getGroupObject(int32 goroup) const
+	{
+		std::list<IOObjectPtr> objs;
+		for (int32 i = 0; i< MAX_OBJECT_SIZE; ++i)
+		{
+			auto& obj = _objects[i];
+			if (obj && (!goroup || obj->getGroup() == goroup || obj->getProtocol()->getGroup() == goroup))
+			{
+				objs.push_back(obj);
+			}
+		}
+		return objs;
 	}
 
 	void CNetwork::run()
@@ -137,11 +167,9 @@ namespace net
 
 	void CNetwork::loop()
 	{
-		auto timer = TimerHander(_shceduler);
-		_timerHandler = &timer;
 		while (!_isStop)
 		{
-			_poller->poll(_objects, 1);
+			_poller->poll(_objects, 4);
 
 			std::list<IOEvent*> events;
 			_eventQueue.pop(events);
@@ -188,12 +216,21 @@ namespace net
 			}			
 		}
 
-		if (!_eventQueue.empty()) 
-		{
+		if (!_eventQueue.empty())
 			core_log_error("net quit existed event ");
-		}
 
-		//to do...
+		if (!isEmpty())
+		{
+			cleartImpl(0);
+
+			while (!isEmpty())
+			{
+				_poller->poll(_objects, 4);
+
+				auto now = TimeHelp::clock().count();
+				_shceduler->update(now);
+			}
+		}
 	}
 
 	void CNetwork::onTimer1000ms()
@@ -297,10 +334,6 @@ namespace net
 			tcpConnect(event->getIp(), event->getPort(), protocol);
 			break;
 		}
-		case EPROTO_UDP:
-		{
-			break;
-		}
 		case EPROTO_KCP:
 		{
 			break;
@@ -313,7 +346,16 @@ namespace net
 
 	void CNetwork::processClose(IOClose* event)
 	{
-		auto key = event->getKey();
+		closeImpl(event->getKey());
+	}
+
+	void CNetwork::processClear(IOEventClear* event)
+	{
+		cleartImpl(event->getGroup());
+	}
+
+	void CNetwork::closeImpl(uint32 key)
+	{
 		auto object = getObject(key);
 		if (!object)
 		{
@@ -324,9 +366,7 @@ namespace net
 		switch (protocol->getProtocolType())
 		{
 		case EPROTO_TCP:
-			tcpClose(event->getKey(), false);
-			break;
-		case EPROTO_UDP:
+			tcpClose(key, false);
 			break;
 		case EPROTO_KCP:
 			break;
@@ -336,9 +376,11 @@ namespace net
 		}
 	}
 
-	void CNetwork::processClear(IOEventClear* event)
+	void CNetwork::cleartImpl(int32 group)
 	{
-
+		auto objs = getGroupObject(group);
+		for (auto& obj : objs)
+			closeImpl(obj->getKey());
 	}
 
 	void CNetwork::defaultErrorHandle(const IOObjectPtr& object)

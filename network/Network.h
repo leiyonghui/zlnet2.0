@@ -15,26 +15,32 @@ namespace net
 		CNetwork();
 		virtual ~CNetwork();
 	public:
+		//multi-thread
 		void start();
 		void stop();
 		bool isRuning();
 
-		uint32 listen(uint16 port, IOProtocolPtr protocol);//multi-thread
-		uint32 connect(const std::string& ip, uint16 port, IOProtocolPtr protocol);//multi-thread
-		void close(uint32 key);//multi-thread
+		uint32 listen(uint16 port, IOProtocolPtr protocol);
+		uint32 connect(const std::string& ip, uint16 port, IOProtocolPtr protocol);
+		void close(uint32 key);
+		void clear(int32 group);
 
 		template<class UserData>
-		void send(IOEventData<UserData>* event)//multi-thread
+		void send(IOEventData<UserData>* event)
 		{
 			pushEvent(static_cast<IOEvent*>(event));
 		}
 
-		uint32 popKey();//multi-thread
-		void pushKey(uint32 key);//multi-thread
+		uint32 popKey();
+		void pushKey(uint32 key);
+
 	protected:
+		//net-thread
 		void addObject(const IOObjectPtr& object);
 		void removeObject(uint32 key);
 		IOObjectPtr getObject(uint32 key) const;
+		bool isEmpty() const;
+		std::list<IOObjectPtr> getGroupObject(int32 goroup) const;
 
 		void run();
 		void init();
@@ -48,6 +54,9 @@ namespace net
 		void processConnect(IOEConnect* event);
 		void processClose(IOClose* event);
 		void processClear(IOEventClear* event);
+
+		void closeImpl(uint32 key);
+		void cleartImpl(int32 group);
 
 		void defaultErrorHandle(const IOObjectPtr& object);
 
@@ -77,7 +86,6 @@ namespace net
 		Queue<IOEvent*> _eventQueue;
 		class CPoller* _poller;
 		IScheduler* _shceduler;
-		TimerHander* _timerHandler;
 		int64 _lastclock;
 		std::thread _thr;
 	};

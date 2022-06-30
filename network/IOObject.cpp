@@ -7,11 +7,12 @@ namespace net
 
 	}
 
-	void IOObject::onAwake(const IOProtocolPtr& protocl, CEndPointUnPtr endPoint)
+	void IOObject::onAwake(const IOProtocolPtr& protocol, CEndPointUnPtr endPoint)
 	{
-		_protocol = protocl;
-		_key = protocl->getKey();
+		_protocol = protocol;
+		_key = protocol->getKey();
 		_events = 0;
+		_group = 0;
 		_endpoint = std::move(endPoint);
 		_endpoint->setNonblock();
 	}

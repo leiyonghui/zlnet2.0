@@ -22,6 +22,8 @@ namespace net
 		uint32 getKey() const { return _key; }
 		IOProtocolPtr getProtocol() const { return _protocol; }
 
+		void setGroup(int32 group) { _group = group; }
+		int32 getGroup() const { return _group; }
 		int32 getEvents() const { return _events; }
 		void updateEvents(int32 events) { _events = events; }
 		bool hasReading() const { return READ_EVENT & _events; }

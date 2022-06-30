@@ -16,6 +16,7 @@ namespace app
 		{
 			CObjectPoolMonitor::showInfo();
 		}
+
 	}
 	TestApp* __AppInstant = nullptr;
 

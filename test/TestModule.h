@@ -9,6 +9,8 @@ public:
 
 	bool onInit() override;
 
+	void onQuit() override;
+
 	void onAccepct(uint32 uid, uint32 fromUid);
 
 	void onClose(uint32 uid);
@@ -23,6 +25,7 @@ public:
 
 	void onTimer1000ms();
 
+
 	bool _isServer{false};
 	bool _isNode{ false };
 	int32 _connectNum{ 0 };
@@ -30,5 +33,6 @@ public:
 	int64 _acCost{ 0 };
 	SSeting1 setting;
 	SSeting1 setting2;
+	int32 tick{0};
 	std::set<uint32> uids;
 };

@@ -43,6 +43,11 @@ bool CTestModule::onInit()
 	return true;
 }
 
+void CTestModule::onQuit()
+{
+	core_log_trace("module quit..");
+}
+
 void CTestModule::onAccepct(uint32 uid, uint32 fromUid)
 {
 	_acNum++;
@@ -104,5 +109,12 @@ void CTestModule::onTimer1000ms()
 		}
 		IOPacketPtr packet(new IOPacket(uid, 101, 0, 0, std::make_shared<SerializeMessage>(msg)));
 		__AppInstant->send(packet);
+	}
+
+	tick++;
+	if (tick == 100 && _isServer)
+	{
+		core_log_trace("to stop...");
+		__AppInstant->stop();
 	}
 }

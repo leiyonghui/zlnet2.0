@@ -3,7 +3,7 @@
 
 namespace net
 {
-	IOProtocol::IOProtocol(): _protocolType(EPROTO_TCP), _key(0), _network(nullptr)
+	IOProtocol::IOProtocol(): _protocolType(EPROTO_TCP), _key(0), _group(0), _network(nullptr)
 	{
 	}
 
@@ -12,9 +12,10 @@ namespace net
 		assert(!_key);
 	}
 
-	void IOProtocol::onAwake(EPROTOCOL pType)
+	void IOProtocol::onAwake(EPROTOCOL ptype)
 	{
-		_protocolType = pType;
+		_protocolType = ptype;
+		_group = 0;
 	}
 
 	void IOProtocol::onRecycle()
