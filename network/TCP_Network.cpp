@@ -258,7 +258,7 @@ namespace net
 		assert(con);
 		if (!con->enableSend())
 		{
-			core_log_trace("con dis send", object->getKey(), con->getState());
+			core_log_warning("con dis send", object->getKey(), con->getState());
 			return;
 		}
 		auto protocol = con->getProtocol();
@@ -375,8 +375,6 @@ namespace net
 		assert(con->getType() == IO_OBJECT_CONNECTION);
 		assert(con->getState() != DISCONNECTED);
 
-		core_log_trace("close con", con->getKey(), con->getState());
-
 		if (con->getState() == CONNECTED)
 		{
 			con->getProtocol()->onClose();
@@ -476,7 +474,7 @@ namespace net
 	void CNetwork::removeTcpCon(const ConnectionPtr& con)
 	{
 		if (con->isWriting())
-			core_log_error("remove con is writing", con->getKey());
+			core_log_warning("remove con is writing", con->getKey());
 
 		con->setState(DISCONNECTED);
 		_poller->deregisterObject(con);

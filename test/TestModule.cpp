@@ -8,16 +8,25 @@
 bool CTestModule::onInit()
 {
 
-	__AppInstant->bindPacketHandler(101, std::make_shared<MessageHandlerBinding>([](CMessageContext& context) {
+	__AppInstant->bindPacketHandler(101, std::make_shared<MessageHandlerBinding>([_isServer = _isServer](CMessageContext& context) {
 
-		core_log_debug("========= msg rev");
-		core_log_debug(context._cmd, context._uid);
+
 
 		msgs::TestMessagePtr msg = std::dynamic_pointer_cast<msgs::TestMessage>(context._msg);
-		if (msg)
+		if (!_isServer)
 		{
-			core_log_debug("---rev", msg->tostirng());
+			core_log_debug("=========rev", context._uid);
+			if (msg)
+				core_log_debug("---rev", msg->value2);
+			core_log_debug("");
 		}
+		else
+		{
+
+		}
+
+		IOPacketPtr packet(new IOPacket(context._uid, 101, 0, 0, std::make_shared<SerializeMessage>(msg)));
+		__AppInstant->send(packet);
 	}));
 
 	if (_isServer)
@@ -96,9 +105,10 @@ void CTestModule::onTimer1000ms()
 {
 	for (auto uid : uids)
 	{
+		sendcount++;
 		msgs::TestMessagePtr msg = std::make_shared<msgs::TestMessage>();
 		msg->value1 = uid;
-		msg->value2 = int64(1) << (uid % 64);
+		msg->value2 = sendcount;
 		msg->str = "hello world!";
 		for (int32 i = 1; i <= 20; i++)
 		{
@@ -109,6 +119,7 @@ void CTestModule::onTimer1000ms()
 		}
 		IOPacketPtr packet(new IOPacket(uid, 101, 0, 0, std::make_shared<SerializeMessage>(msg)));
 		__AppInstant->send(packet);
+		core_log_trace("sendtosever: ", uid, sendcount);
 	}
 
 	tick++;

@@ -3,6 +3,12 @@
 
 namespace net
 {
+	void __AddCounter(const std::string& name, int32 add);
+	void __DelCounter(const std::string& name, int32 add);
+
+	std::string BufferName = "Buffer";
+	std::string StackName = "StackBuffer";
+
     class Buffer : public IBuffer
     {
     private:
@@ -16,12 +22,17 @@ namespace net
         
         explicit Buffer(uint32 size): _size(0), _capacity(size > 0 ? size : kInitialSize), _buff(new char[_capacity])
         {
-
+#ifdef _MONITOR
+            __AddCounter(BufferName, _capacity);
+#endif  //_MONITOR
         }
 
         virtual ~Buffer()
         {
             delete[] _buff;
+#ifdef _MONITOR
+			__DelCounter(BufferName, _capacity);
+#endif  //_MONITOR
         }
 
         Buffer(const Buffer& buff)
@@ -138,6 +149,11 @@ namespace net
                 new_capacity = (new_capacity << 1) + 1;
             }
 
+#ifdef _MONITOR
+			__DelCounter(BufferName, _capacity);
+            __AddCounter(BufferName, new_capacity);
+#endif  //_MONITOR
+
             char* new_buff = new char[new_capacity];
             memset(new_buff, 0, sizeof(char) * new_capacity);
             memcpy(new_buff, _buff, _size);
@@ -160,6 +176,11 @@ namespace net
         StackBuffer(const char* buf, uint32 size) : _ptr(size > FIXED_SIZE ? new char[size] : _buf), _capacity(size > FIXED_SIZE ? size : FIXED_SIZE)
         {
             memcpy(_ptr, buf, size);
+
+#ifdef _MONITOR
+			__AddCounter(StackName, _capacity);
+#endif  //_MONITOR
+
         }
 
         StackBuffer(const StackBuffer& obj)
@@ -167,6 +188,11 @@ namespace net
             if (obj._capacity > FIXED_SIZE)
             {
                 _ptr = new char[obj._capacity];
+
+#ifdef _MONITOR
+				__AddCounter(StackName, obj._capacity);
+#endif  //_MONITOR
+
             }
             else {
                 _ptr = _buf;
@@ -180,6 +206,9 @@ namespace net
 		{
 			if (_capacity > FIXED_SIZE) {
                 delete[] _ptr;
+
+
+
 			}
 			if (obj._capacity > FIXED_SIZE) {
                 _ptr = new char[obj._capacity];
@@ -271,6 +300,11 @@ namespace net
 			while (new_capacity < size) {
 				new_capacity = (new_capacity << 1) + 1;
 			}
+
+#ifdef _MONITOR
+			__DelCounter(BufferName, _capacity);
+			__AddCounter(BufferName, new_capacity);
+#endif  //_MONITOR
 
             char* new_ptr = new char[new_capacity];
 			memcpy(new_ptr, _ptr, _size);

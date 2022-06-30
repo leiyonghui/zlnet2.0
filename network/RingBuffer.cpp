@@ -1,8 +1,15 @@
 #include "RingBuffer.h"
+#include "core/ResourceMonitor.h"
 
 namespace net
 {
+	const std::string NAME = "RingBuffer";
+
 	CRingBuffer::CRingBuffer(uint32 capacity) :_capacity(capacity), _front(0), _end(0), _size(0), _buff(new char[_capacity]) {
+
+#ifdef _MONITOR
+		ResourceMonitor::Instance()->addCounter(NAME, _capacity);
+#endif // _MONITOR
 
 	}
 
@@ -231,6 +238,11 @@ namespace net
 
 	void CRingBuffer::resize(uint32 newcapacity)
 	{
+#ifdef _MONITOR
+		ResourceMonitor::Instance()->delCounter(NAME, _capacity);
+		ResourceMonitor::Instance()->addCounter(NAME, newcapacity);
+#endif // _MONITOR
+
 		char* tembuff = new char[newcapacity];
 		if (_end <= _front && _size)
 		{
@@ -254,6 +266,7 @@ namespace net
 		_capacity = newcapacity;
 		_front = 0;
 		_end = _size;
+
 	}
 
 }

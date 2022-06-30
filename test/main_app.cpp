@@ -4,11 +4,13 @@
 #include "network/Network.h"
 #include "network/Common.h"
 #include "TestMessage.h"
+#include "core/ResourceMonitor.h"
 
 using namespace std;
 using namespace app;
 using namespace net;
 
+#define _MONITOR
 
 int main(int argc, char** argv)
 {
@@ -38,6 +40,7 @@ int main(int argc, char** argv)
 	TimeHelp::StartUp();
 	FileLogAppender * apperder = new FileLogAppender(string("Test_Net_").append(op == 1 ? "Server" : "Client").append("_%T"), true);
 	Logger::Instance(apperder);
+	ResourceMonitor::Instance(new ResourceMonitor());
 
 	CNetwork net;
 	TestApp app(&net);
