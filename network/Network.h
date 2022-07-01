@@ -86,7 +86,9 @@ namespace net
 		Queue<IOEvent*> _eventQueue;
 		class CPoller* _poller;
 		IScheduler* _shceduler;
+		int64 _tick;
 		int64 _lastclock;
+		int64 _secondTick;
 		std::thread _thr;
 	};
 }

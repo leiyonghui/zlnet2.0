@@ -101,6 +101,7 @@
     <ClInclude Include="core\core\NonCopyable.h" />
     <ClInclude Include="core\core\ObjectPools.h" />
     <ClInclude Include="core\core\Queue.h" />
+    <ClInclude Include="core\core\ResourceMonitor.h" />
     <ClInclude Include="core\core\Singleton.h" />
     <ClInclude Include="core\core\SkipList.h" />
     <ClInclude Include="core\core\SyncQueue.h" />
@@ -166,6 +167,7 @@
     <ClCompile Include="engine\Protocol.cpp" />
     <ClCompile Include="engine\Serializes.cpp" />
     <ClCompile Include="network\Address.cpp" />
+    <ClCompile Include="network\Buffer.cpp" />
     <ClCompile Include="network\Common.cpp" />
     <ClCompile Include="network\Endpoint.cpp" />
     <ClCompile Include="network\EPoller.cpp" />
@@ -187,7 +189,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>.\core\;.\</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>__linux;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>__linux;_MONITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <CppLanguageStandard>c++17</CppLanguageStandard>
       <AdditionalOptions>-pthread</AdditionalOptions>
     </ClCompile>

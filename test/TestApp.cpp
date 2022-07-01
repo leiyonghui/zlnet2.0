@@ -1,4 +1,5 @@
 #include "TestApp.h"
+#include "core/ResourceMonitor.h"
 
 namespace app
 {
@@ -15,6 +16,7 @@ namespace app
 		if (_sec % 30 == 0)
 		{
 			CObjectPoolMonitor::showInfo();
+			ResourceMonitor::Instance()->showinfo();
 		}
 
 	}

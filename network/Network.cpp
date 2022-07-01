@@ -16,7 +16,7 @@
 
 namespace net
 {
-	CNetwork::CNetwork() :_isRuning(false), _isStop(false),_poller(new CEPoller()),_shceduler(new timerset::TimerSet()), _lastclock(0)
+	CNetwork::CNetwork() :_isRuning(false), _isStop(false),_poller(new CEPoller()),_shceduler(new timerset::TimerSet()), _tick(0), _lastclock(0), _secondTick(0)
 	{
 		_objects.resize(MAX_OBJECT_SIZE);
 	}
@@ -169,6 +169,7 @@ namespace net
 	{
 		while (!_isStop)
 		{
+			++_tick;
 			_poller->poll(_objects, 4);
 
 			std::list<IOEvent*> events;
@@ -235,7 +236,10 @@ namespace net
 
 	void CNetwork::onTimer1000ms()
 	{
+		++_secondTick;
+#ifdef _MONITOR
 
+#endif
 	}
 
 	void CNetwork::pushEvent(IOEvent* event)

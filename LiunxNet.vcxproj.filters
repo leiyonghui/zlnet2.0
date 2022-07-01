@@ -231,6 +231,9 @@
     <ClInclude Include="core\core\TimerImpl.h">
       <Filter>core</Filter>
     </ClInclude>
+    <ClInclude Include="core\core\ResourceMonitor.h">
+      <Filter>core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="network\Address.cpp">
@@ -336,6 +339,9 @@
       <Filter>core</Filter>
     </ClCompile>
     <ClCompile Include="network\Common.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="network\Buffer.cpp">
       <Filter>net</Filter>
     </ClCompile>
   </ItemGroup>

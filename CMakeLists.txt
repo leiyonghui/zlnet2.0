@@ -8,6 +8,7 @@ endif()
 
 message(status "build type: .....${CMAKE_BUILD_TYPE}")
 
+add_definitions(-D_MONITOR)
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
 	message(status "SYSTEM: ....liunx")
 	add_definitions(-D__Linux -D__linux)

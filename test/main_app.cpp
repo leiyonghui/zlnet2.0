@@ -59,7 +59,14 @@ int main(int argc, char** argv)
 	}
 	else if (op == 3)
 	{
-		cin >> module._connectNum;
+		if (argc == 3)
+		{
+			module._connectNum = std::atoi(argv[2]);
+		}
+		else
+		{
+			cin >> module._connectNum;
+		}
 	}
 	else
 	{

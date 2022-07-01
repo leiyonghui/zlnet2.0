@@ -16,6 +16,10 @@ namespace net
 	CRingBuffer::~CRingBuffer()
 	{
 		delete[] _buff;
+
+#ifdef _MONITOR
+		ResourceMonitor::Instance()->delCounter(NAME, _capacity);
+#endif  //_MONITOR
 	}
 
 	void CRingBuffer::write(const char* buff, uint32 len)

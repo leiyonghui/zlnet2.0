@@ -15,10 +15,10 @@ bool CTestModule::onInit()
 		msgs::TestMessagePtr msg = std::dynamic_pointer_cast<msgs::TestMessage>(context._msg);
 		if (!_isServer)
 		{
-			core_log_debug("=========rev", context._uid);
-			if (msg)
-				core_log_debug("---rev", msg->value2);
-			core_log_debug("");
+			//core_log_debug("=========rev", context._uid);
+			//if (msg)
+				//core_log_debug("---rev", msg->value2);
+			//core_log_debug("");
 		}
 		else
 		{
@@ -119,13 +119,13 @@ void CTestModule::onTimer1000ms()
 		}
 		IOPacketPtr packet(new IOPacket(uid, 101, 0, 0, std::make_shared<SerializeMessage>(msg)));
 		__AppInstant->send(packet);
-		core_log_trace("sendtosever: ", uid, sendcount);
+		//core_log_trace("==sendtosever: ", uid, sendcount);
 	}
 
 	tick++;
 	if (tick == 100 && _isServer)
 	{
-		core_log_trace("to stop...");
-		__AppInstant->stop();
+		//core_log_trace("to stop...");
+		//__AppInstant->stop();
 	}
 }

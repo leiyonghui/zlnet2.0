@@ -6,8 +6,8 @@ namespace net
 	void __AddCounter(const std::string& name, int32 add);
 	void __DelCounter(const std::string& name, int32 add);
 
-	std::string BufferName = "Buffer";
-	std::string StackName = "StackBuffer";
+	const std::string BufferName = "Buffer";
+	const std::string StackName = "StackBuffer";
 
     class Buffer : public IBuffer
     {
@@ -30,6 +30,7 @@ namespace net
         virtual ~Buffer()
         {
             delete[] _buff;
+
 #ifdef _MONITOR
 			__DelCounter(BufferName, _capacity);
 #endif  //_MONITOR
@@ -41,6 +42,10 @@ namespace net
             _size = buff._size;
             _buff = new char[_capacity];
             memcpy(_buff, buff._buff, _size);
+
+#ifdef _MONITOR
+			__AddCounter(BufferName, _capacity);
+#endif  //_MONITOR
         }
 
 		Buffer& operator = (const Buffer& buff)
@@ -49,6 +54,10 @@ namespace net
                 return *this;
 
             delete[] _buff;
+
+#ifdef _MONITOR
+			__AddCounter(BufferName, _capacity);
+#endif  //_MONITOR
 
 			_capacity = buff._capacity;
 			_size = buff._size;
@@ -207,11 +216,18 @@ namespace net
 			if (_capacity > FIXED_SIZE) {
                 delete[] _ptr;
 
-
+#ifdef _MONITOR
+				__AddCounter(StackName, _capacity);
+#endif  //_MONITOR
 
 			}
 			if (obj._capacity > FIXED_SIZE) {
                 _ptr = new char[obj._capacity];
+
+#ifdef _MONITOR
+				__AddCounter(StackName, obj._capacity);
+#endif  //_MONITOR
+
 			}
 			else {
 				_ptr = _buf;
@@ -224,9 +240,14 @@ namespace net
 
         virtual ~StackBuffer()
         {
-            if (_size > FIXED_SIZE)
+            if (_capacity > FIXED_SIZE)
             {
                 delete[] _ptr;
+
+#ifdef _MONITOR
+				__DelCounter(StackName, _capacity);
+#endif  //_MONITOR
+
             }
         }
 
@@ -302,8 +323,7 @@ namespace net
 			}
 
 #ifdef _MONITOR
-			__DelCounter(BufferName, _capacity);
-			__AddCounter(BufferName, new_capacity);
+			__AddCounter(StackName, new_capacity);
 #endif  //_MONITOR
 
             char* new_ptr = new char[new_capacity];
@@ -311,6 +331,11 @@ namespace net
 
 			if (_capacity > FIXED_SIZE) {
                 delete[] _ptr;
+
+#ifdef _MONITOR
+				__DelCounter(StackName, _capacity);
+#endif  //_MONITOR
+
 			}
 			_ptr = new_ptr;
 			_capacity = new_capacity;
