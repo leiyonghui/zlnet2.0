@@ -156,7 +156,7 @@ namespace engine
 		case net::IO_OBJECT_LISTENER:
 			onUnlisten(uid);
 			break;
-		case net::IO_OBJECT_CONNECTION:
+		case net::IO_OBJECT_SESSION:
 			onClose(uid);
 			break;
 		case net::IO_OBJECT_CONNECTOR:
@@ -558,8 +558,8 @@ namespace engine
 				continue;
 			if (protocol->getType() == net::IO_OBJECT_CONNECTOR)
 			{
-				IOPacketPtr packet(new IOPacket(uid, MsgCmd::Heart, 0, 0, nullptr));
-				send(packet);
+				/*IOPacketPtr packet(new IOPacket(uid, MsgCmd::Heart, 0, 0, nullptr));
+				send(packet);*/
 			}
 		}
 	}

@@ -35,9 +35,9 @@ namespace net
 
 	protected:
 
-		virtual void onSerialize(IOEvent* event, IBuffer* buffer) = 0;
+		virtual bool onSerialize(IOEvent* event, IBuffer* buffer) = 0;
 
-		virtual void onUnserialize(IIOBuffer* buffer) = 0;
+		virtual bool onUnserialize(IIOBuffer* buffer) = 0;
 
 		virtual void onListen(bool success) = 0;
 

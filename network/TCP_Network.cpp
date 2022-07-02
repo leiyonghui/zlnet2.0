@@ -99,7 +99,7 @@ namespace net
 		int32 cnt = endPoint->readv(vec, iovcnt);
 		if (cnt > 0)
 		{
-			if (cnt >= writeable)
+			if (cnt > writeable)
 			{
 				if (writeable)
 					inputBuffer->write_confirm(writeable);
@@ -109,7 +109,11 @@ namespace net
 			{
 				inputBuffer->write_confirm(cnt);
 			}
-			protocol->onUnserialize(inputBuffer);
+			if (!protocol->onUnserialize(inputBuffer))
+			{
+				core_log_error("unserialize error", con->getKey(), con->getType());
+				tcpCloseCon(con, true);
+			}
 		}
 		else if (cnt == 0)
 		{
@@ -253,7 +257,12 @@ namespace net
 		}
 		auto protocol = con->getProtocol();
 		auto buffer = StackBuffer<2048>();
-		protocol->onSerialize(event, &buffer);
+		if (!protocol->onSerialize(event, &buffer))
+		{
+			core_log_error("serialize error", con->getKey(), con->getType());
+			tcpCloseCon(con, true);
+			return;
+		}
 		auto size = int32(buffer.size());
 		if (size == 0)
 		{
@@ -308,11 +317,10 @@ namespace net
 		auto protocol = connect->getProtocol();
 		protocol->onConnect(false);
 
-		connect->startTimer(1000ms * 4, 1000ms * 4, [this, address](IOObjectPtr obj) {
-			auto object = getObject(obj->getKey());
-			if (object)
+		connect->startTimer(1000ms * 4, 0ms, [this, address](ConnectionPtr con) {
+			if (getObject(con->getKey()))
 			{
-				auto connect = std::dynamic_pointer_cast<TcpConnector>(obj);
+				auto connect = std::dynamic_pointer_cast<TcpConnector>(con);
 				core_log_trace("reconnect", connect->getKey(), connect->getState());
 				assert(connect->getState() == DISCONNECTED);
 
@@ -327,7 +335,7 @@ namespace net
 			}
 			else
 			{
-				core_log_warning("unknow", obj->getKey());
+				core_log_warning("unknow", con->getKey());
 			}
 		});
 	}
@@ -386,13 +394,12 @@ namespace net
 			if (!con->isWriting())
 				con->getEndPoint()->shutdownWrite();//·¢ËÍfin				
 
-			con->startTimer(1000ms * FORCE_CLOSE_SECOND, 0ms, [this](IOObjectPtr obj) {
-				if (!getObject(obj->getKey()))
+			con->startTimer(1000ms * FORCE_CLOSE_SECOND, 0ms, [this](ConnectionPtr con) {
+				if (!getObject(con->getKey()))
 				{
-					core_log_warning("close connection exist", obj->getKey());
+					core_log_warning("close connection exist", con->getKey());
 					return;
 				}
-				auto con = std::static_pointer_cast<Connection>(obj);
 				auto state = con->getState();
 				assert(state == DISCONNECTING);
 				removeTcpCon(con);
@@ -435,13 +442,12 @@ namespace net
 			if (!con->isWriting())
 				con->getEndPoint()->shutdownWrite();
 
-			con->startTimer(1000ms * FORCE_CLOSE_SECOND, 0ms, [this](IOObjectPtr obj) {
-				if (!getObject(obj->getKey()))
+			con->startTimer(1000ms * FORCE_CLOSE_SECOND, 0ms, [this](ConnectionPtr con) {
+				if (!getObject(con->getKey()))
 				{
-					core_log_warning("close connector exist", obj->getKey());
+					core_log_warning("close connector exist", con->getKey());
 					return;
 				}
-				auto con = std::static_pointer_cast<Connection>(obj);
 				auto state = con->getState();
 				assert(state == DISCONNECTING);
 				removeTcpCon(con);

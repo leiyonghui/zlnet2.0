@@ -56,7 +56,8 @@ namespace net
             delete[] _buff;
 
 #ifdef _MONITOR
-			__AddCounter(BufferName, _capacity);
+            __DelCounter(BufferName, _capacity);
+			__AddCounter(BufferName, buff._capacity);
 #endif  //_MONITOR
 
 			_capacity = buff._capacity;

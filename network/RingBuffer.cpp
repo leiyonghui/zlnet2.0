@@ -27,7 +27,7 @@ namespace net
 		assert(len > 0);
 		ensure(_size + len);
 		assert(_end == _front ? (_size == 0) : true);
-		if (_end >= _front /*|| (_end == _front && !_size)*/) //ensure保证有空间
+		if (_end >= _front) //ensure保证有空间
 		{
 			uint32 count = _capacity - _end;
 			if (len < count)
@@ -248,23 +248,27 @@ namespace net
 #endif // _MONITOR
 
 		char* tembuff = new char[newcapacity];
-		if (_end <= _front && _size)
+		if (_size)
 		{
-			auto len = _capacity - _front;
+			if (_end <= _front)
+			{
+				auto len = _capacity - _front;
 #ifdef _DEBUG
-			assert(_size == len + _end);
+				assert(_size == len + _end);
 #endif // DEBUG
 
-			memcpy(tembuff, _buff + _front, len);
-			memcpy(tembuff + len, _buff, _end);
+				memcpy(tembuff, _buff + _front, len);
+				memcpy(tembuff + len, _buff, _end);
 		}
-		else
-		{
+			else
+			{
 #ifdef _DEBUG
-			assert(_size == _end - _front);
+				assert(_size == _end - _front);
 #endif // DEBUG
-			memcpy(tembuff, _buff + _front, _size);
+				memcpy(tembuff, _buff + _front, _size);
+			}
 		}
+	
 		delete[] _buff;
 		_buff = tembuff;
 		_capacity = newcapacity;

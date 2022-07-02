@@ -237,9 +237,25 @@ namespace net
 	void CNetwork::onTimer1000ms()
 	{
 		++_secondTick;
-#ifdef _MONITOR
 
+#ifdef _MONITOR
+		if (_secondTick % 30 == 1)
+		{
+			core_log_info("----------Buffer Size----------");
+			for (auto& obj : _objects)
+			{
+				if (!obj || obj->getType() == IO_OBJECT_LISTENER)
+					continue;
+
+				auto con = std::dynamic_pointer_cast<Connection>(obj);
+				if (con->getInputBuffer()->size())
+					core_log_trace("con:", con->getKey(), "input:", con->getInputBuffer()->size(), con->getInputBuffer()->capacity());
+				if (con->getOutBuffer()->size())
+					core_log_trace("con:", con->getKey(), "output:", con->getOutBuffer()->size(), con->getOutBuffer()->capacity());
+			}
+		}
 #endif
+
 	}
 
 	void CNetwork::pushEvent(IOEvent* event)
@@ -395,13 +411,19 @@ namespace net
 
 	void CNetwork::onNewConnection(const ConnectionPtr& con)
 	{
-		con->startTimer(1000ms, 1000ms, [this](IOObjectPtr obj) {
-			if (!obj->getProtocol()->onTimer())
+		con->startTimer(1000ms, 1000ms, [this](ConnectionPtr con) {
+			if (!con->getProtocol()->onTimer())
 			{
-				_close(obj->getKey());
+				_close(con->getKey());
 			}
 		});
 
-		
+#ifdef _MONITOR
+		/*con->startTimer(0ms, 30s, [](ConnectionPtr con) {
+			core_log_trace("con:", con->getKey(), "input:", con->getInputBuffer()->size(), con->getInputBuffer()->capacity());
+			core_log_trace("con:", con->getKey(), "output:", con->getOutBuffer()->size(), con->getOutBuffer()->capacity());
+		});*/
+#endif // _MONITOR
+
 	}
 }

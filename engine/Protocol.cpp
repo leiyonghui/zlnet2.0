@@ -105,7 +105,7 @@ namespace engine
 
 	bool Protocol::onTimer()
 	{
-		if (getType() == net::IO_OBJECT_CONNECTION)
+		/*if (getType() == net::IO_OBJECT_SESSION)
 		{
 			auto count = getHeartCount() + 1;
 			if (count > MAX_HEART_COUNT)
@@ -117,7 +117,7 @@ namespace engine
 			{
 				setHeartCount(count);
 			}
-		}
+		}*/
 		return true;
 	}
 }

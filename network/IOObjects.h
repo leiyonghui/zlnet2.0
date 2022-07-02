@@ -4,7 +4,7 @@
 
 namespace net
 {
-	class Connection : public IOObject
+	class Connection : public IOObject, public TimerImpl<Connection>
 	{
 	public:
 		Connection(EIOOBJECT_TYPE type);

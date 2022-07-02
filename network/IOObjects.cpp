@@ -26,5 +26,6 @@ namespace net
 		IOObject::onRecycle();
 		_inputBuffer->clear();
 		_outBuffer->clear();
+		TimerImpl<Connection>::reset();
 	}
 }

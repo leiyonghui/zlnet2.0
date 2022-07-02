@@ -9,7 +9,7 @@ namespace net
 	using ReadCallback = std::function<void(const IOObjectPtr&)>;
 	using WriteCallback = std::function<void(const IOObjectPtr&)>;
 
-	class IOObject : public core::CPoolObject, public CNoncopyable, public std::enable_shared_from_this<IOObject> , public TimerImpl<IOObject>
+	class IOObject : public core::CPoolObject, public CNoncopyable, public std::enable_shared_from_this<IOObject>
 	{
 	public:
 		IOObject(EIOOBJECT_TYPE type);

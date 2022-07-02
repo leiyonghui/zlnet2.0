@@ -10,7 +10,6 @@ using namespace std;
 using namespace app;
 using namespace net;
 
-#define _MONITOR
 
 int main(int argc, char** argv)
 {
@@ -33,7 +32,7 @@ int main(int argc, char** argv)
 	{
 		cin >> op;
 	}
-	if (argc == 2) 
+	if (argc > 1) 
 	{
 		op = std::atoi(argv[1]);
 	}
