@@ -222,7 +222,7 @@ namespace net
 
 		if (!isEmpty())
 		{
-			cleartImpl(0);
+			_clear(0);
 
 			while (!isEmpty())
 			{
@@ -350,15 +350,15 @@ namespace net
 
 	void CNetwork::processClose(IOClose* event)
 	{
-		closeImpl(event->getKey());
+		_close(event->getKey());
 	}
 
 	void CNetwork::processClear(IOEventClear* event)
 	{
-		cleartImpl(event->getGroup());
+		_clear(event->getGroup());
 	}
 
-	void CNetwork::closeImpl(uint32 key)
+	void CNetwork::_close(uint32 key)
 	{
 		auto object = getObject(key);
 		if (!object)
@@ -380,16 +380,28 @@ namespace net
 		}
 	}
 
-	void CNetwork::cleartImpl(int32 group)
+	void CNetwork::_clear(int32 group)
 	{
 		auto objs = getGroupObject(group);
 		for (auto& obj : objs)
-			closeImpl(obj->getKey());
+			_close(obj->getKey());
 	}
 
 	void CNetwork::defaultErrorHandle(const IOObjectPtr& object)
 	{
 		auto err = object->getEndPoint()->getSocketError();
 		core_log_error("default error", object->getKey(), object->getType(), err, strerror(err));
+	}
+
+	void CNetwork::onNewConnection(const ConnectionPtr& con)
+	{
+		con->startTimer(1000ms, 1000ms, [this](IOObjectPtr obj) {
+			if (!obj->getProtocol()->onTimer())
+			{
+				_close(obj->getKey());
+			}
+		});
+
+		
 	}
 }

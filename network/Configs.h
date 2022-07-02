@@ -23,8 +23,8 @@ namespace net
 	USING_SHARED_PTR(TcpListener);
 	class Connection;
 	USING_SHARED_PTR(Connection);
-	class TcpConnection;
-	USING_SHARED_PTR(TcpConnection);
+	class TcpSession;
+	USING_SHARED_PTR(TcpSession);
 	class TcpConnector;
 	USING_SHARED_PTR(TcpConnector);
 
@@ -39,7 +39,7 @@ namespace net
 	{
 		IO_OBJECT_LISTENER,
 		IO_OBJECT_CONNECTOR,
-		IO_OBJECT_CONNECTION,
+		IO_OBJECT_SESSION,
 	};
 
 	enum EConnectState

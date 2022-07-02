@@ -55,10 +55,11 @@ namespace net
 		void processClose(IOClose* event);
 		void processClear(IOEventClear* event);
 
-		void closeImpl(uint32 key);
-		void cleartImpl(int32 group);
+		void _close(uint32 key);
+		void _clear(int32 group);
 
 		void defaultErrorHandle(const IOObjectPtr& object);
+		void onNewConnection(const ConnectionPtr& con);
 
 		void handleTcpAccept(const IOObjectPtr& object);
 		void handleTcpConError(const IOObjectPtr& object);
@@ -69,10 +70,10 @@ namespace net
 		void tcpListen(int16 port, const IOProtocolPtr& protocol);
 		void tcpSend(const IOObjectPtr& object, IOEvent* event);
 		void tcpConnect(const std::string& ip, uint16 port, const IOProtocolPtr& protocol);
-		void tcpConnectError(const TcpConnectorPtr& connect);
+		void onTcpConnectError(const TcpConnectorPtr& connect);
 		void tcpClose(uint32 key, bool force);
 		void tcpCloseCon(const ConnectionPtr& con, bool force);
-		void tcpCloseConnection(const TcpConnectionPtr& con, bool force);
+		void tcpCloseConnection(const TcpSessionPtr& con, bool force);
 		void tcpCloseConnector(const TcpConnectorPtr& con, bool force);
 		void tcpCloseListen(const TcpListenerPtr& listener);
 		void removeTcpListen(const TcpListenerPtr& listener);

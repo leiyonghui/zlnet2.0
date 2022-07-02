@@ -45,12 +45,12 @@ namespace net
 			return;
 		}
 		prototcol->setKey(key);
-		prototcol->setType(IO_OBJECT_CONNECTION);
+		prototcol->setType(IO_OBJECT_SESSION);
 		prototcol->setLoclAddress(endPoint->getLocalName().first);
 		prototcol->setRemoteAddress(endPoint->getRemoteName().first);
 		prototcol->setNetwork(this);
 
-		auto con = CObjectPool<TcpConnection>::Instance()->create(prototcol, std::move(endPoint));
+		auto con = CObjectPool<TcpSession>::Instance()->create(prototcol, std::move(endPoint));
 		con->setErrorCallback(std::bind(&CNetwork::handleTcpConError, this, _1));
 		con->setReadCallback(std::bind(&CNetwork::handleTcpConRead, this, _1));
 		con->setWriteCallback(std::bind(&CNetwork::handleTcpConWrite, this, _1));
@@ -62,12 +62,7 @@ namespace net
 
 		prototcol->onAccept(listener->getProtocol());
 
-		con->startTimer(1000ms, 1000ms, [this](IOObjectPtr obj) {
-			if (!obj->getProtocol()->onTimer())
-			{
-				tcpCloseConnection(std::dynamic_pointer_cast<TcpConnection>(obj), 2);
-			}
-		});
+		onNewConnection(std::static_pointer_cast<Connection>(con));
 	}
 
 	void CNetwork::handleTcpConError(const IOObjectPtr& object)
@@ -179,12 +174,12 @@ namespace net
 		{
 			auto err = object->getEndPoint()->getSocketError();		//geterror会把error清理
 			core_log_warning("connect remote error", object->getSocket(), err, strerror(err));
-			tcpConnectError(connect);
+			onTcpConnectError(connect);
 		}
 		else if(endPont->isSelfConnect())
 		{
 			core_log_error("connect self connect", object->getSocket());
-			tcpConnectError(connect);
+			onTcpConnectError(connect);
 		}
 		else
 		{
@@ -201,12 +196,7 @@ namespace net
 
 			protocol->onConnect(true);
 
-			connect->startTimer(1000ms, 1000ms, [this](IOObjectPtr obj) {
-				if (!obj->getProtocol()->onTimer())
-				{
-					tcpCloseConnector(std::dynamic_pointer_cast<TcpConnector>(obj), 2);
-				}
-			});
+			onNewConnection(std::static_pointer_cast<Connection>(connect));
 		}
 	}
 
@@ -215,7 +205,7 @@ namespace net
 		auto err = object->getEndPoint()->getSocketError();
 		core_log_warning("connect error", object->getSocket(), strerror(err));
 
-		tcpConnectError(std::dynamic_pointer_cast<TcpConnector>(object));
+		onTcpConnectError(std::dynamic_pointer_cast<TcpConnector>(object));
 	}
 
 	void CNetwork::tcpListen(int16 port, const IOProtocolPtr& protocol)
@@ -308,7 +298,7 @@ namespace net
 		_poller->registerWriteHandler(connect);
 	}
 
-	void CNetwork::tcpConnectError(const TcpConnectorPtr& connect)
+	void CNetwork::onTcpConnectError(const TcpConnectorPtr& connect)
 	{
 		CAddress address = connect->getEndPoint()->getAddress();
 
@@ -350,8 +340,8 @@ namespace net
 		case IO_OBJECT_LISTENER:
 			tcpCloseListen(std::dynamic_pointer_cast<TcpListener>(object));
 			break;
-		case IO_OBJECT_CONNECTION:
-			tcpCloseConnection(std::dynamic_pointer_cast<TcpConnection>(object), force);
+		case IO_OBJECT_SESSION:
+			tcpCloseConnection(std::dynamic_pointer_cast<TcpSession>(object), force);
 			break;
 		case IO_OBJECT_CONNECTOR:
 			tcpCloseConnector(std::dynamic_pointer_cast<TcpConnector>(object), force);
@@ -364,15 +354,15 @@ namespace net
 
 	void CNetwork::tcpCloseCon(const ConnectionPtr& con, bool force)
 	{
-		if (con->getType() == IO_OBJECT_CONNECTION)
-			tcpCloseConnection(std::dynamic_pointer_cast<TcpConnection>(con), force);
+		if (con->getType() == IO_OBJECT_SESSION)
+			tcpCloseConnection(std::dynamic_pointer_cast<TcpSession>(con), force);
 		else
 			tcpCloseConnector(std::dynamic_pointer_cast<TcpConnector>(con), force);
 	}
 
-	void CNetwork::tcpCloseConnection(const TcpConnectionPtr& con, bool force)
+	void CNetwork::tcpCloseConnection(const TcpSessionPtr& con, bool force)
 	{
-		assert(con->getType() == IO_OBJECT_CONNECTION);
+		assert(con->getType() == IO_OBJECT_SESSION);
 		assert(con->getState() != DISCONNECTED);
 
 		if (con->getState() == CONNECTED)
@@ -402,7 +392,7 @@ namespace net
 					core_log_warning("close connection exist", obj->getKey());
 					return;
 				}
-				auto con = std::dynamic_pointer_cast<TcpConnection>(obj);
+				auto con = std::static_pointer_cast<Connection>(obj);
 				auto state = con->getState();
 				assert(state == DISCONNECTING);
 				removeTcpCon(con);
@@ -451,7 +441,7 @@ namespace net
 					core_log_warning("close connector exist", obj->getKey());
 					return;
 				}
-				auto con = std::dynamic_pointer_cast<TcpConnection>(obj);
+				auto con = std::static_pointer_cast<Connection>(obj);
 				auto state = con->getState();
 				assert(state == DISCONNECTING);
 				removeTcpCon(con);

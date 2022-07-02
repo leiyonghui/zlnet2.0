@@ -110,7 +110,7 @@ void CTestModule::onTimer1000ms()
 		msg->value1 = uid;
 		msg->value2 = sendcount;
 		msg->str = "hello world!";
-		for (int32 i = 1; i <= 20; i++)
+		for (int32 i = 1; i <= 500; i++)
 		{
 			msg->values.push_back(i);
 			msg->strValues.push_back(std::to_string(i));

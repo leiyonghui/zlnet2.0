@@ -14,10 +14,10 @@ namespace net
 		CEndPointUnPtr accept();
 	};
 
-	class TcpConnection : public Connection
+	class TcpSession : public Connection
 	{
 	public:
-		TcpConnection():Connection(IO_OBJECT_CONNECTION){}
+		TcpSession():Connection(IO_OBJECT_SESSION){}
 		void onAwake(const IOProtocolPtr& protocol, CEndPointUnPtr endPoint);
 		void onRecycle();
 	};

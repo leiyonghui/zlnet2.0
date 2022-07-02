@@ -27,12 +27,12 @@ namespace net
 		return _endpoint->accept();
 	}
 
-	void TcpConnection::onAwake(const IOProtocolPtr& protocol, CEndPointUnPtr endPoint)
+	void TcpSession::onAwake(const IOProtocolPtr& protocol, CEndPointUnPtr endPoint)
 	{
 		Connection::onAwake(protocol, std::move(endPoint));
 	}
 
-	void TcpConnection::onRecycle()
+	void TcpSession::onRecycle()
 	{
 		Connection::onRecycle();
 	}
