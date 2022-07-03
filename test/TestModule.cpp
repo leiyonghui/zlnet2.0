@@ -8,9 +8,9 @@
 bool CTestModule::onInit()
 {
 
-	__AppInstant->bindPacketHandler(101, std::make_shared<MessageHandlerBinding>([_isServer = _isServer](CMessageContext& context) {
+	__AppInstant->bindPacketHandler(101, std::make_shared<MessageHandlerBinding>([this](CMessageContext& context) {
 
-
+		++_revcount;
 
 		msgs::TestMessagePtr msg = std::dynamic_pointer_cast<msgs::TestMessage>(context._msg);
 		if (!_isServer)
@@ -22,11 +22,11 @@ bool CTestModule::onInit()
 		}
 		else
 		{
-
+			IOPacketPtr packet(new IOPacket(context._uid, 101, 0, 0, std::make_shared<SerializeMessage>(msg)));
+			__AppInstant->send(packet);
 		}
 
-		IOPacketPtr packet(new IOPacket(context._uid, 101, 0, 0, std::make_shared<SerializeMessage>(msg)));
-		__AppInstant->send(packet);
+
 	}));
 
 	if (_isServer)
@@ -103,26 +103,34 @@ void CTestModule::onNodeDisConnect(uint32 uid)
 
 void CTestModule::onTimer1000ms()
 {
-	for (auto uid : uids)
+	
+	if (tick % 20 == 1)
 	{
-		sendcount++;
-		msgs::TestMessagePtr msg = std::make_shared<msgs::TestMessage>();
-		msg->value1 = uid;
-		msg->value2 = sendcount;
-		msg->str = "hello world!";
-		for (int32 i = 1; i <= 500; i++)
+		for (auto uid : uids)
 		{
-			msg->values.push_back(i);
-			msg->strValues.push_back(std::to_string(i));
-			msg->set.insert(i);
-			msg->map.insert({ i, i });
+			_sendcount++;
+			msgs::TestMessagePtr msg = std::make_shared<msgs::TestMessage>();
+			msg->value1 = uid;
+			msg->value2 = _sendcount;
+			msg->str = "hello world!";
+			for (int32 i = 1; i <= 500; i++)
+			{
+				msg->values.push_back(i);
+				msg->strValues.push_back(std::to_string(i));
+				msg->set.insert(i);
+				msg->map.insert({ i, i });
+			}
+			IOPacketPtr packet(new IOPacket(uid, 101, 0, 0, std::make_shared<SerializeMessage>(msg)));
+			__AppInstant->send(packet);
+			//core_log_trace("==sendtosever: ", uid, sendcount);
 		}
-		IOPacketPtr packet(new IOPacket(uid, 101, 0, 0, std::make_shared<SerializeMessage>(msg)));
-		__AppInstant->send(packet);
-		//core_log_trace("==sendtosever: ", uid, sendcount);
 	}
 
 	tick++;
+	if (tick % 10)
+	{
+		//core_log_trace("send rev:", _sendcount, _revcount);
+	}
 	if (tick == 100 && _isServer)
 	{
 		//core_log_trace("to stop...");

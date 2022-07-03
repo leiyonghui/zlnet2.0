@@ -34,6 +34,7 @@ public:
 	SSeting1 setting;
 	SSeting1 setting2;
 	int32 tick{0};
-	int32 sendcount{ 0 };
+	int32 _sendcount{ 0 };
+	int32 _revcount{ 0 };
 	std::set<uint32> uids;
 };

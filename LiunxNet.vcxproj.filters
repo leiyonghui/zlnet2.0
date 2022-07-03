@@ -344,8 +344,5 @@
     <ClCompile Include="network\Buffer.cpp">
       <Filter>net</Filter>
     </ClCompile>
-    <ClCompile Include="test\TestBuffer.cpp">
-      <Filter>test</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>

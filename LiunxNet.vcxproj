@@ -183,7 +183,6 @@
     <ClCompile Include="test\main_app.cpp" />
     <ClCompile Include="test\main_win.cpp" />
     <ClCompile Include="test\TestApp.cpp" />
-    <ClCompile Include="test\TestBuffer.cpp" />
     <ClCompile Include="test\TestMessage.cpp" />
     <ClCompile Include="test\TestModule.cpp" />
   </ItemGroup>

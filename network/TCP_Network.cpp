@@ -29,7 +29,7 @@ namespace net
 		if (!endPoint) 
 		{
 			core_log_error("unaccept", listener->getKey());
-			tcpCloseListen(listener);
+			//tcpCloseListen(listener);
 			return;
 		}
 		auto key = popKey();
