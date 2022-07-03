@@ -5,6 +5,9 @@ namespace net
 {
 	const std::string NAME = "RingBuffer";
 
+	const int32 BOUND_SIZE	=	1024 * 500;
+	const int32 SHRINK_SIZE =	1024 * 10;
+
 	CRingBuffer::CRingBuffer(uint32 capacity) :_capacity(capacity), _front(0), _end(0), _size(0), _buff(new char[_capacity]) {
 
 #ifdef _MONITOR
@@ -49,6 +52,8 @@ namespace net
 			_end += len;
 		}
 		_size += len;
+		if (!_size)
+			tryshrink();
 	}
 
 	void CRingBuffer::read(char* buff, uint32 len)
@@ -80,6 +85,8 @@ namespace net
 			}
 		}
 		_size -= len;
+		if (!_size)
+			tryshrink();
 	}
 
 	void CRingBuffer::write_confirm(uint32 len)
@@ -221,11 +228,12 @@ namespace net
 		_readerv->clear();
 	}
 
-	void CRingBuffer::shrink(uint32 newcapacity)
+	void CRingBuffer::tryshrink()
 	{
-		if (_size > newcapacity || newcapacity > _capacity)
+		if (_size)
 			return;
-		resize(newcapacity);
+		if (_capacity > BOUND_SIZE)
+			resize(SHRINK_SIZE);
 	}
 
 	void CRingBuffer::ensure(uint32 capacity)
