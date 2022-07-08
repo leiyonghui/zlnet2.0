@@ -13,6 +13,7 @@ namespace net
 	{
 	public:
 		IOObject(EIOOBJECT_TYPE type);
+		IOObject( EIOOBJECT_TYPE type, uint32 key, CEndPointUnPtr&& endPoint);
 		virtual ~IOObject() = default;
 
 		void onAwake(const IOProtocolPtr& protocl, CEndPointUnPtr endPoint);

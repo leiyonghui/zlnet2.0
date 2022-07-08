@@ -43,11 +43,12 @@ namespace net
 		std::list<IOObjectPtr> getGroupObject(int32 goroup) const;
 
 		void run();
-		void init();
+		bool init();
 		void loop();
 		void onQuit();
 		void onTimer1000ms();
 		void pushEvent(IOEvent* event);
+		void weakup();
 		void dispatchProcess(IOEvent* event);
 		void processDataEvent(IOEvent* event);
 		void processListen(IOListen* event);
@@ -58,6 +59,7 @@ namespace net
 		void _close(uint32 key);
 		void _clear(int32 group);
 
+		void weakupReadHandler(const IOObjectPtr& object);
 		void defaultErrorHandle(const IOObjectPtr& object);
 		void onNewConnection(const ConnectionPtr& con);
 
@@ -91,5 +93,6 @@ namespace net
 		int64 _lastclock;
 		int64 _secondTick;
 		std::thread _thr;
+		IOObjectPtr _wakeupObject;
 	};
 }

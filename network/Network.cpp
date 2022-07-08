@@ -16,6 +16,8 @@
 
 namespace net
 {
+	const int32 POLL_TIMEOUT = 10 * 1000;
+
 	CNetwork::CNetwork() :_isRuning(false), _isStop(false),_poller(new CEPoller()),_shceduler(new timerset::TimerSet()), _tick(0), _lastclock(0), _secondTick(0)
 	{
 		_objects.resize(MAX_OBJECT_SIZE);
@@ -150,19 +152,41 @@ namespace net
 
 	void CNetwork::run()
 	{
+		if (!init())
+		{
+			core_log_error("net init");
+			return;
+		}
 		core_log_trace("start net:", std::this_thread::get_id());
-		init();
 
 		loop();
 
 		onQuit();
 	}
 
-	void CNetwork::init()
+	bool CNetwork::init()
 	{
 #ifdef __linux
 		signal(SIGPIPE, SIG_IGN);
 #endif // __linux
+
+		auto key = popKey();
+		if (!key)
+		{
+			core_log_error("key null");
+			return false;
+		}
+		auto socket = common::CreateSocket(EPROTO_TCP);
+		if (socket == INVALID_SOCKET)
+		{
+			core_log_error("listen create socket");
+			return false;
+		}
+		auto endPoint = CObjectPool<CEndPoint>::Instance()->createUnique(socket);
+		_wakeupObject = std::make_shared<IOObject>(IO_OBJECT_WAKEUP, key, std::move(endPoint));
+		_wakeupObject->setReadCallback(std::bind(&CNetwork::weakupReadHandler, this, _1));
+		_poller->registerReadHandler(_wakeupObject);
+		addObject(_wakeupObject);
 	}
 
 	void CNetwork::loop()
@@ -170,7 +194,7 @@ namespace net
 		while (!_isStop)
 		{
 			++_tick;
-			_poller->poll(_objects, 4);
+			_poller->poll(_objects, POLL_TIMEOUT);
 
 			std::list<IOEvent*> events;
 			_eventQueue.pop(events);
@@ -262,7 +286,19 @@ namespace net
 	{
 		bool notify;
 		_eventQueue.push(event, notify);
+		if (notify) 
+			weakup();
 	}
+
+    void CNetwork::weakup()
+    {
+		int32 n = 1;
+		auto cnt = _wakeupObject->getEndPoint()->write((char*)&n, sizeof(n));
+		if (cnt != sizeof(n)) 
+		{
+			core_log_error("weakup error", cnt);
+		}
+    }
 
 	void CNetwork::dispatchProcess(IOEvent* event)
 	{
@@ -401,6 +437,17 @@ namespace net
 		auto objs = getGroupObject(group);
 		for (auto& obj : objs)
 			_close(obj->getKey());
+	}
+
+	void CNetwork::weakupReadHandler(const IOObjectPtr& object)
+	{
+		auto endPoint = object->getEndPoint();
+		int32 n = 0;
+		auto cnt = endPoint->read((char*)&n, sizeof(n));
+		if (cnt != sizeof(n)) 
+		{
+			core_log_error("weakup unexpect", cnt);
+		}
 	}
 
 	void CNetwork::defaultErrorHandle(const IOObjectPtr& object)

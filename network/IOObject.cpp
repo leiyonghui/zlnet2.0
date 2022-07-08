@@ -7,6 +7,11 @@ namespace net
 
 	}
 
+    IOObject::IOObject(EIOOBJECT_TYPE type, uint32 key, CEndPointUnPtr&& endPoint):_type(type), _key(key), _group(0), _events(0), _endpoint(std::move(endPoint))
+    {
+
+    }
+
 	void IOObject::onAwake(const IOProtocolPtr& protocol, CEndPointUnPtr endPoint)
 	{
 		_protocol = protocol;
